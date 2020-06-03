@@ -10,9 +10,9 @@ import com.ql.util.express.instruction.FunctionInstructionSet;
 
 /**
  * 表达式装载器
- * 
+ *
  * @author xuannan
- * 
+ *
  */
 public class ExpressLoader {
 	private  ConcurrentHashMap<String, InstructionSet> expressInstructionSetCache = new ConcurrentHashMap<String, InstructionSet>();
@@ -22,12 +22,13 @@ public class ExpressLoader {
 	}
 	public InstructionSet loadExpress(String expressName)
 			throws Exception {
-		return parseInstructionSet(expressName,this.creator.getExpressResourceLoader().loadExpress(expressName));		
+		return parseInstructionSet(expressName,this.creator.getExpressResourceLoader().loadExpress(expressName));
 	}
 
 	public void addInstructionSet(String expressName, InstructionSet set)
 			throws Exception {
 		synchronized (expressInstructionSetCache) {
+			// 存在时抛异常，即 新的表达式不能覆盖老的
 			if (expressInstructionSetCache.containsKey(expressName)) {
 				throw new QLException("表达式定义重复：" + expressName);
 			}
@@ -35,6 +36,13 @@ public class ExpressLoader {
 		}
 	}
 
+	/**
+	 * 设置指令集 到本地缓存
+	 * @param expressName
+	 * @param expressString
+	 * @return
+	 * @throws Exception
+	 */
 	public InstructionSet parseInstructionSet(String expressName,
 			String expressString) throws Exception {
 		InstructionSet parseResult = null;

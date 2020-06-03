@@ -10,7 +10,13 @@ import com.ql.util.express.match.QLPattern;
 import com.ql.util.express.match.QLPatternNode;
 
 enum NodeTypeKind {
-	KEYWORD, BLOCK, EXPRESS, OPERATOR, WORDDEF, GROUP, STATEMENT
+	KEYWORD, //关键字
+	BLOCK,
+	EXPRESS, //表达式
+	OPERATOR, //操作符
+	WORDDEF,
+	GROUP,
+	STATEMENT
 }
 
 public class NodeType implements INodeType {

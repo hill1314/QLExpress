@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ExpressPackage {
-	private List<String> m_packages;
+	private List<String> m_packages;   // 默认自动加载的包（java.lang,java.util）
 	private Map<String,Class<?>> name2CallCache = null;
 	private Class<?> S_NULL = NullClass.class;
 	private ExpressPackage parent;
@@ -49,10 +49,10 @@ public class ExpressPackage {
 				if(tempClass == null){
 					tempClass = S_NULL ;
 				}
-			}	
+			}
 			this.name2CallCache.put(name, tempClass);
 		}
-		
+
 		if(tempClass == S_NULL){
 			return null;
 		}else{
@@ -111,5 +111,5 @@ public class ExpressPackage {
 }
 
 class NullClass{
-	
+
 }

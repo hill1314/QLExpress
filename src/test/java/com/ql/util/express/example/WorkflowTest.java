@@ -13,14 +13,40 @@ import com.ql.util.express.example.operator.ApproveOperator;
  *
  */
 public class WorkflowTest {
-    
-    public void print(String s) {
-        System.out.print(s);
-    }
-    
-    public void println(String s) {
-        System.out.println(s);
-    }
+
+	public void print(String s) {
+		System.out.print(s);
+	}
+
+	public void println(String s) {
+		System.out.println(s);
+	}
+
+	@Test
+	public void testApproveSimple()throws Exception{
+		String exp = "如果 (审批通过(经理,金额)){   报销入账(金额) }\n" +
+				"否则 {   打回修改(申请人) }\n" +
+				"打印(\"流程结束\")";
+
+		ExpressRunner runner = new ExpressRunner(false,true);
+		//定义操作符别名
+		runner.addOperatorWithAlias("如果", "if",null);
+		runner.addOperatorWithAlias("否则", "else",null);
+
+		runner.addFunctionOfServiceMethod("打印", new WorkflowTest(), "println",new String[] { "String" }, null);
+		//定义方法
+		runner.addFunction("审批通过", new ApproveOperator(1));
+		runner.addFunction("报销入账", new ApproveOperator(2));
+		runner.addFunction("打回修改", new ApproveOperator(3));
+		//设置上下文变量
+		IExpressContext<String,Object> expressContext = new DefaultContext<String,Object>();
+		expressContext.put("经理", "王经理");
+		expressContext.put("申请人", "小强");
+		expressContext.put("金额", new Integer(4000));
+		//执行表达式
+		runner.execute(exp, expressContext, null,false, true);
+
+	}
 
 	/**
 	 * 执行一段文本
@@ -51,7 +77,8 @@ public class WorkflowTest {
 				         "   打回修改(申请人)" +
 				         "}" +
 				         "打印(\"完成\")";
-    ExpressRunner runner = new ExpressRunner();
+//		System.out.println(exp);
+    	ExpressRunner runner = new ExpressRunner();
 		//定义操作符别名
 		runner.addOperatorWithAlias("如果", "if",null);
 		runner.addOperatorWithAlias("否则", "else",null);
@@ -93,7 +120,7 @@ public class WorkflowTest {
 		//加载文件
 		runner.loadExpress("example/approve1");
 		//从指定文件中获取表示式构造指令集
-		
+
 		//设置上下文变量
 		IExpressContext<String,Object> expressContext = new DefaultContext<String, Object>();
 		expressContext.put("经理", "王经理");
@@ -101,10 +128,10 @@ public class WorkflowTest {
 		expressContext.put("财务", "张财务");
 		expressContext.put("申请人", "小强");
 		expressContext.put("金额", new Integer(5000));
-		
+
 		runner.executeByExpressName("example/approve1", expressContext, null, false,false,null);
 	}
-	
+
 	/**
 	 * 通过文件加载方法及表达式
 	 * @throws Exception
@@ -117,7 +144,7 @@ public class WorkflowTest {
 	  runner.addOperatorWithAlias("否则", "else",null);
   	runner.addOperatorWithAlias("大于", ">",null);
 		//
-		runner.addFunctionOfServiceMethod("打印", new WorkflowTest(), "println",new String[] { "String" }, null);		
+		runner.addFunctionOfServiceMethod("打印", new WorkflowTest(), "println",new String[] { "String" }, null);
 		//加载文件
 		runner.loadExpress("example/approve");
 		//设置上下文变量
@@ -127,10 +154,10 @@ public class WorkflowTest {
 		expressContext.put("财务", "张财务");
 		expressContext.put("申请人", "小强");
 		expressContext.put("金额", new Integer(6000));
-		
+
 		runner.executeByExpressName("example/approve", expressContext, null, false,false,null);
 	}
-	
+
 	/**
 	 * 从不同的文件中加载方法及表达式
 	 * @throws Exception
@@ -144,7 +171,7 @@ public class WorkflowTest {
   	runner.addOperatorWithAlias("大于", ">",null);
 		//
 		runner.addFunctionOfServiceMethod("打印", new WorkflowTest(), "println",new String[] { "String" }, null);
-		
+
 		//加载文件
 		runner.loadExpress("example/approve1");
 		runner.loadExpress("example/approve2");
@@ -155,8 +182,8 @@ public class WorkflowTest {
 		expressContext.put("财务", "张财务");
 		expressContext.put("申请人", "小强");
 		expressContext.put("金额", new Integer(7000));
-		
+
 		runner.executeByExpressName("example/approve1", expressContext, null, false,false,null);
 	}
-	
+
 }
