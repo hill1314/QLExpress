@@ -7,6 +7,9 @@ import com.ql.util.express.ExpressRunner;
 import com.ql.util.express.IExpressContext;
 import com.ql.util.express.example.operator.ApproveOperator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 本例模拟了一个简单的流程处理
  * 用于展示如何定义表达式，方法，并使用上下文变量
@@ -44,7 +47,9 @@ public class WorkflowTest {
 		expressContext.put("申请人", "小强");
 		expressContext.put("金额", new Integer(4000));
 		//执行表达式
-		runner.execute(exp, expressContext, null,false, true);
+		List<String> errorList = new ArrayList<String>();
+		errorList.add("test error");
+		runner.execute(exp, expressContext, null,true, true);
 
 	}
 

@@ -53,8 +53,13 @@ public class ExpressRunner {
      * 表达式对应的规则的缓存
      */
     private Map<String, Rule> ruleCache = new HashMap<String, Rule>();
-
+    /**
+     * 表达式装载器
+     */
     private ExpressLoader loader;
+    /**
+     * 加载表达式资源接口
+     */
     private IExpressResourceLoader expressResourceLoader;
     /**
      * 语法定义的管理器
@@ -658,7 +663,7 @@ public class ExpressRunner {
                 }
             }
         } else {
-        	//1. 编译成指令集过程：string -> InstructionSet
+            //1. 编译成指令集过程：string -> InstructionSet
             parseResult = this.parseInstructionSet(expressString);
         }
 
@@ -755,7 +760,7 @@ public class ExpressRunner {
             ExpressNode root = this.parse.parse(this.rootExpressPackage, text, isTrace, selfDefineClass);
 
             //（4）生成指令集合
-            InstructionSet result = createInstructionSet(root, "main");
+            InstructionSet result = createInstructionSet(root, InstructionSet.TYPE_MAIN);
             if (this.isTrace && log.isDebugEnabled()) {
                 log.debug(result);
             }
@@ -889,7 +894,7 @@ public class ExpressRunner {
             }
             Word[] words = this.parse.splitWords(rootExpressPackage, text, isTrace, selfDefineClass);
             ExpressNode root = this.parse.parse(this.rootExpressPackage, words, text, isTrace, selfDefineClass, mockRemoteJavaClass);
-            InstructionSet result = createInstructionSet(root, "main");
+            InstructionSet result = createInstructionSet(root, InstructionSet.TYPE_MAIN);
             if (this.isTrace && log.isDebugEnabled()) {
                 log.debug(result);
             }
