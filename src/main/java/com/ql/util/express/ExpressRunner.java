@@ -79,27 +79,28 @@ public class ExpressRunner {
      */
     ExpressPackage rootExpressPackage = new ExpressPackage(null);
 
-    public AppendingClassMethodManager getAppendingClassMethodManager() {
-        return appendingClassMethodManager;
-    }
-
+    /**
+     * 添加类方法
+     */
     private AppendingClassMethodManager appendingClassMethodManager;
 
-    public AppendingClassFieldManager getAppendingClassFieldManager() {
-        return appendingClassFieldManager;
-    }
-
+    /**
+     * 添加类字段
+     */
     private AppendingClassFieldManager appendingClassFieldManager;
 
+    /**
+     * 操作数据缓存
+     */
     private ThreadLocal<IOperateDataCache> m_OperateDataObjectCache = new ThreadLocal<IOperateDataCache>() {
         protected IOperateDataCache initialValue() {
             return new OperateDataCacheImpl(30);
         }
     };
 
-    public IOperateDataCache getOperateDataCache() {
-        return this.m_OperateDataObjectCache.get();
-    }
+    /**
+     * ================================= 构造函数 ===begin============================
+     */
 
     public ExpressRunner() {
         this(false, false);
@@ -140,6 +141,9 @@ public class ExpressRunner {
         this.addSystemOperators();
     }
 
+    /**
+     * 系统默认操作
+     */
     private void addSystemOperators() {
         try {
             this.addOperator("instanceof", new OperatorInstanceOf("instanceof"));
@@ -148,6 +152,9 @@ public class ExpressRunner {
         }
     }
 
+    /**
+     * 系统默认方法
+     */
     public void addSystemFunctions() {
         this.addFunction("max", new OperatorMinMax("max"));
         this.addFunction("min", new OperatorMinMax("min"));
@@ -157,26 +164,10 @@ public class ExpressRunner {
     }
 
     /**
-     * 获取语法定义的管理器
-     *
-     * @return
+     * ================================= 构造函数 ===end============================
      */
-    public NodeTypeManager getNodeTypeManager() {
-        return this.manager;
-    }
 
-    /**
-     * 获取操作符号管理器
-     *
-     * @return
-     */
-    public OperatorFactory getOperatorFactory() {
-        return this.operatorManager;
-    }
 
-    public IExpressResourceLoader getExpressResourceLoader() {
-        return this.expressResourceLoader;
-    }
 
     /**
      * 添加宏定义 例如： macro 玄难 { abc(userinfo.userId);}
@@ -225,7 +216,6 @@ public class ExpressRunner {
         this.manager.addFunctionName(name);
     }
 
-    ;
 
     /**
      * 添加函数定义扩展类的方法
@@ -240,7 +230,6 @@ public class ExpressRunner {
 
     }
 
-    ;
 
     /**
      * 添加类的方法
@@ -657,17 +646,16 @@ public class ExpressRunner {
                     parseResult = expressInstructionSetCache.get(expressString);
                     if (parseResult == null) {
                         parseResult = this.parseInstructionSet(expressString);
-                        expressInstructionSetCache.put(expressString,
-                                parseResult);
+                        expressInstructionSetCache.put(expressString,parseResult);
                     }
                 }
             }
         } else {
-            //1. 编译成指令集过程：string -> InstructionSet
+            //step1、 编译成指令集过程：string -> InstructionSet
             parseResult = this.parseInstructionSet(expressString);
         }
 
-        //2. 指令集执行过程：InstructionSet + context ->Object
+        //step2. 指令集执行过程：InstructionSet + context ->Object
         return InstructionSetRunner.executeOuter(this, parseResult, this.loader, context, errorList,
                 isTrace, false, aLog, false);
     }
@@ -716,7 +704,7 @@ public class ExpressRunner {
 //      分成两句话执行，用来保存中间的words结果
 //		ExpressNode root = this.parse.parse(this.rootExpressPackage,text, isTrace,selfDefineClass);
 
-        Word[] words = this.parse.splitWords(rootExpressPackage, text, isTrace, selfDefineClass);
+        Word[] words = this.parse.splitWords(text, isTrace, selfDefineClass);
         ExpressNode root = this.parse.parse(rootExpressPackage, words, text, isTrace, selfDefineClass);
         Rule rule = RuleManager.createRule(root, words);
         rule.setCode(ruleCode);
@@ -734,7 +722,7 @@ public class ExpressRunner {
             }
         }
 
-        Word[] words = this.parse.splitWords(rootExpressPackage, text, isTrace, selfDefineClass);
+        Word[] words = this.parse.splitWords(text, isTrace, selfDefineClass);
         ExpressNode root = this.parse.parse(rootExpressPackage, words, text, isTrace, selfDefineClass);
         return RuleManager.createCondition(root, words);
     }
@@ -750,6 +738,8 @@ public class ExpressRunner {
     public InstructionSet parseInstructionSet(String text)
             throws Exception {
         try {
+
+            //获取 对外的变量声明，还没实现
             Map<String, String> selfDefineClass = new HashMap<String, String>();
             for (ExportItem item : this.loader.getExportInfo()) {
                 if (item.getType().equals(InstructionSet.TYPE_CLASS)) {
@@ -757,6 +747,7 @@ public class ExpressRunner {
                 }
             }
 
+            //指令解析
             ExpressNode root = this.parse.parse(this.rootExpressPackage, text, isTrace, selfDefineClass);
 
             //（4）生成指令集合
@@ -892,7 +883,7 @@ public class ExpressRunner {
                     selfDefineClass.put(item.getName(), item.getName());
                 }
             }
-            Word[] words = this.parse.splitWords(rootExpressPackage, text, isTrace, selfDefineClass);
+            Word[] words = this.parse.splitWords(text, isTrace, selfDefineClass);
             ExpressNode root = this.parse.parse(this.rootExpressPackage, words, text, isTrace, selfDefineClass, mockRemoteJavaClass);
             InstructionSet result = createInstructionSet(root, InstructionSet.TYPE_MAIN);
             if (this.isTrace && log.isDebugEnabled()) {
@@ -907,4 +898,47 @@ public class ExpressRunner {
             return false;
         }
     }
+
+
+    /**
+     * ================================= get \ set ===begin============================
+     */
+
+    public AppendingClassMethodManager getAppendingClassMethodManager() {
+        return appendingClassMethodManager;
+    }
+
+    public IOperateDataCache getOperateDataCache() {
+        return this.m_OperateDataObjectCache.get();
+    }
+
+    public AppendingClassFieldManager getAppendingClassFieldManager() {
+        return appendingClassFieldManager;
+    }
+
+    /**
+     * 获取语法定义的管理器
+     *
+     * @return
+     */
+    public NodeTypeManager getNodeTypeManager() {
+        return this.manager;
+    }
+
+    /**
+     * 获取操作符号管理器
+     *
+     * @return
+     */
+    public OperatorFactory getOperatorFactory() {
+        return this.operatorManager;
+    }
+
+    public IExpressResourceLoader getExpressResourceLoader() {
+        return this.expressResourceLoader;
+    }
+
+    /**
+     * ================================= get \ set ===end============================
+     */
 }

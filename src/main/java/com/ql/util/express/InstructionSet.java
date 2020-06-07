@@ -22,9 +22,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class InstructionSet implements Serializable {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1841743860792681669L;
 
     private static final transient Log log = LogFactory.getLog(InstructionSet.class);
@@ -245,6 +242,10 @@ public class InstructionSet implements Serializable {
         return this.functionDefine.values().toArray(new FunctionInstructionSet[0]);
     }
 
+    /**
+     * 添加对外的变量声明（还没实现）
+     * @param e
+     */
     public void addExportDef(ExportItem e) {
         this.exportVar.add(e);
     }

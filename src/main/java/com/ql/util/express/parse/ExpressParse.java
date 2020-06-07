@@ -44,17 +44,19 @@ public class ExpressParse {
         this.isPrecise = aIsPrecise;
     }
 
+    //TODO 是否必须
     protected Word[] getExpressByName(String expressFileName) throws Exception {
         String express = this.expressResourceLoader.loadExpress(expressFileName);
         return WordSplit.parse(nodeTypeManager.splitWord, express);
     }
 
-	/**
-	 * include 引包处理
-	 * @param wordObjects
-	 * @return
-	 * @throws Exception
-	 */
+    /**
+     * include 引包处理
+     *
+     * @param wordObjects
+     * @return
+     * @throws Exception
+     */
     protected Word[] dealInclude(Word[] wordObjects) throws Exception {
         boolean isInclude = false;
         StringBuffer includeFileName = new StringBuffer();
@@ -100,6 +102,7 @@ public class ExpressParse {
         ExpressPackage tmpImportPackage = null;
         if (dealJavaClass == true) {
             tmpImportPackage = new ExpressPackage(aRootExpressPackage);
+
             //先处理import，import必须放在文件的最开始，必须以;结束
             boolean isImport = false;
             StringBuffer importName = new StringBuffer();
@@ -119,6 +122,7 @@ public class ExpressParse {
             }
         }
 
+        //单词类型分析
         String orgiValue = null;
         Object objectValue = null;
         NodeType treeNodeType = null;
@@ -129,6 +133,8 @@ public class ExpressParse {
 
             char firstChar = tempWord.charAt(0);
             char lastChar = tempWord.substring(tempWord.length() - 1).toLowerCase().charAt(0);
+
+            //数字开头
             if (firstChar >= '0' && firstChar <= '9') {
                 if (result.size() > 0) {//对 负号进行特殊处理
                     if (result.get(result.size() - 1).getValue().equals("-")) {
@@ -188,15 +194,17 @@ public class ExpressParse {
                 treeNodeType = nodeTypeManager.findNodeType("CONST");
                 point = point + 1;
             } else if (firstChar == '"') {
+                //双引号开头
                 if (lastChar != '"' || tempWord.length() < 2) {
                     throw new QLCompileException("没有关闭的字符串：" + tempWord);
                 }
-                tempWord = tempWord.substring(1, tempWord.length() - 1);
-                tempType = nodeTypeManager.findNodeType("CONST_STRING");
+                tempWord = tempWord.substring(1, tempWord.length() - 1);  //取引号内的内容
+                tempType = nodeTypeManager.findNodeType("CONST_STRING"); //字符串常量
                 objectValue = tempWord;
                 treeNodeType = nodeTypeManager.findNodeType("CONST");
                 point = point + 1;
             } else if (firstChar == '\'') {
+                //单引号开头
                 if (lastChar != '\'' || tempWord.length() < 2) {
                     throw new QLCompileException("没有关闭的字符：" + tempWord);
                 }
@@ -213,16 +221,19 @@ public class ExpressParse {
 
                 point = point + 1;
             } else if (tempWord.equals("true") || tempWord.equals("false")) {
+                // boolean 类型
                 tempType = nodeTypeManager.findNodeType("CONST_BOOLEAN");
                 treeNodeType = nodeTypeManager.findNodeType("CONST");
                 objectValue = Boolean.valueOf(tempWord);
                 point = point + 1;
             } else {
+                //其他 节点类型
                 tempType = nodeTypeManager.isExistNodeTypeDefine(tempWord);
                 if (tempType != null && tempType.getKind() != NodeTypeKind.KEYWORD) {
                     //不是关键字
                     tempType = null;
                 }
+
                 if (tempType == null) {
                     boolean isClass = false;
                     String tmpStr = "";
@@ -231,14 +242,14 @@ public class ExpressParse {
                         int j = point;
                         while (j < wordObjects.length) {
                             tmpStr = tmpStr + wordObjects[j].word;
+                            //从 import的包中找，判断是不是 class类型
                             tmpClass = tmpImportPackage.getClass(tmpStr);
                             if (tmpClass != null) {
                                 point = j + 1;
                                 isClass = true;
                                 break;
                             }
-                            if (j < wordObjects.length - 1
-                                    && wordObjects[j + 1].word.equals(".") == true) {
+                            if (j < wordObjects.length - 1 && wordObjects[j + 1].word.equals(".") == true) {
                                 tmpStr = tmpStr + wordObjects[j + 1].word;
                                 j = j + 2;
                                 continue;
@@ -259,12 +270,14 @@ public class ExpressParse {
                         tempType = nodeTypeManager.findNodeType("VClass");
                         point = point + 1;
                     } else {
+                        //以上类型 都不是，则认为是ID(变量名)
                         tempType = nodeTypeManager.findNodeType("ID");
                         point = point + 1;
                     }
                 } else {
                     point = point + 1;
                 }
+
             }
             result.add(new ExpressNode(tempType, tempWord, orgiValue, objectValue, treeNodeType, tmpWordObject.line, tmpWordObject.col, tmpWordObject.index));
             treeNodeType = null;
@@ -339,21 +352,21 @@ public class ExpressParse {
 
     public ExpressNode parse(ExpressPackage rootExpressPackage, String express, boolean isTrace, Map<String, String> selfDefineClass) throws Exception {
         //（1）token分解
-        Word[] words = splitWords(rootExpressPackage, express, isTrace, selfDefineClass);
-        return parse(rootExpressPackage, words, express, isTrace, selfDefineClass);
+        Word[] words = splitWords(express, isTrace, selfDefineClass);
+//        return parse(rootExpressPackage, words, express, isTrace, selfDefineClass);
+        return parse(rootExpressPackage, words, express, isTrace, selfDefineClass, false);
     }
 
     /**
      * token分解(分词)
      *
-     * @param rootExpressPackage
      * @param express
      * @param isTrace
      * @param selfDefineClass
      * @return
      * @throws Exception
      */
-    public Word[] splitWords(ExpressPackage rootExpressPackage, String express, boolean isTrace, Map<String, String> selfDefineClass) throws Exception {
+    public Word[] splitWords(String express, boolean isTrace, Map<String, String> selfDefineClass) throws Exception {
         Word[] words = WordSplit.parse(this.nodeTypeManager.splitWord, express);
         if (isTrace == true && log.isDebugEnabled()) {
             log.debug("执行的表达式:" + express);
@@ -395,12 +408,13 @@ public class ExpressParse {
                              boolean isTrace, Map<String, String> selfDefineClass,
                              boolean mockRemoteJavaClass) throws Exception {
 
-		//（2）token解析
-        List<ExpressNode> tempList = this.transferWord2ExpressNode(rootExpressPackage, words, selfDefineClass, true);
+        //（2）token解析
+        List<ExpressNode> tempList = transferWord2ExpressNode(rootExpressPackage, words, selfDefineClass, true);
         if (isTrace == true && log.isDebugEnabled()) {
             log.debug("单词分析结果:" + printInfo(tempList, ","));
         }
-        //比如用在远程配置脚本，本地jvm并不包含这个java类，可以
+
+        //比如用在远程配置脚本，本地jvm并不包含这个java类，可以  TODO 暂时用不到
         if (mockRemoteJavaClass) {
             List<ExpressNode> tempList2 = new ArrayList<ExpressNode>();
             for (int i = 0; i < tempList.size(); i++) {
@@ -430,16 +444,17 @@ public class ExpressParse {
         }
 
         //（3）匹配AST语法树
-        QLMatchResult result = QLPattern.findMatchStatement(this.nodeTypeManager, this.nodeTypeManager
-                .findNodeType("PROGRAM").getPatternNode(), tempList, 0);
+        QLMatchResult result = QLPattern.findMatchStatement(nodeTypeManager, tempList, 0);
         if (result == null) {
             throw new QLCompileException("语法匹配失败");
         }
+
         if (result.getMatchLastIndex() < tempList.size()) {
             int maxPoint = result.getMatchLastIndex();
             ExpressNode tempNode = tempList.get(maxPoint);
             throw new QLCompileException("还有单词没有完成语法匹配：" + result.getMatchLastIndex() + "[" + tempNode.getValue() + ":line=" + tempNode.getLine() + ",col=" + tempNode.getCol() + "] 之后的单词 \n" + express);
         }
+
         result.getMatchs().get(0).buildExpressNodeTree();
         ExpressNode root = (ExpressNode) result.getMatchs().get(0).getRef();
 

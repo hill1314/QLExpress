@@ -23,7 +23,7 @@ public class TestMap {
 	}
 
 	@Test
-	public void testmain() throws Exception {
+	public void testMain() throws Exception {
 		IExpressContext<String,Object> expressContext = new IExpressContext<String,Object> () {
 			Map<String, Object> map = new HashMap<String, Object>();
 			public Object put(String name, Object object) {
@@ -33,7 +33,7 @@ public class TestMap {
 				return map.get(key);
 			}
 		};
-		
+
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("key1", 1);
 		expressContext.put("map", map);

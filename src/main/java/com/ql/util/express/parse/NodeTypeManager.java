@@ -15,7 +15,7 @@ public class NodeTypeManager implements INodeTypeManager {
     public String[] splitWord;
     private String[] keyWords;
     private String[] nodeTypeDefines;
-    protected String[][] instructionFacotryMapping;
+    protected String[][] instructionFactoryMapping;
     protected Map<String, NodeType> nodeTypes = new HashMap<String, NodeType>();
 
     //所有的函数定义
@@ -25,12 +25,12 @@ public class NodeTypeManager implements INodeTypeManager {
         this(new KeyWordDefine4Java());
     }
 
-    public NodeTypeManager(KeyWordDefine4Java keyWorkdDefine) {
-        this.splitWord = keyWorkdDefine.splitWord;
-        com.ql.util.express.parse.WordSplit.sortSplitWord(this.splitWord);
-        this.keyWords = keyWorkdDefine.keyWords;
-        this.nodeTypeDefines = keyWorkdDefine.nodeTypeDefines;
-        this.instructionFacotryMapping = keyWorkdDefine.instructionFactoryMapping;
+    public NodeTypeManager(KeyWordDefine4Java keyWordDefine) {
+        this.splitWord = keyWordDefine.splitWord;
+        WordSplit.sortSplitWord(this.splitWord);
+        this.keyWords = keyWordDefine.keyWords;
+        this.nodeTypeDefines = keyWordDefine.nodeTypeDefines;
+        this.instructionFactoryMapping = keyWordDefine.instructionFactoryMapping;
         this.initial();
         this.addOperatorWithRealNodeType("and", "&&");
         this.addOperatorWithRealNodeType("or", "||");
@@ -61,9 +61,9 @@ public class NodeTypeManager implements INodeTypeManager {
             nodeTypes[i].initial();
         }
 
-        //初始化指令Facotry
-        if (this.instructionFacotryMapping != null) {
-            for (String[] list : this.instructionFacotryMapping) {
+        //初始化指令Factory
+        if (this.instructionFactoryMapping != null) {
+            for (String[] list : this.instructionFactoryMapping) {
                 for (String s : list[0].split(",")) {
                     this.findNodeType(s).setInstructionFactory(list[1]);
                 }

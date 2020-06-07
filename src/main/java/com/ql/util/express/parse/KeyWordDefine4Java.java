@@ -29,9 +29,10 @@ public class KeyWordDefine4Java {
     };
 
     /**
-     * 节点类型定义 TODO 意义？
+     * 节点类型定义
      */
     public String[] nodeTypeDefines = new String[]{
+            //关键词 NodeTypeKind.WORDDEF
             "ID:TYPE=WORDDEF",
             "EOF:TYPE=WORDDEF",
             "FUNCTION_NAME:TYPE=WORDDEF",
@@ -46,7 +47,6 @@ public class KeyWordDefine4Java {
             "RIGHT_COMMENT:TYPE=WORDDEF,DEFINE=**/",
             "MULTI:TYPE=WORDDEF,DEFINE=*",
 
-
             "CONST_BYTE:TYPE=WORDDEF",
             "CONST_SHORT:TYPE=WORDDEF",
             "CONST_INTEGER:TYPE=WORDDEF",
@@ -60,9 +60,11 @@ public class KeyWordDefine4Java {
             "CONST_CLASS:TYPE=WORDDEF",
             "CONST:TYPE=WORDDEF,DEFINE=CONST_NUMBER|CONST_CHAR|CONST_STRING|CONST_BOOLEAN|CONST_CLASS",
 
+            //表达式  NodeTypeKind.EXPRESS
             "CHILD_EXPRESS:TYPE=EXPRESS,DEFINE=LEFT_BRACKET->CHILD_EXPRESS^$(RIGHT_BRACKET~|(EXPRESS$(,~$EXPRESS)*$RIGHT_BRACKET~))",
             "[]:TYPE=EXPRESS,DEFINE=[~$EXPRESS*$]~#[]",
 
+            //操作 NodeTypeKind.OPERATOR
             "OP_LEVEL1:TYPE=OPERATOR,DEFINE=~|!",
             "OP_LEVEL2:TYPE=OPERATOR,DEFINE=++|--",
             "OP_LEVEL3:TYPE=OPERATOR,DEFINE=&|MAYBE|XOR|<<|>>",
@@ -73,11 +75,13 @@ public class KeyWordDefine4Java {
             "OP_LEVEL8:TYPE=OPERATOR,DEFINE=&&",
             "OP_LEVEL9:TYPE=OPERATOR,DEFINE=OR|nor",
 
+            //NodeTypeKind.GROUP
             "OP_LIST:TYPE=GROUP,DEFINE=OP_LEVEL1|OP_LEVEL2|OP_LEVEL3|OP_LEVEL4|OP_LEVEL5|OP_LEVEL6|OP_LEVEL7|OP_LEVEL8|OP_LEVEL9|=|LEFT_BRACKET|RIGHT_BRACKET|[|]|{|}",
 
+            //NodeTypeKind.STATEMENT
             "PARAMETER_LIST:TYPE=STATEMENT,DEFINE=LEFT_BRACKET~$(RIGHT_BRACKET~|(EXPRESS$(,~$EXPRESS)*$RIGHT_BRACKET~))",
 
-
+            //表达式  NodeTypeKind.EXPRESS
             "VAR_DEFINE:TYPE=EXPRESS,DEFINE=(CONST_CLASS|VClass->CONST_STRING)$(([$])#[])*$ID->CONST_STRING#def",
             "EXPORT_VAR_DEFINE:TYPE=EXPRESS,DEFINE=exportDef^$CONST_CLASS$ID->CONST_STRING",
             "NEW_OBJECT:TYPE=EXPRESS,DEFINE=new->NEW_OBJECT^$CONST_CLASS$PARAMETER_LIST",
