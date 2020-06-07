@@ -207,18 +207,18 @@ public class InstructionSet implements Serializable {
         return result;
     }
 
-    public void executeInnerOrigiInstruction(RunEnvironment environmen, List<String> errorList, Log aLog) throws Exception {
+    public void executeInnerOrigiInstruction(RunEnvironment environment, List<String> errorList, Log aLog) throws Exception {
         Instruction instruction = null;
         try {
-            while (environmen.programPoint < this.instructionList.length) {
+            while (environment.programPoint < this.instructionList.length) {
                 QLExpressTimer.assertTimeOut();
-                instruction = this.instructionList[environmen.programPoint];
+                instruction = this.instructionList[environment.programPoint];
                 instruction.setLog(aLog);// 设置log
-                instruction.execute(environmen, errorList);
+                instruction.execute(environment, errorList);
             }
         } catch (Exception e) {
             if (printInstructionError) {
-                log.error("当前ProgramPoint = " + environmen.programPoint);
+                log.error("当前ProgramPoint = " + environment.programPoint);
                 log.error("当前指令" + instruction);
                 log.error(e);
             }

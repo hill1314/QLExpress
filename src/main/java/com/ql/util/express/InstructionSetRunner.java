@@ -62,8 +62,8 @@ public class InstructionSetRunner {
                                  boolean isTrace, boolean isCatchException,
                                  boolean isReturnLastData, Log aLog, boolean isSupportDynamicFieldName)
             throws Exception {
-        InstructionSetContext context = OperateDataCacheManager.fetchInstructionSetContext(
-                true, runner, aContext, loader, isSupportDynamicFieldName);
+        InstructionSetContext context =
+                OperateDataCacheManager.fetchInstructionSetContext(true, runner, aContext, loader, isSupportDynamicFieldName);
         Object result = execute(sets, context, errorList, isTrace, isCatchException, isReturnLastData, aLog);
         return result;
     }

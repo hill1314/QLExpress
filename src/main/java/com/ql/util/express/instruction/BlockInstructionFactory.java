@@ -15,17 +15,19 @@ public class BlockInstructionFactory extends InstructionFactory {
             throws Exception {
         if (node.isTypeEqualsOrChild("STAT_SEMICOLON")
                 && result.getCurrentPoint() >= 0
-				&& result.getInstruction(result.getCurrentPoint()) instanceof InstructionClearDataStack == false) {
+                && result.getInstruction(result.getCurrentPoint()) instanceof InstructionClearDataStack == false) {
             result.addInstruction(new InstructionClearDataStack().setLine(node.getLine()));
         }
 
         int tmpPoint = result.getCurrentPoint() + 1;
         boolean returnVal = false;
         boolean hasDef = false;
+
         for (ExpressNode tmpNode : node.getChildren()) {
             boolean tmpHas = aCompile.createInstructionSetPrivate(result, forStack, tmpNode, false);
             hasDef = hasDef || tmpHas;
         }
+
         if (hasDef == true && isRoot == false
                 && node.getTreeType().isEqualsOrChild("STAT_BLOCK")) {
             result.insertInstruction(tmpPoint, new InstructionOpenNewArea().setLine(node.getLine()));

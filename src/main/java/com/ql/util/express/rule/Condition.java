@@ -9,7 +9,7 @@ import java.util.List;
  * Created by tianqiao on 16/12/6.
  */
 
-public class Condition extends Node{
+public class Condition extends Node {
 
 
     private boolean prior = false;
@@ -50,27 +50,25 @@ public class Condition extends Node{
     }
 
     public void addChild(Condition child) {
-        if(this.children==null){
+        if (this.children == null) {
             this.children = new ArrayList<Condition>();
         }
         this.children.add(child);
     }
 
-    public String toString()
-    {
-        if(this.type == ConditionType.Leaf){
+    public String toString() {
+        if (this.type == ConditionType.Leaf) {
             return priorString(this.getText());
-        } else if(this.type == ConditionType.And){
-            return priorString(StringUtils.join(this.getChildren()," and "));
-        } else if(this.type == ConditionType.Or){
-            return priorString(StringUtils.join(this.getChildren()," or "));
+        } else if (this.type == ConditionType.And) {
+            return priorString(StringUtils.join(this.getChildren(), " and "));
+        } else if (this.type == ConditionType.Or) {
+            return priorString(StringUtils.join(this.getChildren(), " or "));
         }
         return null;
     }
 
-    private String priorString(String orig)
-    {
-        if(this.isPrior()){
+    private String priorString(String orig) {
+        if (this.isPrior()) {
             return new StringBuilder("(").append(orig).append(")").toString();
         }
         return orig;

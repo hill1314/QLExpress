@@ -712,6 +712,13 @@ public class ExpressRunner {
         return rule;
     }
 
+
+    /**
+     * 解析条件
+     * @param text
+     * @return
+     * @throws Exception
+     */
     public Condition parseCondition(String text)
             throws Exception {
 
@@ -795,13 +802,32 @@ public class ExpressRunner {
         return parseResult;
     }
 
+    /**
+     * 创建指令
+     * @param root
+     * @param type
+     * @return
+     * @throws Exception
+     */
     public InstructionSet createInstructionSet(ExpressNode root, String type)
             throws Exception {
         InstructionSet result = new InstructionSet(type);
-        createInstructionSet(root, result);
+
+        Stack<ForRelBreakContinue> forStack = new Stack<ForRelBreakContinue>();
+        createInstructionSetPrivate(result, forStack, root, true);
+        if (forStack.size() > 0) {
+            throw new QLCompileException("For处理错误");
+        }
+
         return result;
     }
 
+    /**
+     * 创建指令
+     * @param root
+     * @param result
+     * @throws Exception
+     */
     public void createInstructionSet(ExpressNode root, InstructionSet result)
             throws Exception {
         Stack<ForRelBreakContinue> forStack = new Stack<ForRelBreakContinue>();
@@ -811,6 +837,15 @@ public class ExpressRunner {
         }
     }
 
+    /**
+     * 通过指令工厂 创建指令
+     * @param result
+     * @param forStack
+     * @param node
+     * @param isRoot
+     * @return
+     * @throws Exception
+     */
     public boolean createInstructionSetPrivate(InstructionSet result,
                                                Stack<ForRelBreakContinue> forStack, ExpressNode node,
                                                boolean isRoot) throws Exception {
@@ -834,26 +869,6 @@ public class ExpressRunner {
         return parseInstructionSet(express).getOutFunctionNames();
     }
 
-
-    public boolean isShortCircuit() {
-        return isShortCircuit;
-    }
-
-    public void setShortCircuit(boolean isShortCircuit) {
-        isShortCircuit = isShortCircuit;
-    }
-
-    /**
-     * 是否忽略charset类型的数据，而识别为string，比如'a' -》 "a"
-     * 默认为不忽略，正常识别为String
-     */
-    public boolean isIgnoreConstChar() {
-        return parse.isIgnoreConstChar();
-    }
-
-    public void setIgnoreConstChar(boolean ignoreConstChar) {
-        parse.setIgnoreConstChar(ignoreConstChar);
-    }
 
     /**
      * 提供简答的语法检查，保证可以在运行期本地环境编译成指令
@@ -936,6 +951,26 @@ public class ExpressRunner {
 
     public IExpressResourceLoader getExpressResourceLoader() {
         return expressResourceLoader;
+    }
+
+    public boolean isShortCircuit() {
+        return isShortCircuit;
+    }
+
+    public void setShortCircuit(boolean isShortCircuit) {
+        isShortCircuit = isShortCircuit;
+    }
+
+    /**
+     * 是否忽略charset类型的数据，而识别为string，比如'a' -》 "a"
+     * 默认为不忽略，正常识别为String
+     */
+    public boolean isIgnoreConstChar() {
+        return parse.isIgnoreConstChar();
+    }
+
+    public void setIgnoreConstChar(boolean ignoreConstChar) {
+        parse.setIgnoreConstChar(ignoreConstChar);
     }
 
     /**
