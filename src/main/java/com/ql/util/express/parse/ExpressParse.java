@@ -192,6 +192,7 @@ public class ExpressParse {
                     }
                 }
                 treeNodeType = nodeTypeManager.findNodeType("CONST");
+
                 point = point + 1;
             } else if (firstChar == '"') {
                 //双引号开头
@@ -287,6 +288,13 @@ public class ExpressParse {
         return result;
     }
 
+
+    /**
+     * 打印
+     * @param builder
+     * @param node
+     * @param level
+     */
     public static void printTreeNode(StringBuilder builder, ExpressNode node, int level) {
         builder.append(level + ":");
 
@@ -316,6 +324,7 @@ public class ExpressParse {
     }
 
     public static void printTreeNode(ExpressNode node, int level) {
+        log.debug("最后的语法树:");
         StringBuilder builder = new StringBuilder();
         printTreeNode(builder, node, level);
         System.out.println(builder.toString());
@@ -350,12 +359,6 @@ public class ExpressParse {
         }
     }
 
-    public ExpressNode parse(ExpressPackage rootExpressPackage, String express, boolean isTrace, Map<String, String> selfDefineClass) throws Exception {
-        //（1）token分解
-        Word[] words = splitWords(express, isTrace, selfDefineClass);
-//        return parse(rootExpressPackage, words, express, isTrace, selfDefineClass);
-        return parse(rootExpressPackage, words, express, isTrace, selfDefineClass, false);
-    }
 
     /**
      * token分解(分词)
@@ -372,6 +375,7 @@ public class ExpressParse {
             log.debug("执行的表达式:" + express);
             log.debug("单词分解结果:" + WordSplit.getPrintInfo(words, ","));
         }
+
         words = this.dealInclude(words);
         if (isTrace == true && log.isDebugEnabled()) {
             log.debug("预处理后结果:" + WordSplit.getPrintInfo(words, ","));
@@ -381,19 +385,18 @@ public class ExpressParse {
         if (selfDefineClass == null) {
             selfDefineClass = new HashMap<String, String>();
         }
+
+        //提取自定义的Class
         fetchSelfDefineClass(words, selfDefineClass);
+
         for (int i = 0; i < words.length; i++) {
             words[i].index = i;
         }
         return words;
     }
 
-    public ExpressNode parse(ExpressPackage rootExpressPackage, Word[] words, String express, boolean isTrace, Map<String, String> selfDefineClass) throws Exception {
-        return parse(rootExpressPackage, words, express, isTrace, selfDefineClass, false);
-    }
-
     /**
-     * （2）token解析
+     * token解析
      *
      * @param rootExpressPackage
      * @param words
@@ -408,6 +411,11 @@ public class ExpressParse {
                              boolean isTrace, Map<String, String> selfDefineClass,
                              boolean mockRemoteJavaClass) throws Exception {
 
+        //（1）token分解
+        if (words == null || words.length == 0) {
+            words = splitWords(express, isTrace, selfDefineClass);
+        }
+
         //（2）token解析
         List<ExpressNode> tempList = transferWord2ExpressNode(rootExpressPackage, words, selfDefineClass, true);
         if (isTrace == true && log.isDebugEnabled()) {
@@ -416,31 +424,7 @@ public class ExpressParse {
 
         //比如用在远程配置脚本，本地jvm并不包含这个java类，可以  TODO 暂时用不到
         if (mockRemoteJavaClass) {
-            List<ExpressNode> tempList2 = new ArrayList<ExpressNode>();
-            for (int i = 0; i < tempList.size(); i++) {
-                ExpressNode node = tempList.get(i);
-                if (node.getValue().equals("new") && node.getNodeType().getKind() == NodeTypeKind.KEYWORD && i + 1 < tempList.size() && !"CONST_CLASS".equals(tempList.get(i + 1).getNodeType().getName())) {
-                    tempList2.add(node);
-                    //取出 ( 前面的类路径作为configClass名称
-                    int end = i + 1;
-                    String configClass = tempList.get(end).getValue();
-                    end++;
-                    while (!tempList.get(end).getValue().equals("(")) {
-                        configClass = configClass + tempList.get(end).getValue();
-                        end++;
-                    }
-                    NodeType nodeType = nodeTypeManager.findNodeType("VClass");
-                    ExpressNode vClassNode = new ExpressNode(nodeType, configClass);
-                    tempList2.add(vClassNode);
-                    i = end - 1;//因为循环之后，i++，所以i=end-1
-                } else {
-                    tempList2.add(node);
-                }
-            }
-            tempList = tempList2;
-            if (isTrace == true && log.isDebugEnabled()) {
-                log.debug("修正后单词分析结果:" + printInfo(tempList, ","));
-            }
+            deal4MockRemoteJavaClass(tempList,isTrace);
         }
 
         //（3）匹配AST语法树
@@ -450,22 +434,56 @@ public class ExpressParse {
         }
 
         if (result.getMatchLastIndex() < tempList.size()) {
-            int maxPoint = result.getMatchLastIndex();
-            ExpressNode tempNode = tempList.get(maxPoint);
-            throw new QLCompileException("还有单词没有完成语法匹配：" + result.getMatchLastIndex() + "[" + tempNode.getValue() + ":line=" + tempNode.getLine() + ",col=" + tempNode.getCol() + "] 之后的单词 \n" + express);
+            ExpressNode tempNode = tempList.get(result.getMatchLastIndex());
+            throw new QLCompileException("还有单词没有完成语法匹配：" + result.getMatchLastIndex() + "["
+                    + tempNode.getValue() + ":line=" + tempNode.getLine() + ",col=" + tempNode.getCol() + "] 之后的单词 \n" + express);
         }
 
         result.getMatchs().get(0).buildExpressNodeTree();
         ExpressNode root = (ExpressNode) result.getMatchs().get(0).getRef();
 
-        //为了生成代码时候进行判断，需要设置每个节点的父亲
+        //为了生成代码时候进行判断，需要设置每个节点的父亲 TODO ?
         resetParent(root, null);
 
         if (isTrace == true && log.isDebugEnabled()) {
-            log.debug("最后的语法树:");
             printTreeNode(root, 1);
         }
+
         return root;
+    }
+
+    /**
+     * 比如用在远程配置脚本，本地jvm并不包含这个java类，可以
+     * @param tempList
+     * @param isTrace
+     * @throws Exception
+     */
+    private void deal4MockRemoteJavaClass(List<ExpressNode> tempList, boolean isTrace) throws Exception {
+        List<ExpressNode> tempList2 = new ArrayList<ExpressNode>();
+        for (int i = 0; i < tempList.size(); i++) {
+            ExpressNode node = tempList.get(i);
+            if (node.getValue().equals("new") && node.getNodeType().getKind() == NodeTypeKind.KEYWORD && i + 1 < tempList.size() && !"CONST_CLASS".equals(tempList.get(i + 1).getNodeType().getName())) {
+                tempList2.add(node);
+                //取出 ( 前面的类路径作为configClass名称
+                int end = i + 1;
+                String configClass = tempList.get(end).getValue();
+                end++;
+                while (!tempList.get(end).getValue().equals("(")) {
+                    configClass = configClass + tempList.get(end).getValue();
+                    end++;
+                }
+                NodeType nodeType = nodeTypeManager.findNodeType("VClass");
+                ExpressNode vClassNode = new ExpressNode(nodeType, configClass);
+                tempList2.add(vClassNode);
+                i = end - 1;//因为循环之后，i++，所以i=end-1
+            } else {
+                tempList2.add(node);
+            }
+        }
+        tempList = tempList2;
+        if (isTrace == true && log.isDebugEnabled()) {
+            log.debug("修正后单词分析结果:" + printInfo(tempList, ","));
+        }
     }
 
     public static String printInfo(List<ExpressNode> list, String splitOp) {

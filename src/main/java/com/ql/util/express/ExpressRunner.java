@@ -28,7 +28,11 @@ import java.util.regex.Pattern;
 public class ExpressRunner {
 
     private static final Log log = LogFactory.getLog(ExpressRunner.class);
+
     private static final String GLOBAL_DEFINE_NAME = "全局定义";
+
+    static Pattern patternRule = Pattern.compile("rule[\\s]+'([^']+)'[\\s]+name[\\s]+'([^']+)'[\\s]+");
+
     /**
      * 是否输出所有的跟踪信息，同时还需要log级别是DEBUG级别
      */
@@ -146,7 +150,7 @@ public class ExpressRunner {
      */
     private void addSystemOperators() {
         try {
-            this.addOperator("instanceof", new OperatorInstanceOf("instanceof"));
+            addOperator("instanceof", new OperatorInstanceOf("instanceof"));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -156,17 +160,16 @@ public class ExpressRunner {
      * 系统默认方法
      */
     public void addSystemFunctions() {
-        this.addFunction("max", new OperatorMinMax("max"));
-        this.addFunction("min", new OperatorMinMax("min"));
-        this.addFunction("round", new OperatorRound("round"));
-        this.addFunction("print", new OperatorPrint("print"));
-        this.addFunction("println", new OperatorPrintln("println"));
+        addFunction("max", new OperatorMinMax("max"));
+        addFunction("min", new OperatorMinMax("min"));
+        addFunction("round", new OperatorRound("round"));
+        addFunction("print", new OperatorPrint("print"));
+        addFunction("println", new OperatorPrintln("println"));
     }
 
     /**
      * ================================= 构造函数 ===end============================
      */
-
 
 
     /**
@@ -178,7 +181,7 @@ public class ExpressRunner {
      */
     public void addMacro(String macroName, String express) throws Exception {
         String macroExpress = "macro " + macroName + " {" + express + "}";
-        this.loader.parseInstructionSet(GLOBAL_DEFINE_NAME, macroExpress);
+        loader.parseInstructionSet(GLOBAL_DEFINE_NAME, macroExpress);
     }
 
     /**
@@ -192,7 +195,7 @@ public class ExpressRunner {
         if (groupName == null || groupName.trim().length() == 0) {
             groupName = GLOBAL_DEFINE_NAME;
         }
-        this.loader.parseInstructionSet(groupName, express);
+        loader.parseInstructionSet(groupName, express);
     }
 
     /**
@@ -202,7 +205,7 @@ public class ExpressRunner {
      * @throws Exception
      */
     public void loadExpress(String expressName) throws Exception {
-        this.loader.loadExpress(expressName);
+        loader.loadExpress(expressName);
     }
 
     /**
@@ -212,8 +215,8 @@ public class ExpressRunner {
      * @param op   对应的操作实现类
      */
     public void addFunction(String name, OperatorBase op) {
-        this.operatorManager.addOperator(name, op);
-        this.manager.addFunctionName(name);
+        operatorManager.addOperator(name, op);
+        manager.addFunctionName(name);
     }
 
 
@@ -225,8 +228,8 @@ public class ExpressRunner {
      * @param op
      */
     public void addFunctionAndClassMethod(String name, Class<?> bindingClass, OperatorBase op) {
-        this.addFunction(name, op);
-        this.addClassMethod(name, bindingClass, op);
+        addFunction(name, op);
+        addClassMethod(name, bindingClass, op);
 
     }
 
@@ -239,7 +242,7 @@ public class ExpressRunner {
      * @param op
      */
     public void addClassField(String field, Class<?> bindingClass, Operator op) {
-        this.addClassField(field, bindingClass, Object.class, op);
+        addClassField(field, bindingClass, Object.class, op);
     }
 
     /**
@@ -251,10 +254,10 @@ public class ExpressRunner {
      * @param op
      */
     public void addClassField(String field, Class<?> bindingClass, Class<?> returnType, Operator op) {
-        if (this.appendingClassFieldManager == null) {
-            this.appendingClassFieldManager = new AppendingClassFieldManager();
+        if (appendingClassFieldManager == null) {
+            appendingClassFieldManager = new AppendingClassFieldManager();
         }
-        this.appendingClassFieldManager.addAppendingField(field, bindingClass, returnType, op);
+        appendingClassFieldManager.addAppendingField(field, bindingClass, returnType, op);
     }
 
     /**
@@ -265,10 +268,10 @@ public class ExpressRunner {
      * @param op
      */
     public void addClassMethod(String name, Class<?> bindingClass, OperatorBase op) {
-        if (this.appendingClassMethodManager == null) {
-            this.appendingClassMethodManager = new AppendingClassMethodManager();
+        if (appendingClassMethodManager == null) {
+            appendingClassMethodManager = new AppendingClassMethodManager();
         }
-        this.appendingClassMethodManager.addAppendingMethod(name, bindingClass, op);
+        appendingClassMethodManager.addAppendingMethod(name, bindingClass, op);
     }
 
     /**
@@ -278,7 +281,7 @@ public class ExpressRunner {
      * @return
      */
     public OperatorBase getFunciton(String name) {
-        return this.operatorManager.getOperator(name);
+        return operatorManager.getOperator(name);
     }
 
     /**
@@ -294,7 +297,7 @@ public class ExpressRunner {
     public void addFunctionOfClassMethod(String name, String aClassName,
                                          String aFunctionName, Class<?>[] aParameterClassTypes,
                                          String errorInfo) throws Exception {
-        this.addFunction(name, new OperatorSelfDefineClassFunction(name,
+        addFunction(name, new OperatorSelfDefineClassFunction(name,
                 aClassName, aFunctionName, aParameterClassTypes, null, null, errorInfo));
 
     }
@@ -312,7 +315,7 @@ public class ExpressRunner {
     public void addFunctionOfClassMethod(String name, Class<?> aClass,
                                          String aFunctionName, Class<?>[] aParameterClassTypes,
                                          String errorInfo) throws Exception {
-        this.addFunction(name, new OperatorSelfDefineClassFunction(name,
+        addFunction(name, new OperatorSelfDefineClassFunction(name,
                 aClass, aFunctionName, aParameterClassTypes, null, null, errorInfo));
 
     }
@@ -333,7 +336,7 @@ public class ExpressRunner {
                                          String aFunctionName, Class<?>[] aParameterClassTypes,
                                          String[] aParameterDesc, String[] aParameterAnnotation,
                                          String errorInfo) throws Exception {
-        this.addFunction(name, new OperatorSelfDefineClassFunction(name,
+        addFunction(name, new OperatorSelfDefineClassFunction(name,
                 aClassName, aFunctionName, aParameterClassTypes, aParameterDesc, aParameterAnnotation, errorInfo));
 
     }
@@ -351,7 +354,7 @@ public class ExpressRunner {
     public void addFunctionOfClassMethod(String name, String aClassName,
                                          String aFunctionName, String[] aParameterTypes, String errorInfo)
             throws Exception {
-        this.addFunction(name, new OperatorSelfDefineClassFunction(name,
+        addFunction(name, new OperatorSelfDefineClassFunction(name,
                 aClassName, aFunctionName, aParameterTypes, null, null, errorInfo));
     }
 
@@ -372,7 +375,7 @@ public class ExpressRunner {
                                          String[] aParameterDesc, String[] aParameterAnnotation,
                                          String errorInfo)
             throws Exception {
-        this.addFunction(name, new OperatorSelfDefineClassFunction(name,
+        addFunction(name, new OperatorSelfDefineClassFunction(name,
                 aClassName, aFunctionName, aParameterTypes, aParameterDesc, aParameterAnnotation, errorInfo));
 
     }
@@ -390,7 +393,7 @@ public class ExpressRunner {
     public void addFunctionOfServiceMethod(String name, Object aServiceObject,
                                            String aFunctionName, Class<?>[] aParameterClassTypes,
                                            String errorInfo) throws Exception {
-        this.addFunction(name, new OperatorSelfDefineServiceFunction(name,
+        addFunction(name, new OperatorSelfDefineServiceFunction(name,
                 aServiceObject, aFunctionName, aParameterClassTypes, null, null, errorInfo));
 
     }
@@ -411,7 +414,7 @@ public class ExpressRunner {
                                            String aFunctionName, Class<?>[] aParameterClassTypes,
                                            String[] aParameterDesc, String[] aParameterAnnotation,
                                            String errorInfo) throws Exception {
-        this.addFunction(name, new OperatorSelfDefineServiceFunction(name,
+        addFunction(name, new OperatorSelfDefineServiceFunction(name,
                 aServiceObject, aFunctionName, aParameterClassTypes, aParameterDesc, aParameterAnnotation, errorInfo));
 
     }
@@ -429,7 +432,7 @@ public class ExpressRunner {
     public void addFunctionOfServiceMethod(String name, Object aServiceObject,
                                            String aFunctionName, String[] aParameterTypes, String errorInfo)
             throws Exception {
-        this.addFunction(name, new OperatorSelfDefineServiceFunction(name,
+        addFunction(name, new OperatorSelfDefineServiceFunction(name,
                 aServiceObject, aFunctionName, aParameterTypes, null, null, errorInfo));
 
     }
@@ -439,7 +442,7 @@ public class ExpressRunner {
                                            String[] aParameterDesc, String[] aParameterAnnotation,
                                            String errorInfo)
             throws Exception {
-        this.addFunction(name, new OperatorSelfDefineServiceFunction(name,
+        addFunction(name, new OperatorSelfDefineServiceFunction(name,
                 aServiceObject, aFunctionName, aParameterTypes, aParameterDesc, aParameterAnnotation, errorInfo));
 
     }
@@ -452,7 +455,7 @@ public class ExpressRunner {
      * @throws Exception
      */
     public void addOperator(String name, Operator op) throws Exception {
-        this.addOperator(name, "*", op);
+        addOperator(name, "*", op);
     }
 
     /**
@@ -464,8 +467,8 @@ public class ExpressRunner {
      * @throws Exception
      */
     public void addOperator(String name, String aRefOpername, Operator op) throws Exception {
-        this.manager.addOperatorWithLevelOfReference(name, aRefOpername);
-        this.operatorManager.addOperator(name, op);
+        manager.addOperatorWithLevelOfReference(name, aRefOpername);
+        operatorManager.addOperator(name, op);
     }
 
     /**
@@ -483,25 +486,25 @@ public class ExpressRunner {
             errorInfo = null;
         }
         //添加函数别名
-        if (this.manager.isFunction(realKeyWordName)) {
-            this.manager.addFunctionName(keyWordName);
-            this.operatorManager.addOperatorWithAlias(keyWordName, realKeyWordName, errorInfo);
+        if (manager.isFunction(realKeyWordName)) {
+            manager.addFunctionName(keyWordName);
+            operatorManager.addOperatorWithAlias(keyWordName, realKeyWordName, errorInfo);
             return;
         }
-        NodeType realNodeType = this.manager.findNodeType(realKeyWordName);
+        NodeType realNodeType = manager.findNodeType(realKeyWordName);
         if (realNodeType == null) {
             throw new QLException("关键字：" + realKeyWordName + "不存在");
         }
-        boolean isExist = this.operatorManager.isExistOperator(realNodeType.getName());
+        boolean isExist = operatorManager.isExistOperator(realNodeType.getName());
         if (isExist == false && errorInfo != null) {
             throw new QLException("关键字：" + realKeyWordName + "是通过指令来实现的，不能设置错误的提示信息，errorInfo 必须是 null");
         }
         if (isExist == false || errorInfo == null) {
             //不需要新增操作符号，只需要建立一个关键子即可
-            this.manager.addOperatorWithRealNodeType(keyWordName, realNodeType.getName());
+            manager.addOperatorWithRealNodeType(keyWordName, realNodeType.getName());
         } else {
-            this.manager.addOperatorWithLevelOfReference(keyWordName, realNodeType.getName());
-            this.operatorManager.addOperatorWithAlias(keyWordName, realNodeType.getName(), errorInfo);
+            manager.addOperatorWithLevelOfReference(keyWordName, realNodeType.getName());
+            operatorManager.addOperatorWithAlias(keyWordName, realNodeType.getName(), errorInfo);
         }
     }
 
@@ -511,11 +514,11 @@ public class ExpressRunner {
      * @param name
      */
     public OperatorBase replaceOperator(String name, OperatorBase op) {
-        return this.operatorManager.replaceOperator(name, op);
+        return operatorManager.replaceOperator(name, op);
     }
 
     public ExpressPackage getRootExpressPackage() {
-        return this.rootExpressPackage;
+        return rootExpressPackage;
     }
 
     /**
@@ -541,7 +544,7 @@ public class ExpressRunner {
      */
     public Object executeByExpressName(String name, IExpressContext<String, Object> context, List<String> errorList,
                                        boolean isTrace, boolean isCatchException, Log aLog) throws Exception {
-        return InstructionSetRunner.executeOuter(this, this.loader.getInstructionSet(name), this.loader, context, errorList,
+        return InstructionSetRunner.executeOuter(this, loader.getInstructionSet(name), loader, context, errorList,
                 isTrace, isCatchException, aLog, false);
 
     }
@@ -562,7 +565,7 @@ public class ExpressRunner {
     @Deprecated
     public Object execute(InstructionSet[] instructionSets, IExpressContext<String, Object> context, List<String> errorList,
                           boolean isTrace, boolean isCatchException, Log aLog) throws Exception {
-        return InstructionSetRunner.executeOuter(this, instructionSets[0], this.loader, context, errorList,
+        return InstructionSetRunner.executeOuter(this, instructionSets[0], loader, context, errorList,
                 isTrace, isCatchException, aLog, false);
     }
 
@@ -580,7 +583,7 @@ public class ExpressRunner {
      */
     public Object execute(InstructionSet instructionSets, IExpressContext<String, Object> context, List<String> errorList,
                           boolean isTrace, boolean isCatchException, Log aLog) throws Exception {
-        return InstructionSetRunner.executeOuter(this, instructionSets, this.loader, context, errorList,
+        return InstructionSetRunner.executeOuter(this, instructionSets, loader, context, errorList,
                 isTrace, isCatchException, aLog, false);
     }
 
@@ -601,7 +604,7 @@ public class ExpressRunner {
         //设置超时毫秒时间
         QLExpressTimer.setTimer(timeoutMillis);
         try {
-            return this.execute(expressString, context, errorList, isCache, isTrace, null);
+            return execute(expressString, context, errorList, isCache, isTrace, null);
         } finally {
             QLExpressTimer.reset();
         }
@@ -620,7 +623,7 @@ public class ExpressRunner {
      */
     public Object execute(String expressString, IExpressContext<String, Object> context,
                           List<String> errorList, boolean isCache, boolean isTrace) throws Exception {
-        return this.execute(expressString, context, errorList, isCache, isTrace, null);
+        return execute(expressString, context, errorList, isCache, isTrace, null);
     }
 
     /**
@@ -645,20 +648,21 @@ public class ExpressRunner {
                 synchronized (expressInstructionSetCache) {
                     parseResult = expressInstructionSetCache.get(expressString);
                     if (parseResult == null) {
-                        parseResult = this.parseInstructionSet(expressString);
-                        expressInstructionSetCache.put(expressString,parseResult);
+                        parseResult = parseInstructionSet(expressString);
+                        expressInstructionSetCache.put(expressString, parseResult);
                     }
                 }
             }
         } else {
             //step1、 编译成指令集过程：string -> InstructionSet
-            parseResult = this.parseInstructionSet(expressString);
+            parseResult = parseInstructionSet(expressString);
         }
 
         //step2. 指令集执行过程：InstructionSet + context ->Object
-        return InstructionSetRunner.executeOuter(this, parseResult, this.loader, context, errorList,
+        return InstructionSetRunner.executeOuter(this, parseResult, loader, context, errorList,
                 isTrace, false, aLog, false);
     }
+
 
     public RuleResult executeRule(String expressString, IExpressContext<String, Object> context, boolean isCache, boolean isTrace)
             throws Exception {
@@ -669,19 +673,18 @@ public class ExpressRunner {
                 synchronized (ruleCache) {
                     rule = ruleCache.get(expressString);
                     if (rule == null) {
-                        rule = this.parseRule(expressString);
+                        rule = parseRule(expressString);
                         ruleCache.put(expressString,
                                 rule);
                     }
                 }
             }
         } else {
-            rule = this.parseRule(expressString);
+            rule = parseRule(expressString);
         }
         return RuleManager.executeRule(this, rule, context, isCache, isTrace);
     }
 
-    static Pattern patternRule = Pattern.compile("rule[\\s]+'([^']+)'[\\s]+name[\\s]+'([^']+)'[\\s]+");
 
     public Rule parseRule(String text)
             throws Exception {
@@ -695,35 +698,32 @@ public class ExpressRunner {
         }
 
         Map<String, String> selfDefineClass = new HashMap<String, String>();
-        for (ExportItem item : this.loader.getExportInfo()) {
+        for (ExportItem item : loader.getExportInfo()) {
             if (item.getType().equals(InstructionSet.TYPE_CLASS)) {
                 selfDefineClass.put(item.getName(), item.getName());
             }
         }
 
-//      分成两句话执行，用来保存中间的words结果
-//		ExpressNode root = this.parse.parse(this.rootExpressPackage,text, isTrace,selfDefineClass);
-
-        Word[] words = this.parse.splitWords(text, isTrace, selfDefineClass);
-        ExpressNode root = this.parse.parse(rootExpressPackage, words, text, isTrace, selfDefineClass);
+        Word[] words = parse.splitWords(text, isTrace, selfDefineClass);
+        ExpressNode root = parse.parse(rootExpressPackage, words, text, isTrace, selfDefineClass, false);
         Rule rule = RuleManager.createRule(root, words);
         rule.setCode(ruleCode);
         rule.setName(ruleName);
         return rule;
     }
 
-    public Condition parseContition(String text)
+    public Condition parseCondition(String text)
             throws Exception {
 
         Map<String, String> selfDefineClass = new HashMap<String, String>();
-        for (ExportItem item : this.loader.getExportInfo()) {
+        for (ExportItem item : loader.getExportInfo()) {
             if (item.getType().equals(InstructionSet.TYPE_CLASS)) {
                 selfDefineClass.put(item.getName(), item.getName());
             }
         }
 
-        Word[] words = this.parse.splitWords(text, isTrace, selfDefineClass);
-        ExpressNode root = this.parse.parse(rootExpressPackage, words, text, isTrace, selfDefineClass);
+        Word[] words = parse.splitWords(text, isTrace, selfDefineClass);
+        ExpressNode root = parse.parse(rootExpressPackage, words, text, isTrace, selfDefineClass, false);
         return RuleManager.createCondition(root, words);
     }
 
@@ -741,18 +741,18 @@ public class ExpressRunner {
 
             //获取 对外的变量声明，还没实现
             Map<String, String> selfDefineClass = new HashMap<String, String>();
-            for (ExportItem item : this.loader.getExportInfo()) {
+            for (ExportItem item : loader.getExportInfo()) {
                 if (item.getType().equals(InstructionSet.TYPE_CLASS)) {
                     selfDefineClass.put(item.getName(), item.getName());
                 }
             }
 
             //指令解析
-            ExpressNode root = this.parse.parse(this.rootExpressPackage, text, isTrace, selfDefineClass);
+            ExpressNode root = parse.parse(rootExpressPackage, null, text, isTrace, selfDefineClass, false);
 
-            //（4）生成指令集合
+            //生成指令集合
             InstructionSet result = createInstructionSet(root, InstructionSet.TYPE_MAIN);
-            if (this.isTrace && log.isDebugEnabled()) {
+            if (isTrace && log.isDebugEnabled()) {
                 log.debug(result);
             }
             return result;
@@ -769,7 +769,7 @@ public class ExpressRunner {
      * @return
      */
     public ExportItem[] getExportInfo() {
-        return this.loader.getExportInfo();
+        return loader.getExportInfo();
     }
 
     /**
@@ -786,7 +786,7 @@ public class ExpressRunner {
             synchronized (expressInstructionSetCache) {
                 parseResult = expressInstructionSetCache.get(expressString);
                 if (parseResult == null) {
-                    parseResult = this.parseInstructionSet(expressString);
+                    parseResult = parseInstructionSet(expressString);
                     expressInstructionSetCache.put(expressString,
                             parseResult);
                 }
@@ -814,8 +814,7 @@ public class ExpressRunner {
     public boolean createInstructionSetPrivate(InstructionSet result,
                                                Stack<ForRelBreakContinue> forStack, ExpressNode node,
                                                boolean isRoot) throws Exception {
-        InstructionFactory factory = InstructionFactory
-                .getInstructionFactory(node.getInstructionFactory());
+        InstructionFactory factory = InstructionFactory.getInstructionFactory(node.getInstructionFactory());
         boolean hasLocalVar = factory.createInstruction(this, result, forStack, node, isRoot);
         return hasLocalVar;
     }
@@ -828,11 +827,11 @@ public class ExpressRunner {
      * @throws Exception
      */
     public String[] getOutVarNames(String express) throws Exception {
-        return this.parseInstructionSet(express).getOutAttrNames();
+        return parseInstructionSet(express).getOutAttrNames();
     }
 
     public String[] getOutFunctionNames(String express) throws Exception {
-        return this.parseInstructionSet(express).getOutFunctionNames();
+        return parseInstructionSet(express).getOutFunctionNames();
     }
 
 
@@ -841,7 +840,7 @@ public class ExpressRunner {
     }
 
     public void setShortCircuit(boolean isShortCircuit) {
-        this.isShortCircuit = isShortCircuit;
+        isShortCircuit = isShortCircuit;
     }
 
     /**
@@ -849,11 +848,11 @@ public class ExpressRunner {
      * 默认为不忽略，正常识别为String
      */
     public boolean isIgnoreConstChar() {
-        return this.parse.isIgnoreConstChar();
+        return parse.isIgnoreConstChar();
     }
 
     public void setIgnoreConstChar(boolean ignoreConstChar) {
-        this.parse.setIgnoreConstChar(ignoreConstChar);
+        parse.setIgnoreConstChar(ignoreConstChar);
     }
 
     /**
@@ -878,15 +877,16 @@ public class ExpressRunner {
 
         try {
             Map<String, String> selfDefineClass = new HashMap<String, String>();
-            for (ExportItem item : this.loader.getExportInfo()) {
+            for (ExportItem item : loader.getExportInfo()) {
                 if (item.getType().equals(InstructionSet.TYPE_CLASS)) {
                     selfDefineClass.put(item.getName(), item.getName());
                 }
             }
-            Word[] words = this.parse.splitWords(text, isTrace, selfDefineClass);
-            ExpressNode root = this.parse.parse(this.rootExpressPackage, words, text, isTrace, selfDefineClass, mockRemoteJavaClass);
+
+            ExpressNode root = parse.parse(rootExpressPackage, null, text, isTrace, selfDefineClass, mockRemoteJavaClass);
+
             InstructionSet result = createInstructionSet(root, InstructionSet.TYPE_MAIN);
-            if (this.isTrace && log.isDebugEnabled()) {
+            if (isTrace && log.isDebugEnabled()) {
                 log.debug(result);
             }
             if (mockRemoteJavaClass && remoteJavaClassNames != null) {
@@ -909,7 +909,7 @@ public class ExpressRunner {
     }
 
     public IOperateDataCache getOperateDataCache() {
-        return this.m_OperateDataObjectCache.get();
+        return m_OperateDataObjectCache.get();
     }
 
     public AppendingClassFieldManager getAppendingClassFieldManager() {
@@ -922,7 +922,7 @@ public class ExpressRunner {
      * @return
      */
     public NodeTypeManager getNodeTypeManager() {
-        return this.manager;
+        return manager;
     }
 
     /**
@@ -931,11 +931,11 @@ public class ExpressRunner {
      * @return
      */
     public OperatorFactory getOperatorFactory() {
-        return this.operatorManager;
+        return operatorManager;
     }
 
     public IExpressResourceLoader getExpressResourceLoader() {
-        return this.expressResourceLoader;
+        return expressResourceLoader;
     }
 
     /**

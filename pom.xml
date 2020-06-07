@@ -11,7 +11,7 @@
     <description>QLExpress is a powerful, lightweight, dynamic language for the Java platform aimed at improving developers’ productivity in different business scenes.</description>
     <url>https://github.com/alibaba/QLExpress</url>
     <inceptionYear>2012</inceptionYear>
-    
+
     <licenses>
         <license>
             <name>Apache 2</name>
@@ -29,12 +29,12 @@
         <url>https://github.com/alibaba/QLExpress/issues</url>
         <system>GitHub Issues</system>
     </issueManagement>
-    
+
     <organization>
         <name>Alibaba Group</name>
         <url>https://github.com/alibaba</url>
     </organization>
-    
+
     <developers>
         <developer>
             <id>tianqiao</id>
@@ -52,11 +52,11 @@
             <email>qhlhl2010@gmail.com</email>
         </developer>
     </developers>
-    
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>commons-beanutils</groupId>
@@ -79,6 +79,13 @@
 			<artifactId>commons-lang</artifactId>
 			<version>2.4</version>
 		</dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>io.vavr</groupId>-->
+<!--            <artifactId>vavr</artifactId>-->
+<!--            <version>0.10.2</version>-->
+<!--        </dependency>-->
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -98,7 +105,7 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-    
+
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>

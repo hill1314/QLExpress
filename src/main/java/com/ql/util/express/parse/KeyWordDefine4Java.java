@@ -37,6 +37,7 @@ public class KeyWordDefine4Java {
             "EOF:TYPE=WORDDEF",
             "FUNCTION_NAME:TYPE=WORDDEF",
             "FUNCTION_DEFINE:TYPE=WORDDEF",
+
             "LEFT_BRACKET:TYPE=WORDDEF,DEFINE=(",
             "RIGHT_BRACKET:TYPE=WORDDEF,DEFINE=)",
 
@@ -58,6 +59,7 @@ public class KeyWordDefine4Java {
             "CONST_STRING:TYPE=WORDDEF",
             "CONST_BOOLEAN:TYPE=WORDDEF",
             "CONST_CLASS:TYPE=WORDDEF",
+            //TODO define 后面代表包含的子类型
             "CONST:TYPE=WORDDEF,DEFINE=CONST_NUMBER|CONST_CHAR|CONST_STRING|CONST_BOOLEAN|CONST_CLASS",
 
             //表达式  NodeTypeKind.EXPRESS
@@ -147,7 +149,7 @@ public class KeyWordDefine4Java {
 
             "STAT_BLOCK:TYPE=BLOCK,DEFINE={->STAT_BLOCK^$STAT_LIST$}~",
             "STAT_LIST:TYPE=BLOCK,DEFINE=(STAT_BLOCK|STATEMENT)*",
-            "PROGRAM:TYPE=BLOCK,DEFINE=STAT_LIST#STAT_BLOCK",
+            "PROGRAM:TYPE=BLOCK,DEFINE=STAT_LIST#STAT_BLOCK", //AST语法树 解析入口
     };
 
     /**
