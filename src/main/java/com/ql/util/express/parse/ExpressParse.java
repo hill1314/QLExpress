@@ -350,13 +350,6 @@ public class ExpressParse {
         }
     }
 
-    public ExpressNode parse(ExpressPackage rootExpressPackage, String express, boolean isTrace, Map<String, String> selfDefineClass) throws Exception {
-        //（1）token分解
-        Word[] words = splitWords(express, isTrace, selfDefineClass);
-//        return parse(rootExpressPackage, words, express, isTrace, selfDefineClass);
-        return parse(rootExpressPackage, words, express, isTrace, selfDefineClass, false);
-    }
-
     /**
      * token分解(分词)
      *
@@ -388,10 +381,6 @@ public class ExpressParse {
         return words;
     }
 
-    public ExpressNode parse(ExpressPackage rootExpressPackage, Word[] words, String express, boolean isTrace, Map<String, String> selfDefineClass) throws Exception {
-        return parse(rootExpressPackage, words, express, isTrace, selfDefineClass, false);
-    }
-
     /**
      * （2）token解析
      *
@@ -407,6 +396,11 @@ public class ExpressParse {
     public ExpressNode parse(ExpressPackage rootExpressPackage, Word[] words, String express,
                              boolean isTrace, Map<String, String> selfDefineClass,
                              boolean mockRemoteJavaClass) throws Exception {
+
+        //（1）token分解
+        if(words==null || words.length==0){
+            words = splitWords(express, isTrace, selfDefineClass);
+        }
 
         //（2）token解析
         List<ExpressNode> tempList = transferWord2ExpressNode(rootExpressPackage, words, selfDefineClass, true);
@@ -438,6 +432,7 @@ public class ExpressParse {
                 }
             }
             tempList = tempList2;
+
             if (isTrace == true && log.isDebugEnabled()) {
                 log.debug("修正后单词分析结果:" + printInfo(tempList, ","));
             }

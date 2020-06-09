@@ -89,6 +89,8 @@ public class ExpressRunner {
      */
     private AppendingClassFieldManager appendingClassFieldManager;
 
+    static Pattern patternRule = Pattern.compile("rule[\\s]+'([^']+)'[\\s]+name[\\s]+'([^']+)'[\\s]+");
+
     /**
      * 操作数据缓存
      */
@@ -168,7 +170,6 @@ public class ExpressRunner {
      */
 
 
-
     /**
      * 添加宏定义 例如： macro 玄难 { abc(userinfo.userId);}
      *
@@ -188,7 +189,7 @@ public class ExpressRunner {
      * @param express
      * @throws Exception
      */
-    public void loadMutilExpress(String groupName, String express) throws Exception {
+    public void loadMultiExpress(String groupName, String express) throws Exception {
         if (groupName == null || groupName.trim().length() == 0) {
             groupName = GLOBAL_DEFINE_NAME;
         }
@@ -216,7 +217,6 @@ public class ExpressRunner {
         this.manager.addFunctionName(name);
     }
 
-
     /**
      * 添加函数定义扩展类的方法
      *
@@ -229,7 +229,6 @@ public class ExpressRunner {
         this.addClassMethod(name, bindingClass, op);
 
     }
-
 
     /**
      * 添加类的方法
@@ -277,7 +276,7 @@ public class ExpressRunner {
      * @param name 函数名称
      * @return
      */
-    public OperatorBase getFunciton(String name) {
+    public OperatorBase getFunction(String name) {
         return this.operatorManager.getOperator(name);
     }
 
@@ -514,10 +513,6 @@ public class ExpressRunner {
         return this.operatorManager.replaceOperator(name, op);
     }
 
-    public ExpressPackage getRootExpressPackage() {
-        return this.rootExpressPackage;
-    }
-
     /**
      * 清除缓存
      */
@@ -646,7 +641,7 @@ public class ExpressRunner {
                     parseResult = expressInstructionSetCache.get(expressString);
                     if (parseResult == null) {
                         parseResult = this.parseInstructionSet(expressString);
-                        expressInstructionSetCache.put(expressString,parseResult);
+                        expressInstructionSetCache.put(expressString, parseResult);
                     }
                 }
             }
@@ -670,8 +665,7 @@ public class ExpressRunner {
                     rule = ruleCache.get(expressString);
                     if (rule == null) {
                         rule = this.parseRule(expressString);
-                        ruleCache.put(expressString,
-                                rule);
+                        ruleCache.put(expressString, rule);
                     }
                 }
             }
@@ -681,7 +675,6 @@ public class ExpressRunner {
         return RuleManager.executeRule(this, rule, context, isCache, isTrace);
     }
 
-    static Pattern patternRule = Pattern.compile("rule[\\s]+'([^']+)'[\\s]+name[\\s]+'([^']+)'[\\s]+");
 
     public Rule parseRule(String text)
             throws Exception {
@@ -701,11 +694,8 @@ public class ExpressRunner {
             }
         }
 
-//      分成两句话执行，用来保存中间的words结果
-//		ExpressNode root = this.parse.parse(this.rootExpressPackage,text, isTrace,selfDefineClass);
-
-        Word[] words = this.parse.splitWords(text, isTrace, selfDefineClass);
-        ExpressNode root = this.parse.parse(rootExpressPackage, words, text, isTrace, selfDefineClass);
+        Word[] words = parse.splitWords(text, isTrace, selfDefineClass);
+        ExpressNode root = parse.parse(rootExpressPackage, words, text, isTrace, selfDefineClass, false);
         Rule rule = RuleManager.createRule(root, words);
         rule.setCode(ruleCode);
         rule.setName(ruleName);
@@ -716,14 +706,14 @@ public class ExpressRunner {
             throws Exception {
 
         Map<String, String> selfDefineClass = new HashMap<String, String>();
-        for (ExportItem item : this.loader.getExportInfo()) {
+        for (ExportItem item : loader.getExportInfo()) {
             if (item.getType().equals(InstructionSet.TYPE_CLASS)) {
                 selfDefineClass.put(item.getName(), item.getName());
             }
         }
 
-        Word[] words = this.parse.splitWords(text, isTrace, selfDefineClass);
-        ExpressNode root = this.parse.parse(rootExpressPackage, words, text, isTrace, selfDefineClass);
+        Word[] words = parse.splitWords(text, isTrace, selfDefineClass);
+        ExpressNode root = parse.parse(rootExpressPackage, words, text, isTrace, selfDefineClass, false);
         return RuleManager.createCondition(root, words);
     }
 
@@ -741,18 +731,18 @@ public class ExpressRunner {
 
             //获取 对外的变量声明，还没实现
             Map<String, String> selfDefineClass = new HashMap<String, String>();
-            for (ExportItem item : this.loader.getExportInfo()) {
+            for (ExportItem item : loader.getExportInfo()) {
                 if (item.getType().equals(InstructionSet.TYPE_CLASS)) {
                     selfDefineClass.put(item.getName(), item.getName());
                 }
             }
 
             //指令解析
-            ExpressNode root = this.parse.parse(this.rootExpressPackage, text, isTrace, selfDefineClass);
+            ExpressNode root = parse.parse(rootExpressPackage, null, text, isTrace, selfDefineClass, false);
 
             //（4）生成指令集合
             InstructionSet result = createInstructionSet(root, InstructionSet.TYPE_MAIN);
-            if (this.isTrace && log.isDebugEnabled()) {
+            if (isTrace && log.isDebugEnabled()) {
                 log.debug(result);
             }
             return result;
@@ -769,7 +759,7 @@ public class ExpressRunner {
      * @return
      */
     public ExportItem[] getExportInfo() {
-        return this.loader.getExportInfo();
+        return loader.getExportInfo();
     }
 
     /**
@@ -786,7 +776,7 @@ public class ExpressRunner {
             synchronized (expressInstructionSetCache) {
                 parseResult = expressInstructionSetCache.get(expressString);
                 if (parseResult == null) {
-                    parseResult = this.parseInstructionSet(expressString);
+                    parseResult = parseInstructionSet(expressString);
                     expressInstructionSetCache.put(expressString,
                             parseResult);
                 }
@@ -814,11 +804,11 @@ public class ExpressRunner {
     public boolean createInstructionSetPrivate(InstructionSet result,
                                                Stack<ForRelBreakContinue> forStack, ExpressNode node,
                                                boolean isRoot) throws Exception {
-        InstructionFactory factory = InstructionFactory
-                .getInstructionFactory(node.getInstructionFactory());
+        InstructionFactory factory = InstructionFactory.getInstructionFactory(node.getInstructionFactory());
         boolean hasLocalVar = factory.createInstruction(this, result, forStack, node, isRoot);
         return hasLocalVar;
     }
+
 
     /**
      * 获取一个表达式需要的外部变量名称列表
@@ -828,11 +818,11 @@ public class ExpressRunner {
      * @throws Exception
      */
     public String[] getOutVarNames(String express) throws Exception {
-        return this.parseInstructionSet(express).getOutAttrNames();
+        return parseInstructionSet(express).getOutAttrNames();
     }
 
     public String[] getOutFunctionNames(String express) throws Exception {
-        return this.parseInstructionSet(express).getOutFunctionNames();
+        return parseInstructionSet(express).getOutFunctionNames();
     }
 
 
@@ -849,11 +839,11 @@ public class ExpressRunner {
      * 默认为不忽略，正常识别为String
      */
     public boolean isIgnoreConstChar() {
-        return this.parse.isIgnoreConstChar();
+        return parse.isIgnoreConstChar();
     }
 
     public void setIgnoreConstChar(boolean ignoreConstChar) {
-        this.parse.setIgnoreConstChar(ignoreConstChar);
+        parse.setIgnoreConstChar(ignoreConstChar);
     }
 
     /**
@@ -878,15 +868,15 @@ public class ExpressRunner {
 
         try {
             Map<String, String> selfDefineClass = new HashMap<String, String>();
-            for (ExportItem item : this.loader.getExportInfo()) {
+            for (ExportItem item : loader.getExportInfo()) {
                 if (item.getType().equals(InstructionSet.TYPE_CLASS)) {
                     selfDefineClass.put(item.getName(), item.getName());
                 }
             }
-            Word[] words = this.parse.splitWords(text, isTrace, selfDefineClass);
-            ExpressNode root = this.parse.parse(this.rootExpressPackage, words, text, isTrace, selfDefineClass, mockRemoteJavaClass);
+            Word[] words = parse.splitWords(text, isTrace, selfDefineClass);
+            ExpressNode root = parse.parse(rootExpressPackage, words, text, isTrace, selfDefineClass, mockRemoteJavaClass);
             InstructionSet result = createInstructionSet(root, InstructionSet.TYPE_MAIN);
-            if (this.isTrace && log.isDebugEnabled()) {
+            if (isTrace && log.isDebugEnabled()) {
                 log.debug(result);
             }
             if (mockRemoteJavaClass && remoteJavaClassNames != null) {
@@ -936,6 +926,10 @@ public class ExpressRunner {
 
     public IExpressResourceLoader getExpressResourceLoader() {
         return this.expressResourceLoader;
+    }
+
+    public ExpressPackage getRootExpressPackage() {
+        return this.rootExpressPackage;
     }
 
     /**

@@ -1,6 +1,5 @@
 package com.ql.util.express.test;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.ql.util.express.DefaultContext;
@@ -20,8 +19,8 @@ public class AClassDefineSingle {
 				+ "";
 		ExpressRunner runner = new ExpressRunner(false, true);
 		DefaultContext<String, Object> context = new DefaultContext<String, Object>();
-		runner.loadMutilExpress("",expressDefine);
-		runner.loadMutilExpress("ClassTest", express);
+		runner.loadMultiExpress("",expressDefine);
+		runner.loadMultiExpress("ClassTest", express);
 		Object r = runner.executeByExpressName("ClassTest", context,
 				null, true, false, null);
 

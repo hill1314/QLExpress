@@ -66,7 +66,7 @@ public class ArgumentTypeMismatchTest {
             }
         });
         
-        OperatorBase function = runner.getFunciton("abc");
+        OperatorBase function = runner.getFunction("abc");
         System.out.println("function = " + ToStringBuilder.reflectionToString(function, ToStringStyle.MULTI_LINE_STYLE));
         
         String exp = "abc(a,b,c)";
