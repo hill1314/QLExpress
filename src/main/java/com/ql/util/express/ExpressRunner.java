@@ -172,6 +172,7 @@ public class ExpressRunner {
      */
 
 
+
     /**
      * 添加宏定义 例如： macro 玄难 { abc(userinfo.userId);}
      *
@@ -191,7 +192,7 @@ public class ExpressRunner {
      * @param express
      * @throws Exception
      */
-    public void loadMutilExpress(String groupName, String express) throws Exception {
+    public void loadMultiExpress(String groupName, String express) throws Exception {
         if (groupName == null || groupName.trim().length() == 0) {
             groupName = GLOBAL_DEFINE_NAME;
         }
@@ -219,7 +220,6 @@ public class ExpressRunner {
         manager.addFunctionName(name);
     }
 
-
     /**
      * 添加函数定义扩展类的方法
      *
@@ -232,7 +232,6 @@ public class ExpressRunner {
         addClassMethod(name, bindingClass, op);
 
     }
-
 
     /**
      * 添加类的方法
@@ -280,7 +279,7 @@ public class ExpressRunner {
      * @param name 函数名称
      * @return
      */
-    public OperatorBase getFunciton(String name) {
+    public OperatorBase getFunction(String name) {
         return operatorManager.getOperator(name);
     }
 
@@ -517,10 +516,6 @@ public class ExpressRunner {
         return operatorManager.replaceOperator(name, op);
     }
 
-    public ExpressPackage getRootExpressPackage() {
-        return rootExpressPackage;
-    }
-
     /**
      * 清除缓存
      */
@@ -673,9 +668,8 @@ public class ExpressRunner {
                 synchronized (ruleCache) {
                     rule = ruleCache.get(expressString);
                     if (rule == null) {
-                        rule = parseRule(expressString);
-                        ruleCache.put(expressString,
-                                rule);
+                        rule = this.parseRule(expressString);
+                        ruleCache.put(expressString, rule);
                     }
                 }
             }
@@ -812,13 +806,7 @@ public class ExpressRunner {
     public InstructionSet createInstructionSet(ExpressNode root, String type)
             throws Exception {
         InstructionSet result = new InstructionSet(type);
-
-        Stack<ForRelBreakContinue> forStack = new Stack<ForRelBreakContinue>();
-        createInstructionSetPrivate(result, forStack, root, true);
-        if (forStack.size() > 0) {
-            throw new QLCompileException("For处理错误");
-        }
-
+        createInstructionSet(root, result);
         return result;
     }
 
@@ -853,6 +841,7 @@ public class ExpressRunner {
         boolean hasLocalVar = factory.createInstruction(this, result, forStack, node, isRoot);
         return hasLocalVar;
     }
+
 
     /**
      * 获取一个表达式需要的外部变量名称列表
@@ -937,7 +926,7 @@ public class ExpressRunner {
      * @return
      */
     public NodeTypeManager getNodeTypeManager() {
-        return manager;
+        return this.manager;
     }
 
     /**
@@ -946,7 +935,7 @@ public class ExpressRunner {
      * @return
      */
     public OperatorFactory getOperatorFactory() {
-        return operatorManager;
+        return this.operatorManager;
     }
 
     public IExpressResourceLoader getExpressResourceLoader() {
@@ -958,7 +947,7 @@ public class ExpressRunner {
     }
 
     public void setShortCircuit(boolean isShortCircuit) {
-        isShortCircuit = isShortCircuit;
+        this.isShortCircuit = isShortCircuit;
     }
 
     /**
@@ -971,6 +960,10 @@ public class ExpressRunner {
 
     public void setIgnoreConstChar(boolean ignoreConstChar) {
         parse.setIgnoreConstChar(ignoreConstChar);
+    }
+
+    public ExpressPackage getRootExpressPackage() {
+        return this.rootExpressPackage;
     }
 
     /**

@@ -68,8 +68,7 @@ public class OperatorFactory {
     public void addOperator(String name, OperatorBase op) {
         OperatorBase oldOp = this.operator.get(name);
         if (oldOp != null) {
-            throw new RuntimeException("重复定义操作符：" + name + "定义1："
-                    + oldOp.getClass() + " 定义2：" + op.getClass());
+            throw new RuntimeException("重复定义操作符：" + name + "定义1：" + oldOp.getClass() + " 定义2：" + op.getClass());
         }
         op.setPrecise(this.isPrecise);
         op.setAliasName(name);
@@ -114,7 +113,7 @@ public class OperatorFactory {
         }
     }
 
-    public boolean isExistOperator(String operName) throws Exception {
+    public boolean isExistOperator(String operName) {
         return operator.containsKey(operName);
     }
 

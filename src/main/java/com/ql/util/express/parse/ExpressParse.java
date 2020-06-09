@@ -424,7 +424,7 @@ public class ExpressParse {
 
         //比如用在远程配置脚本，本地jvm并不包含这个java类，可以  TODO 暂时用不到
         if (mockRemoteJavaClass) {
-            deal4MockRemoteJavaClass(tempList,isTrace);
+            tempList = deal4MockRemoteJavaClass(tempList,isTrace);
         }
 
         //（3）匹配AST语法树
@@ -458,7 +458,7 @@ public class ExpressParse {
      * @param isTrace
      * @throws Exception
      */
-    private void deal4MockRemoteJavaClass(List<ExpressNode> tempList, boolean isTrace) throws Exception {
+    private List<ExpressNode> deal4MockRemoteJavaClass(List<ExpressNode> tempList, boolean isTrace) throws Exception {
         List<ExpressNode> tempList2 = new ArrayList<ExpressNode>();
         for (int i = 0; i < tempList.size(); i++) {
             ExpressNode node = tempList.get(i);
@@ -484,8 +484,16 @@ public class ExpressParse {
         if (isTrace == true && log.isDebugEnabled()) {
             log.debug("修正后单词分析结果:" + printInfo(tempList, ","));
         }
+        return tempList2;
     }
 
+    /**
+     * 打印
+     *
+     * @param list
+     * @param splitOp
+     * @return
+     */
     public static String printInfo(List<ExpressNode> list, String splitOp) {
         StringBuffer buffer = new StringBuffer();
         for (int i = 0; i < list.size(); i++) {
