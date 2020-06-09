@@ -39,6 +39,7 @@ public class QLPattern {
         } else if (result != null && result.getMatchSize() != 1) {
             throw new QLCompileException("程序错误，不满足语法规范，必须有一个根节点：" + pattern + ",最大匹配致[0:" + (maxMatchPoint.longValue() - 1) + "]");
         }
+
         return result;
     }
     //TODO 没看懂

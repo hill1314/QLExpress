@@ -398,7 +398,7 @@ public class ExpressParse {
                              boolean mockRemoteJavaClass) throws Exception {
 
         //（1）token分解
-        if(words==null || words.length==0){
+        if (words == null || words.length == 0) {
             words = splitWords(express, isTrace, selfDefineClass);
         }
 
@@ -410,39 +410,11 @@ public class ExpressParse {
 
         //比如用在远程配置脚本，本地jvm并不包含这个java类，可以  TODO 暂时用不到
         if (mockRemoteJavaClass) {
-            List<ExpressNode> tempList2 = new ArrayList<ExpressNode>();
-            for (int i = 0; i < tempList.size(); i++) {
-                ExpressNode node = tempList.get(i);
-                if (node.getValue().equals("new") && node.getNodeType().getKind() == NodeTypeKind.KEYWORD && i + 1 < tempList.size() && !"CONST_CLASS".equals(tempList.get(i + 1).getNodeType().getName())) {
-                    tempList2.add(node);
-                    //取出 ( 前面的类路径作为configClass名称
-                    int end = i + 1;
-                    String configClass = tempList.get(end).getValue();
-                    end++;
-                    while (!tempList.get(end).getValue().equals("(")) {
-                        configClass = configClass + tempList.get(end).getValue();
-                        end++;
-                    }
-                    NodeType nodeType = nodeTypeManager.findNodeType("VClass");
-                    ExpressNode vClassNode = new ExpressNode(nodeType, configClass);
-                    tempList2.add(vClassNode);
-                    i = end - 1;//因为循环之后，i++，所以i=end-1
-                } else {
-                    tempList2.add(node);
-                }
-            }
-            tempList = tempList2;
-
-            if (isTrace == true && log.isDebugEnabled()) {
-                log.debug("修正后单词分析结果:" + printInfo(tempList, ","));
-            }
+            tempList = deal4MockRemoteJavaClass(tempList, isTrace);
         }
 
         //（3）匹配AST语法树
         QLMatchResult result = QLPattern.findMatchStatement(nodeTypeManager, tempList, 0);
-        if (result == null) {
-            throw new QLCompileException("语法匹配失败");
-        }
 
         if (result.getMatchLastIndex() < tempList.size()) {
             int maxPoint = result.getMatchLastIndex();
@@ -463,6 +435,51 @@ public class ExpressParse {
         return root;
     }
 
+    /**
+     * 用在远程配置脚本，本地jvm并不包含这个java类
+     *
+     * @param tempList
+     * @param isTrace
+     * @return
+     * @throws Exception
+     */
+    private List<ExpressNode> deal4MockRemoteJavaClass(List<ExpressNode> tempList, boolean isTrace) throws Exception {
+        List<ExpressNode> tempList2 = new ArrayList<ExpressNode>();
+        for (int i = 0; i < tempList.size(); i++) {
+            ExpressNode node = tempList.get(i);
+            if (node.getValue().equals("new") && node.getNodeType().getKind() == NodeTypeKind.KEYWORD && i + 1 < tempList.size()
+                    && !"CONST_CLASS".equals(tempList.get(i + 1).getNodeType().getName())) {
+
+                tempList2.add(node);
+                //取出 ( 前面的类路径作为configClass名称
+                int end = i + 1;
+                String configClass = tempList.get(end).getValue();
+                end++;
+                while (!tempList.get(end).getValue().equals("(")) {
+                    configClass = configClass + tempList.get(end).getValue();
+                    end++;
+                }
+                NodeType nodeType = nodeTypeManager.findNodeType("VClass");
+                ExpressNode vClassNode = new ExpressNode(nodeType, configClass);
+                tempList2.add(vClassNode);
+                i = end - 1;//因为循环之后，i++，所以i=end-1
+            } else {
+                tempList2.add(node);
+            }
+        }
+        if (isTrace == true && log.isDebugEnabled()) {
+            log.debug("修正后单词分析结果:" + printInfo(tempList, ","));
+        }
+        return tempList2;
+    }
+
+    /**
+     * 打印
+     *
+     * @param list
+     * @param splitOp
+     * @return
+     */
     public static String printInfo(List<ExpressNode> list, String splitOp) {
         StringBuffer buffer = new StringBuffer();
         for (int i = 0; i < list.size(); i++) {
