@@ -198,8 +198,7 @@ public class ExpressUtil {
         return true;
     }
 
-    public static int findMostSpecificSignature(Class<?>[] idealMatch,
-                                                Class<?>[][] candidates) {
+    public static int findMostSpecificSignature(Class<?>[] idealMatch, Class<?>[][] candidates) {
         Class<?>[] bestMatch = null;
         int bestMatchIndex = -1;
 
@@ -293,13 +292,11 @@ public class ExpressUtil {
             }
         }
 
-        int match = findMostSpecificSignature(types, (Class[][]) listClass
-                .toArray(new Class[0][]));
+        int match = findMostSpecificSignature(types, listClass.toArray(new Class[0][]));
         return match == -1 ? null : constructorList.get(match);
     }
 
-    public static Method findMostSpecificMethod(Class<?>[] idealMatch,
-                                                Method[] methods) {
+    public static Method findMostSpecificMethod(Class<?>[] idealMatch, Method[] methods) {
         Class<?>[][] candidateSigs = new Class[methods.length][];
         for (int i = 0; i < methods.length; i++)
             candidateSigs[i] = methods[i].getParameterTypes();
@@ -519,8 +516,7 @@ public class ExpressUtil {
         while (m.find()) {
             int index = Integer.parseInt(m.group().substring(1)) - 1;
             if (index < 0 || index >= parameters.length) {
-                throw new QLException("设置的参数位置$" + (index + 1) + "超过了范围 "
-                        + parameters.length);
+                throw new QLException("设置的参数位置$" + (index + 1) + "超过了范围 " + parameters.length);
             }
             m.appendReplacement(sb, " " + parameters[index].toString() + " ");
         }
@@ -643,7 +639,7 @@ public class ExpressUtil {
 
 
     public static void main(String[] args) throws Exception {
-        System.out.println(replaceString("$1强化$2实施$2", new String[]{"qq","ff"}));
+        System.out.println(replaceString("$1强化$2实施$2", new String[]{"qq", "ff"}));
 
         System.out.println(Number.class.isAssignableFrom(Long.class));
 
