@@ -57,7 +57,10 @@ public class QLMatchResultTree {
         }
         return sourceNode;
     }
-    //TODO 构建 AST 语法树
+
+    /**
+     * 构建 AST 语法树
+     */
     public void buildExpressNodeTree() {
         if (this.targetNodeType != null) {
             transferExpressNodeType(this.ref, this.targetNodeType);

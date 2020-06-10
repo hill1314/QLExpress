@@ -7,7 +7,9 @@ public class QLMatchResult {
     private List<QLMatchResultTree> matchs = new ArrayList<QLMatchResultTree>();
     private int matchLastIndex;
 
-
+    /**
+     * 复位，初始化
+     */
     public void clear() {
         this.matchLastIndex = 0;
         this.matchs.clear();

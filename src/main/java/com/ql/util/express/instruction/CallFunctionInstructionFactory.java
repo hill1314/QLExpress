@@ -19,8 +19,7 @@ public class CallFunctionInstructionFactory extends InstructionFactory{
 		boolean returnVal = false;
 		children = node.getChildren();
 		for (int i = 1; i < children.length; i++) {
-			boolean tmpHas = aCompile.createInstructionSetPrivate(result,
-					forStack, children[i], false);
+			boolean tmpHas = aCompile.createInstructionSetPrivate(result,forStack, children[i], false);
 			returnVal = returnVal || tmpHas;
 		}
 
@@ -30,8 +29,8 @@ public class CallFunctionInstructionFactory extends InstructionFactory{
 		if (op != null) {
 			result.addInstruction(new InstructionOperator(op,opNum ).setLine(node.getLine()));
 		} else {
-			result.addInstruction(new InstructionCallSelfDefineFunction(
-					functionName,opNum).setLine(children[0].getLine()));
+			InstructionCallSelfDefineFunction function = new InstructionCallSelfDefineFunction(functionName,opNum);
+			result.addInstruction(function.setLine(children[0].getLine()));
 		}
 		return returnVal;
 	}

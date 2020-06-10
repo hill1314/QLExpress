@@ -4,8 +4,7 @@ import com.ql.util.express.exception.QLCompileException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 enum MatchMode {
     AND, OR, DETAIL, NULL
@@ -13,6 +12,7 @@ enum MatchMode {
 
 public class QLPatternNode {
     private static final Log log = LogFactory.getLog(QLPatternNode.class);
+
     INodeTypeManager nodeTypeManager;
 
     String name;
@@ -48,7 +48,6 @@ public class QLPatternNode {
      */
     protected int maxMatchNum = 1;
 
-
     /**
      * 匹配类型，例如 ID,if,SELECT
      */
@@ -75,6 +74,9 @@ public class QLPatternNode {
      */
     protected boolean blame = false;
 
+    private static String[] sampleWords = {"(",")","|","||","/**","**/","*"};
+    private static Set<String> sampleWordSet = new HashSet<String>(Arrays.asList(sampleWords));
+
     public boolean canMergeDetail() {
         if (QLPattern.optimizeStackDepth && this.matchMode == MatchMode.DETAIL && this.name.equals("ANONY_PATTERN")
                 && this.nodeType.getPatternNode() != null
@@ -94,8 +96,10 @@ public class QLPatternNode {
      */
     List<QLPatternNode> children = new ArrayList<QLPatternNode>();
 
+
     protected QLPatternNode(INodeTypeManager aManager, String aName, String aOrgiContent) throws Exception {
         this(aManager, aName, aOrgiContent, false, 1);
+
 //		if(this.toString().equals(aOrgiContent)==false){
         //throw new QLCompileException("语法定义解析后的结果与原始值不一致，原始值:"+ aOrgiContent + " 解析结果:" + this.toString());
         //log.error(("语法定义解析后的结果与原始值不一致，原始值:"+ aOrgiContent + " 解析结果:" + this.toString()));
@@ -121,6 +125,18 @@ public class QLPatternNode {
 
     }
 
+
+    /**
+     * 识别操作符的 matchMode（DETAIL,AND,OR,NULL） 和 nodeType
+     *
+     * $ 间隔符
+     * | 或者OR
+     * ^
+     * @ 取反，例如：+@,匹配不是+的所有字符  CONST$(,~$CONST)*
+     * ~ 是否匹配成功，但在输出的时候忽略,用"~"表示
+     *
+     * @throws Exception
+     */
     public void splitChild() throws Exception {
         if (log.isTraceEnabled()) {
             String str = "";
@@ -129,9 +145,11 @@ public class QLPatternNode {
             }
             //log.trace("分解匹配模式[LEVEL="+ this.level +"]START:" + str + this.orgiContent);
         }
+
+
         String orgStr = this.orgiContent;
-        if (orgStr.equals("(") || orgStr.equals(")") || orgStr.equals("|") || orgStr.equals("||") || orgStr.equals("/**") || orgStr.equals("**/") || orgStr.equals("*")) {
-            this.matchMode = MatchMode.DETAIL;
+        if (sampleWordSet.contains(orgStr)) {
+            this.matchMode = MatchMode.DETAIL; //TODO DETAIL 类型
             this.nodeType = this.nodeTypeManager.findNodeType(orgStr);
             return;
         }
@@ -148,22 +166,18 @@ public class QLPatternNode {
             } else if (count > 0) {
                 tempStr = tempStr + orgStr.charAt(i);
             } else if (orgStr.charAt(i) == '$') {
-                if (this.matchMode != MatchMode.NULL
-                        && this.matchMode != MatchMode.AND) {
-                    throw new QLCompileException("不正确的模式串,在一个匹配模式中不能|,$并存,请使用字串模式:"
-                            + orgStr);
+                if (this.matchMode != MatchMode.NULL && this.matchMode != MatchMode.AND) {
+                    throw new QLCompileException("不正确的模式串,在一个匹配模式中不能|,$并存,请使用字串模式:" + orgStr);
                 }
                 children.add(new QLPatternNode(this.nodeTypeManager, "ANONY_PATTERN", tempStr, false, this.level + 1));
-                this.matchMode = MatchMode.AND;
+                this.matchMode = MatchMode.AND;  //TODO $代表 AND 类型
                 tempStr = "";
             } else if (orgStr.charAt(i) == '|') {
-                if (this.matchMode != MatchMode.NULL
-                        && this.matchMode != MatchMode.OR) {
-                    throw new QLCompileException("不正确的模式串,在一个匹配模式中不能|,$并存,请使用字串模式:"
-                            + orgStr);
+                if (this.matchMode != MatchMode.NULL && this.matchMode != MatchMode.OR) {
+                    throw new QLCompileException("不正确的模式串,在一个匹配模式中不能|,$并存,请使用字串模式:" + orgStr);
                 }
                 children.add(new QLPatternNode(this.nodeTypeManager, "ANONY_PATTERN", tempStr, false, this.level + 1));
-                this.matchMode = MatchMode.OR;
+                this.matchMode = MatchMode.OR;  //TODO | 代表 OR类型
                 tempStr = "";
             } else if (orgStr.charAt(i) == '#') {
                 this.rootNodeType = this.nodeTypeManager.findNodeType(orgStr.substring(i + 1));
@@ -204,12 +218,12 @@ public class QLPatternNode {
                 tempStr = tempStr.substring(0, index);
             }
         }
+
+        //^ ~ @ 符号处理方式类似，设为 根节点，截取 对应字符
         if (tempStr.endsWith("^") == true && tempStr.length() > 1) {
             this.isTreeRoot = true;
-            tempStr = tempStr.substring(0, tempStr.length() - 1);
+            tempStr = tempStr.substring(0, tempStr.length() - 1); //去掉 ^ 符号
         }
-
-
         if (tempStr.endsWith("~") && tempStr.length() > 1) {
             this.isSkip = true;
             tempStr = tempStr.substring(0, tempStr.length() - 1);
@@ -230,7 +244,9 @@ public class QLPatternNode {
 
         int index = tempStr.indexOf("->");
         if (index > 0) {
+            //处理 -> 符号后面的 node
             this.targetNodeType = this.nodeTypeManager.findNodeType(tempStr.substring(index + 2));
+            //-> 符号后面的 node
             tempStr = tempStr.substring(0, index);
         }
         if (tempStr.length() > 0) {

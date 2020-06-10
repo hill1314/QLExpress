@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
+/**
+ *  代码结构有大的调整，可能有问题
+ */
 public class QLPattern {
 
     private static final Log log = LogFactory.getLog(QLPattern.class);
@@ -19,179 +22,79 @@ public class QLPattern {
         return new QLPatternNode(nodeTypeManager, name, pattern);
     }
 
+
+    /**
+     * 根据分词 匹配AST语法树
+     *
+     * @param aManager
+     * @param nodes
+     * @param point
+     * @return
+     * @throws Exception
+     */
     public static QLMatchResult findMatchStatement(INodeTypeManager aManager, List<? extends IDataNode> nodes, int point) throws Exception {
-
         QLPatternNode pattern = aManager.findNodeType("PROGRAM").getPatternNode();
-        AtomicLong maxMatchPoint = new AtomicLong(); //最大匹配指针
-        AtomicLong maxDeep = new AtomicLong(1); //最大深度
-        QLMatchResultCache resultCache = new QLMatchResultCache(5);
-        ArrayListCache<QLMatchResultTree> arrayListCache = new ArrayListCache<QLMatchResultTree>(50);
 
-        MatchParamsPack staticParams = new MatchParamsPack(aManager, nodes, maxDeep, maxMatchPoint, resultCache, arrayListCache);
-        QLMatchResult result = findMatchStatementWithAddRootOptimizeStack(staticParams, pattern, point, true, 1);
+        MatchParamsPack staticParams = new MatchParamsPack(aManager, nodes);
+
+        //将节点解析为指令
+        QLMatchResult result = findMatchStatement(staticParams, pattern, point, 1);
+
         if (printStackDepth) {
-            log.warn("递归堆栈深度:" + maxDeep.longValue() + "  重用QLMatchResult次数:" + resultCache.fetchCount
-                    + "  新建QLMatchResult次数:" + resultCache.newCount + "  新建ArrayList数量:" + arrayListCache.newCount);
-
+            log.warn("递归堆栈深度:" + staticParams.maxDeep.longValue()
+                    + "  重用QLMatchResult次数:" + staticParams.resultCache.fetchCount
+                    + "  新建QLMatchResult次数:" + staticParams.resultCache.newCount
+                    + "  新建ArrayList数量:" + staticParams.arrayListCache.newCount);
         }
+
         if (result == null || result.getMatchSize() == 0) {
-            throw new QLCompileException("程序错误，不满足语法规范，没有匹配到合适的语法,最大匹配致[0:" + (maxMatchPoint.longValue() - 1) + "]");
+            throw new QLCompileException("程序错误，不满足语法规范，没有匹配到合适的语法,最大匹配致[0:" + (staticParams.maxMatchPoint.longValue() - 1) + "]");
         } else if (result != null && result.getMatchSize() != 1) {
-            throw new QLCompileException("程序错误，不满足语法规范，必须有一个根节点：" + pattern + ",最大匹配致[0:" + (maxMatchPoint.longValue() - 1) + "]");
+            throw new QLCompileException("程序错误，不满足语法规范，必须有一个根节点：" + pattern + ",最大匹配致[0:" + (staticParams.maxMatchPoint.longValue() - 1) + "]");
         }
 
         return result;
     }
-    //TODO 没看懂
-    private static QLMatchResult findMatchStatementWithAddRootOptimizeStack(MatchParamsPack staticParams, QLPatternNode pattern, int point, boolean isRoot, int deep) throws Exception {
 
-        INodeTypeManager aManager = staticParams.aManager;
+
+    /**
+     * 将节点解析为指令
+     * 原方法名：findMatchStatementWithAddRootOptimizeStack
+     *
+     * @param staticParams
+     * @param pattern
+     * @param point
+     * @param deep
+     * @return
+     * @throws Exception
+     */
+    private static QLMatchResult findMatchStatement(MatchParamsPack staticParams, QLPatternNode pattern, int point, int deep) throws Exception {
+
         List<? extends IDataNode> nodes = staticParams.nodes;
-        AtomicLong maxMatchPoint = staticParams.maxMatchPoint;
         AtomicLong maxDeep = staticParams.maxDeep;
 
         //mark maxDeep
         deep++;
-        if (deep > maxDeep.longValue()) {
-            maxDeep.set(deep);
-        }
+        if (deep > maxDeep.longValue())  maxDeep.set(deep);
+
 
         QLMatchResult result = null;
         List<QLMatchResultTree> tempList = null;
         int count = 0;
         int lastPoint = point;
+
         while (true) {
             QLMatchResult tempResult = null;
-            if (pattern.matchMode == MatchMode.DETAIL) {
-                //tempResult = matchDetailOneTime(aManager,pattern,nodes, lastPoint,maxMatchPoint,deep,maxDeep);
+            if (pattern.matchMode == MatchMode.DETAIL) {  //DETAIL 判断 nodeType 是否为空
+                tempResult = deal4DetailMode(pattern, lastPoint, staticParams, deep);
 
-                int pointDetail = lastPoint;
-                QLMatchResult resultDetail = null;
-                if (pattern.nodeType == aManager.findNodeType("EOF") && pointDetail == nodes.size()) {
-                    resultDetail = staticParams.resultCache.fetch().setMatchLastIndex(pointDetail + 1);
-                } else if (pattern.nodeType == aManager.findNodeType("EOF") && pointDetail < nodes.size() && nodes.get(pointDetail).getValue().equals("}")) {
-                    resultDetail = staticParams.resultCache.fetch().setMatchLastIndex(pointDetail);
-                } else if (pointDetail == nodes.size() && pattern.nodeType.getPatternNode() != null) {
-                    resultDetail = findMatchStatementWithAddRootOptimizeStack(staticParams, pattern.nodeType.getPatternNode(), pointDetail, false, deep);
-                } else if (pointDetail < nodes.size()) {
-                    INodeType tempNodeType = null;
-                    if (pattern.nodeType.equals(nodes.get(pointDetail).getTreeType())) {
-                        tempNodeType = nodes.get(pointDetail).getTreeType();
-                    } else if (pattern.nodeType.equals(nodes.get(pointDetail).getNodeType())) {
-                        tempNodeType = nodes.get(pointDetail).getNodeType();
-                    }
-
-                    if (tempNodeType != null) {
-                        resultDetail = staticParams.resultCache.fetch();
-                        resultDetail.addQLMatchResultTree(new QLMatchResultTree(tempNodeType, nodes.get(pointDetail), pattern.targetNodeType));
-                        pointDetail = pointDetail + 1;
-                        resultDetail.setMatchLastIndex(pointDetail);
-
-                        traceLog(pattern, resultDetail, nodes, pointDetail - 1, 1);
-                    } else if (pattern.nodeType.getPatternNode() != null) {
-                        resultDetail = findMatchStatementWithAddRootOptimizeStack(staticParams, pattern.nodeType.getPatternNode(), pointDetail, false, deep);
-                        if (pattern.targetNodeType != null && resultDetail != null && resultDetail.getMatchSize() > 0) {
-                            if (resultDetail.getMatchSize() > 1) {
-                                throw new QLCompileException("设置了类型转换的语法，只能有一个根节点");
-                            }
-                            resultDetail.getMatchs().get(0).targetNodeType = pattern.targetNodeType;
-                        }
-                    }
-                    if (pattern.blame == true) {//取返处理
-                        if (resultDetail == null) {
-                            resultDetail = staticParams.resultCache.fetch();
-                            resultDetail.addQLMatchResultTree(new QLMatchResultTree(tempNodeType, nodes.get(pointDetail), null));
-                            pointDetail = pointDetail + 1;
-                            resultDetail.setMatchLastIndex(pointDetail);
-                        } else {
-                            resultDetail = null;
-                        }
-                    }
-                }
-                if (resultDetail != null && resultDetail.getMatchLastIndex() > maxMatchPoint.longValue()) {
-                    maxMatchPoint.set(resultDetail.getMatchLastIndex());
-                }
-
-                tempResult = resultDetail;
-
-
-            } else if (pattern.matchMode == MatchMode.AND) {
-                //tempResult = matchAndOneTime(aManager,pattern,nodes, lastPoint,maxMatchPoint,deep,maxDeep);
-
-                int orgiPoint = lastPoint;
-                int pointAnd = lastPoint;
-
-                QLMatchResultTree root = null;
-                int matchCount = 0;//用于调试日志的输出
-                List<QLMatchResultTree> tempListAnd = null;
-                boolean isBreak = false;
-                for (QLPatternNode item : pattern.children) {
-                    if (pointAnd > nodes.size()) {
-                        isBreak = true;
-                        break;
-                    }
-                    QLMatchResult tempResultAnd = findMatchStatementWithAddRootOptimizeStack(staticParams, item,
-                            pointAnd, false, deep);
-                    if (tempResultAnd != null) {
-                        if (tempResultAnd.getMatchSize() > 0) {
-                            matchCount = matchCount + 1;
-                        }
-                        if (tempListAnd == null) {
-                            tempListAnd = staticParams.arrayListCache.fetch();
-                        }
-                        pointAnd = tempResultAnd.getMatchLastIndex();
-                        if (item.isTreeRoot == true && tempResultAnd.getMatchSize() > 0) {
-                            if (tempResultAnd.getMatchSize() > 1) {
-                                throw new QLCompileException("根节点的数量必须是1");
-                            }
-                            if (root == null) {
-                                QLMatchResultTree tempTree = tempResultAnd.getMatchs().get(0);
-                                while (tempTree.getLeft() != null && tempTree.getLeft().size() > 0) {
-                                    tempTree = tempTree.getLeft().get(0);
-                                }
-                                tempTree.addLeftAll(tempListAnd);
-                                tempListAnd.clear();
-                            } else {
-                                tempResultAnd.getMatchs().get(0).addLeft(root);
-                            }
-                            root = tempResultAnd.getMatchs().get(0);
-                        } else if (root != null) {
-                            root.addRightAll(tempResultAnd.getMatchs());
-                        } else {
-                            tempListAnd.addAll(tempResultAnd.getMatchs());
-                        }
-                        //归还QLMatchResult对象到对象池
-                        if (tempResultAnd != null) {
-                            staticParams.resultCache.sendBack(tempResultAnd);
-                            tempResultAnd = null;
-                        }
-                    } else {
-                        isBreak = true;
-                        break;
-                    }
-                }
-                if (root != null) {
-                    tempListAnd.add(root);
-                }
-
-                if (isBreak == false) {
-                    tempResult = staticParams.resultCache.fetch().addQLMatchResultTreeList(tempListAnd);
-                    tempResult.setMatchLastIndex(pointAnd);
-                    traceLog(pattern, tempResult, nodes, orgiPoint, matchCount);
-                } else {
-                    tempResult = null;
-                }
-
-                if (tempListAnd != null) {
-                    staticParams.arrayListCache.sendBack(tempListAnd);
-                }
-
+            } else if (pattern.matchMode == MatchMode.AND) {  //AND OR 判断是否有 children
+                tempResult = deal4AndMode(pattern, lastPoint, staticParams, deep);
 
             } else if (pattern.matchMode == MatchMode.OR) {
-                //tempResult = matchOrOneTime(aManager,pattern,nodes, lastPoint,maxMatchPoint,deep,maxDeep);
 
                 for (QLPatternNode item : pattern.children) {
-                    tempResult = findMatchStatementWithAddRootOptimizeStack(staticParams, item, lastPoint, false, deep);
+                    tempResult = findMatchStatement(staticParams, item, lastPoint, deep);
                     if (tempResult != null) {
                         break;
                     }
@@ -201,6 +104,7 @@ public class QLPattern {
                 throw new QLCompileException("不正确的类型：" + pattern.matchMode.toString());
             }
 
+            //其他场景处理
             if (tempResult == null) {
                 if (count >= pattern.minMatchNum && count <= pattern.maxMatchNum) {
                     //正确匹配
@@ -235,7 +139,7 @@ public class QLPattern {
                 }
             }
 
-            /**  归还QLMatchResult  */
+            /**  归还QLMatchResult ，复位tempResult 以复用  */
             if (tempResult != null) {
                 staticParams.resultCache.sendBack(tempResult);
                 tempResult = null;
@@ -250,31 +154,196 @@ public class QLPattern {
                 result.setMatchLastIndex(lastPoint);
                 break;
             }
+
         }
+
+
         if (result != null && pattern.isSkip == true) {
             //忽略跳过所有匹配到的节点
             result.getMatchs().clear();
         }
 
         if (result != null && result.getMatchSize() > 0 && pattern.rootNodeType != null) {
-            QLMatchResultTree tempTree = new QLMatchResultTree(pattern.rootNodeType, nodes.get(0).createExpressNode(pattern.rootNodeType, null));
+            QLMatchResultTree tempTree = new QLMatchResultTree(pattern.rootNodeType,
+                    nodes.get(0).createExpressNode(pattern.rootNodeType, null));
             tempTree.addLeftAll(result.getMatchs());
             result.getMatchs().clear();
             result.getMatchs().add(tempTree);
         }
+
         if (tempList != null) {
             staticParams.arrayListCache.sendBack(tempList);
         }
         return result;
     }
 
-    public static void traceLog(QLPatternNode pattern, QLMatchResult result,
-                                List<? extends IDataNode> nodes, int point, int matchCount) {
-        if (log.isTraceEnabled() && (pattern.matchMode == MatchMode.DETAIL || pattern.matchMode == MatchMode.AND && matchCount > 1 && pattern.name.equals("ANONY_PATTERN") == false)) {
-            log.trace("匹配--" + pattern.name + "[" + point + ":" + (result.getMatchLastIndex() - 1) + "]:" + pattern);
+
+    /**
+     * and 模式下的处理
+     *
+     * @param pattern
+     * @param lastPoint
+     * @param staticParams
+     * @param deep
+     * @return
+     * @throws Exception
+     */
+    private static QLMatchResult deal4AndMode(QLPatternNode pattern, int lastPoint, MatchParamsPack staticParams, int deep) throws Exception {
+        QLMatchResult resultDetail = null;
+
+        List<? extends IDataNode> nodes = staticParams.nodes;
+        int orgiPoint = lastPoint;
+        int pointAnd = lastPoint;
+
+        QLMatchResultTree root = null;
+        int matchCount = 0;//用于调试日志的输出
+        List<QLMatchResultTree> tempListAnd = null;
+        boolean isBreak = false;
+        for (QLPatternNode item : pattern.children) {
+            if (pointAnd > nodes.size()) {
+                isBreak = true;
+                break;
+            }
+            QLMatchResult tempResultAnd = findMatchStatement(staticParams, item, pointAnd, deep);
+            if (tempResultAnd != null) {
+                if (tempResultAnd.getMatchSize() > 0) {
+                    matchCount = matchCount + 1;
+                }
+                if (tempListAnd == null) {
+                    tempListAnd = staticParams.arrayListCache.fetch();
+                }
+                pointAnd = tempResultAnd.getMatchLastIndex();
+                if (item.isTreeRoot == true && tempResultAnd.getMatchSize() > 0) {
+                    if (tempResultAnd.getMatchSize() > 1) {
+                        throw new QLCompileException("根节点的数量必须是1");
+                    }
+                    if (root == null) {
+                        QLMatchResultTree tempTree = tempResultAnd.getMatchs().get(0);
+                        while (tempTree.getLeft() != null && tempTree.getLeft().size() > 0) {
+                            tempTree = tempTree.getLeft().get(0);
+                        }
+                        tempTree.addLeftAll(tempListAnd);
+                        tempListAnd.clear();
+                    } else {
+                        tempResultAnd.getMatchs().get(0).addLeft(root);
+                    }
+                    root = tempResultAnd.getMatchs().get(0);
+                } else if (root != null) {
+                    root.addRightAll(tempResultAnd.getMatchs());
+                } else {
+                    tempListAnd.addAll(tempResultAnd.getMatchs());
+                }
+                //归还QLMatchResult对象到对象池
+                if (tempResultAnd != null) {
+                    staticParams.resultCache.sendBack(tempResultAnd);
+                    tempResultAnd = null;
+                }
+            } else {
+                isBreak = true;
+                break;
+            }
         }
+        if (root != null) {
+            tempListAnd.add(root);
+        }
+
+        if (isBreak == false) {
+            resultDetail = staticParams.resultCache.fetch().addQLMatchResultTreeList(tempListAnd);
+            resultDetail.setMatchLastIndex(pointAnd);
+            traceLog(pattern, resultDetail, nodes, orgiPoint, matchCount);
+        } else {
+            resultDetail = null;
+        }
+
+        if (tempListAnd != null) {
+            staticParams.arrayListCache.sendBack(tempListAnd);
+        }
+
+        return resultDetail;
     }
 
+    /**
+     * detail 模式下的处理
+     *
+     * @param pattern
+     * @param lastPoint
+     * @param staticParams
+     * @param deep
+     * @return
+     * @throws QLCompileException
+     */
+    private static QLMatchResult deal4DetailMode(QLPatternNode pattern, int lastPoint, MatchParamsPack staticParams, int deep) throws Exception {
+        INodeTypeManager aManager = staticParams.aManager;
+        List<? extends IDataNode> nodes = staticParams.nodes;
+        AtomicLong maxMatchPoint = staticParams.maxMatchPoint;
+
+        int pointDetail = lastPoint;
+        QLMatchResult resultDetail = null;
+        //判断 nodeType
+        if (pattern.nodeType == aManager.findNodeType("EOF") && pointDetail == nodes.size()) {
+            resultDetail = staticParams.resultCache.fetch().setMatchLastIndex(pointDetail + 1);
+        } else if (pattern.nodeType == aManager.findNodeType("EOF") && pointDetail < nodes.size() && nodes.get(pointDetail).getValue().equals("}")) {
+            resultDetail = staticParams.resultCache.fetch().setMatchLastIndex(pointDetail);
+        } else if (pointDetail == nodes.size() && pattern.nodeType.getPatternNode() != null) {
+            resultDetail = findMatchStatement(staticParams, pattern.nodeType.getPatternNode(), pointDetail, deep);
+        } else if (pointDetail < nodes.size()) {
+            INodeType tempNodeType = null;
+            if (pattern.nodeType.equals(nodes.get(pointDetail).getTreeType())) {
+                tempNodeType = nodes.get(pointDetail).getTreeType();
+            } else if (pattern.nodeType.equals(nodes.get(pointDetail).getNodeType())) {
+                tempNodeType = nodes.get(pointDetail).getNodeType();
+            }
+
+            if (tempNodeType != null) {
+                resultDetail = staticParams.resultCache.fetch();
+                resultDetail.addQLMatchResultTree(new QLMatchResultTree(tempNodeType, nodes.get(pointDetail), pattern.targetNodeType));
+                pointDetail = pointDetail + 1;
+                resultDetail.setMatchLastIndex(pointDetail);
+
+                traceLog(pattern, resultDetail, nodes, pointDetail - 1, 1);
+            } else if (pattern.nodeType.getPatternNode() != null) {  //nodeType 不为空就会一直 向下递归处理
+                resultDetail = findMatchStatement(staticParams, pattern.nodeType.getPatternNode(), pointDetail, deep);
+                if (pattern.targetNodeType != null && resultDetail != null && resultDetail.getMatchSize() > 0) {
+                    if (resultDetail.getMatchSize() > 1) {
+                        throw new QLCompileException("设置了类型转换的语法，只能有一个根节点");
+                    }
+                    resultDetail.getMatchs().get(0).targetNodeType = pattern.targetNodeType;
+                }
+            }
+            if (pattern.blame == true) {//取返处理
+                if (resultDetail == null) {
+                    resultDetail = staticParams.resultCache.fetch();
+                    resultDetail.addQLMatchResultTree(new QLMatchResultTree(tempNodeType, nodes.get(pointDetail), null));
+                    pointDetail = pointDetail + 1;
+                    resultDetail.setMatchLastIndex(pointDetail);
+                } else {
+                    resultDetail = null;
+                }
+            }
+        }
+
+        if (resultDetail != null && resultDetail.getMatchLastIndex() > maxMatchPoint.longValue()) {
+            maxMatchPoint.set(resultDetail.getMatchLastIndex());
+        }
+
+        return resultDetail;
+    }
+
+
+    public static void traceLog(QLPatternNode pattern, QLMatchResult result,
+                                List<? extends IDataNode> nodes, int point, int matchCount) {
+
+        log.trace("匹配--" + pattern.name + "[" + point + ":" + (result.getMatchLastIndex() - 1) + "]:" + pattern);
+
+//        if (log.isTraceEnabled() && (pattern.matchMode == MatchMode.DETAIL || pattern.matchMode == MatchMode.AND && matchCount > 1 && pattern.name.equals("ANONY_PATTERN") == false)) {
+//            log.trace("匹配--" + pattern.name + "[" + point + ":" + (result.getMatchLastIndex() - 1) + "]:" + pattern);
+//        }
+    }
+
+
+    /**
+     * 匹配参数包
+     */
     public static class MatchParamsPack {
         INodeTypeManager aManager;
         List<? extends IDataNode> nodes;
@@ -283,7 +352,17 @@ public class QLPattern {
         QLMatchResultCache resultCache;
         ArrayListCache arrayListCache;
 
-        public MatchParamsPack(INodeTypeManager aManager, List<? extends IDataNode> nodes, AtomicLong maxDeep, AtomicLong maxMatchPoint, QLMatchResultCache aResultCache, ArrayListCache aArrayListCache) {
+        public MatchParamsPack(INodeTypeManager aManager, List<? extends IDataNode> nodes) {
+            this.aManager = aManager;
+            this.nodes = nodes;
+            this.maxDeep = new AtomicLong(1); //最大深度
+            this.maxMatchPoint = new AtomicLong(); //最大匹配指针
+            this.resultCache = new QLMatchResultCache(5);
+            this.arrayListCache = new ArrayListCache<QLMatchResultTree>(50);
+        }
+
+        public MatchParamsPack(INodeTypeManager aManager, List<? extends IDataNode> nodes, AtomicLong maxDeep,
+                               AtomicLong maxMatchPoint, QLMatchResultCache aResultCache, ArrayListCache aArrayListCache) {
             this.aManager = aManager;
             this.nodes = nodes;
             this.maxDeep = maxDeep;
@@ -293,14 +372,17 @@ public class QLPattern {
         }
     }
 
-
+    /**
+     * 匹配结果缓存
+     */
     public static class QLMatchResultCache {
-        public int newCount = 0;
-        public int fetchCount = 0;
+        public int newCount = 0; //新建次数
+        public int fetchCount = 0; //fetch次数
 
-        private QLMatchResult[] cache;
+        private QLMatchResult[] cache; //匹配结果数组
         private int len = 10;
         private int point = 9;
+
         //创建对应数量的 QLMatchResult 数组
         public QLMatchResultCache(int aLen) {
             this.len = aLen;
@@ -311,32 +393,50 @@ public class QLPattern {
             }
         }
 
+        /**
+         * 提取 缓存中指定指针下的结果
+         *
+         * @return
+         */
         public QLMatchResult fetch() {
             QLMatchResult result = null;
+            //指针大于0，获取指针对应的 缓存结果，并将该位置缓存清空，指针-1，fetch次数 +1
             if (point >= 0) {
                 result = cache[point];
                 cache[point] = null;
                 point = point - 1;
                 fetchCount++;
             } else {
+                //指针小于0，创建一个新的 match结果，创建次数+1
                 result = new QLMatchResult();
                 newCount++;
             }
             return result;
         }
 
+        /**
+         * 设置 match结果
+         *
+         * @param result
+         */
         public void sendBack(QLMatchResult result) {
+            //指针未超过 总长度的前提下，指针+1， 设置 指针对应位置的 缓存结果，
             if (this.point < this.len - 1) {
                 this.point = this.point + 1;
                 cache[this.point] = result;
-                cache[this.point].clear();
+                cache[this.point].clear(); //相当于初始化
             }
         }
 
     }
 
-    public static class ArrayListCache<T> {
 
+    /**
+     * 缓存集合
+     *
+     * @param <T>
+     */
+    public static class ArrayListCache<T> {
         public int newCount = 0;
         public int fetchCount = 0;
 
