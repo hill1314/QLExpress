@@ -44,18 +44,16 @@ public class NodeType implements INodeType {
         int endIndex = 0;
         while (matcher.find()) {
             if (list.size() > 0) {
-                list.get(list.size() - 1)[1] = str.substring(endIndex,
-                        matcher.start()).trim();
+                list.get(list.size() - 1)[1] = str.substring(endIndex, matcher.start()).trim();
             }
             list.add(new String[2]);
-            list.get(list.size() - 1)[0] = str.substring(matcher.start() + 1,
-                    matcher.end() - 1).trim();
+            list.get(list.size() - 1)[0] = str.substring(matcher.start() + 1, matcher.end() - 1).trim();
             endIndex = matcher.end();
         }
         if (list.size() > 0) {
             list.get(list.size() - 1)[1] = str.substring(endIndex).trim();
         }
-        return (String[][]) list.toArray(new String[0][2]);
+        return list.toArray(new String[0][2]);
     }
 
     public void initial() {
@@ -93,17 +91,14 @@ public class NodeType implements INodeType {
             return false;
         }
         if (this.qlPatternNode.isDetailMode()) {
-            return ((NodeType) this.qlPatternNode.getNodeType())
-                    .isContainerChild(child);
+            return ((NodeType) this.qlPatternNode.getNodeType()).isContainerChild(child);
         }
         // 是and类型，不能增加子节点或进行判断
-        if (this.qlPatternNode.isAndMode()
-                && this.qlPatternNode.getChildren().size() > 0) {
+        if (this.qlPatternNode.isAndMode() && this.qlPatternNode.getChildren().size() > 0) {
             return false;
         }
         for (QLPatternNode node : this.qlPatternNode.getChildren()) {
-            if (node.getNodeType() != null
-                    && ((NodeType) node.getNodeType()).isContainerChild(child)) {
+            if (node.getNodeType() != null && ((NodeType) node.getNodeType()).isContainerChild(child)) {
                 return true;
             }
         }

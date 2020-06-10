@@ -479,8 +479,7 @@ public class ExpressRunner {
      * @param errorInfo
      * @throws Exception
      */
-    public void addOperatorWithAlias(String keyWordName, String realKeyWordName,
-                                     String errorInfo) throws Exception {
+    public void addOperatorWithAlias(String keyWordName, String realKeyWordName,String errorInfo) throws Exception {
         if (errorInfo != null && errorInfo.trim().length() == 0) {
             errorInfo = null;
         }

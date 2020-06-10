@@ -166,8 +166,8 @@ public class InstructionSet implements Serializable {
      * @return
      * @throws Exception
      */
-    public CallResult excute(RunEnvironment environmen, InstructionSetContext context,
-                             List<String> errorList, boolean isReturnLastData, Log aLog)
+    public CallResult execute(RunEnvironment environmen, InstructionSetContext context,
+                              List<String> errorList, boolean isReturnLastData, Log aLog)
             throws Exception {
 
         //将函数export到上下文中,这儿就是重入也没有关系，不需要考虑并发
@@ -181,7 +181,7 @@ public class InstructionSet implements Serializable {
 
         context.addSymbol(cacheFunctionSet);
 
-        this.executeInnerOrigiInstruction(environmen, errorList, aLog);
+        executeInnerOrigiInstruction(environmen, errorList, aLog);
         if (environmen.isExit() == false) {// 是在执行完所有的指令后结束的代码
             if (environmen.getDataStackSize() > 0) {
                 OperateData tmpObject = environmen.pop();

@@ -23,7 +23,7 @@ public abstract class Operator extends OperatorBase {
                 parameters[i] = list.get(i).getObject(context);
             }
         }
-        Object result = this.executeInner(parameters);
+        Object result = executeInner(parameters);
         if (result != null && result.getClass().equals(OperateData.class)) {
             throw new QLException("操作符号定义的返回类型错误：" + this.getAliasName());
         }

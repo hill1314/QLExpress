@@ -127,10 +127,10 @@ public class NodeTypeManager implements INodeTypeManager {
      * @throws Exception
      */
     public void addOperatorWithLevelOfReference(String operName, String refOperName) throws Exception {
-        NodeType target = this.createNodeType(operName + ":TYPE=KEYWORD");
+        NodeType target = createNodeType(operName + ":TYPE=KEYWORD");
         target.initial();
-        NodeType[] list = this.getNodeTypesByKind(NodeTypeKind.OPERATOR);
-        NodeType refNodeType = this.findNodeType(refOperName);
+        NodeType[] list = getNodeTypesByKind(NodeTypeKind.OPERATOR);
+        NodeType refNodeType = findNodeType(refOperName);
         target.setInstructionFactory(refNodeType.getInstructionFactory());
         for (NodeType item : list) {
             if (item.isContainerChild(refNodeType)) {

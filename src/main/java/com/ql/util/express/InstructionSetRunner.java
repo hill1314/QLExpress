@@ -30,10 +30,8 @@ public class InstructionSetRunner {
                                       boolean isTrace, boolean isCatchException,
                                       Log aLog, boolean isSupportDynamicFieldName) throws Exception {
         try {
-
             //开始计时
             QLExpressTimer.startTimer();
-
             OperateDataCacheManager.push(runner);
             return execute(runner, sets, loader, aContext, errorList, isTrace, isCatchException, true, aLog, isSupportDynamicFieldName);
         } finally {
@@ -62,8 +60,7 @@ public class InstructionSetRunner {
                                  boolean isTrace, boolean isCatchException,
                                  boolean isReturnLastData, Log aLog, boolean isSupportDynamicFieldName)
             throws Exception {
-        InstructionSetContext context =
-                OperateDataCacheManager.fetchInstructionSetContext(true, runner, aContext, loader, isSupportDynamicFieldName);
+        InstructionSetContext context = OperateDataCacheManager.fetchInstructionSetContext(true, runner, aContext, loader, isSupportDynamicFieldName);
         Object result = execute(sets, context, errorList, isTrace, isCatchException, isReturnLastData, aLog);
         return result;
     }
@@ -72,11 +69,10 @@ public class InstructionSetRunner {
                                  InstructionSetContext context, List<String> errorList, boolean isTrace, boolean isCatchException,
                                  boolean isReturnLastData, Log aLog) throws Exception {
 
-        RunEnvironment environmen = null;
         Object result = null;
-        environmen = OperateDataCacheManager.fetRunEnvironment(set, context, isTrace);
+        RunEnvironment environment = OperateDataCacheManager.fetRunEnvironment(set, context, isTrace);
         try {
-            CallResult tempResult = set.excute(environmen, context, errorList, isReturnLastData, aLog);
+            CallResult tempResult = set.execute(environment, context, errorList, isReturnLastData, aLog);
             if (tempResult.isExit() == true) {
                 result = tempResult.getReturnValue();
             }
