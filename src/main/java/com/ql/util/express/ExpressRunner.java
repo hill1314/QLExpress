@@ -94,7 +94,7 @@ public class ExpressRunner {
     private AppendingClassFieldManager appendingClassFieldManager;
 
     /**
-     * 操作数据缓存
+     * 操作数据缓存 (线程私有)
      */
     private ThreadLocal<IOperateDataCache> m_OperateDataObjectCache = new ThreadLocal<IOperateDataCache>() {
         protected IOperateDataCache initialValue() {

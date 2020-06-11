@@ -3,6 +3,9 @@ package com.ql.util.express.instruction;
 import com.ql.util.express.*;
 import com.ql.util.express.instruction.opdata.*;
 
+/**
+ * 操作数据缓存实现类
+ */
 public class OperateDataCacheImpl implements IOperateDataCache {
     OperateData[] dataList;
     OperateDataAttr[] attrList;
@@ -50,6 +53,9 @@ public class OperateDataCacheImpl implements IOperateDataCache {
         }
     }
 
+    /**
+     * 清空数据
+     */
     public void resetCache() {
         for (int i = 0; i <= dataPoint && i < length; i++) {
             dataList[i].clear();
@@ -91,7 +97,9 @@ public class OperateDataCacheImpl implements IOperateDataCache {
 
     }
 
-    public InstructionSetContext fetchInstructionSetContext(boolean aIsExpandToParent, ExpressRunner aRunner, IExpressContext<String, Object> aParent, ExpressLoader aExpressLoader, boolean aIsSupportDynamicFieldName) {
+
+    public InstructionSetContext fetchInstructionSetContext(boolean aIsExpandToParent, ExpressRunner aRunner,
+                                                            IExpressContext<String, Object> aParent, ExpressLoader aExpressLoader, boolean aIsSupportDynamicFieldName) {
         InstructionSetContext result = null;
         if (contextPoint < length) {
             result = contextList[contextPoint];
