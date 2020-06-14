@@ -26,7 +26,7 @@ public class ReplaceMethodTest {
         ExpressRunner runner = new ExpressRunner(false, false);
 
         //TODO 表达式中已有的function，不能被重复定义，但提示的错误 有问题
-        runner.addFunctionOfClassMethod("calculate2", ReplaceMethodTest.class.getName(), "calculate", new Class[]{Integer.class}, null);
+//        runner.addFunctionOfClassMethod("calculate2", ReplaceMethodTest.class.getName(), "calculate", new Class[]{Integer.class}, null);
 
         IExpressContext<String, Object> expressContext = new DefaultContext<String, Object>();
         Object r = runner.execute(express, expressContext, null, false, false);

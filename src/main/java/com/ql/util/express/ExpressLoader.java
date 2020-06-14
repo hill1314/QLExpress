@@ -31,8 +31,7 @@ public class ExpressLoader {
      * @return
      * @throws Exception
      */
-    public InstructionSet loadExpress(String expressName)
-            throws Exception {
+    public InstructionSet loadExpress(String expressName) throws Exception {
         return parseInstructionSet(expressName, this.creator.getExpressResourceLoader().loadExpress(expressName));
     }
 
@@ -44,8 +43,7 @@ public class ExpressLoader {
      * @return
      * @throws Exception
      */
-    public InstructionSet parseInstructionSet(String expressName,
-                                              String expressString) throws Exception {
+    public InstructionSet parseInstructionSet(String expressName,String expressString) throws Exception {
         InstructionSet parseResult = null;
         if (expressInstructionSetCache.containsKey(expressName)) {
             throw new QLException("表达式定义重复：" + expressName);
@@ -58,12 +56,12 @@ public class ExpressLoader {
 
             // 需要将函数和宏定义都提取出来
             for (FunctionInstructionSet item : parseResult.getFunctionInstructionSets()) {
-                this.addInstructionSet(item.name, item.instructionSet);
+                addInstructionSet(item.name, item.instructionSet);
                 item.instructionSet.setName(item.name);
                 item.instructionSet.setGlobeName(expressName + "." + item.name);
             }
             if (parseResult.hasMain()) {
-                this.addInstructionSet(expressName, parseResult);
+                addInstructionSet(expressName, parseResult);
             }
         }
         return parseResult;

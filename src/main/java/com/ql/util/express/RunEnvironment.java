@@ -87,6 +87,9 @@ public final class RunEnvironment {
         return programPoint;
     }
 
+    /**
+     * 指针+1
+     */
     public void programPointAddOne() {
         programPoint++;
     }

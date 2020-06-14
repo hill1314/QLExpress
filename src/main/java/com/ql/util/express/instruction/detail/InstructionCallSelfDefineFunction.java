@@ -59,9 +59,7 @@ public class InstructionCallSelfDefineFunction extends Instruction {
                     + this.functionName + "\"的定义");
         }
         InstructionSet functionSet = (InstructionSet) function;
-        OperateData result = InstructionCallSelfDefineFunction
-                .executeSelfFunction(environment, functionSet, parameters,
-                        errorList, this.log);
+        OperateData result = InstructionCallSelfDefineFunction.executeSelfFunction(environment, functionSet, parameters, errorList, this.log);
         environment.push(result);
         environment.programPointAddOne();
     }

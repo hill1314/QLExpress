@@ -207,9 +207,17 @@ public class InstructionSet implements Serializable {
         return result;
     }
 
+    /**
+     * 执行指令
+     * @param environment
+     * @param errorList
+     * @param aLog
+     * @throws Exception
+     */
     public void executeInnerOrigiInstruction(RunEnvironment environment, List<String> errorList, Log aLog) throws Exception {
         Instruction instruction = null;
         try {
+            //遍历指令集，逐个执行
             while (environment.programPoint < this.instructionList.length) {
                 QLExpressTimer.assertTimeOut();
                 instruction = this.instructionList[environment.programPoint];

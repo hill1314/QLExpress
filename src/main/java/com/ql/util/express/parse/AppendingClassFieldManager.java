@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Class追加的字段 管理
+ *
  * Created by tianqiao on 16/10/16.
  */
 public class AppendingClassFieldManager {

@@ -43,7 +43,7 @@ public class InstructionOperator extends Instruction{
 			this.log.debug(str);
 		}
 		try {
-            OperateData result = this.operator.execute(environment.getContext(), parameters, errorList);
+            OperateData result = operator.execute(environment.getContext(), parameters, errorList);
             environment.push(result);
             environment.programPointAddOne();
         }catch (QLException e){

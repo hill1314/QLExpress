@@ -93,7 +93,7 @@ class RunnerDataCache {
         //bugfix处理ExpressRunner嵌套情况下，cache还原的问题
         this.stack.pop();
         if (!this.stack.isEmpty()) {
-            this.cache = this.stack.peek().getOperateDataCache();
+            this.cache = stack.peek().getOperateDataCache();
         } else {
             this.cache = null;
         }

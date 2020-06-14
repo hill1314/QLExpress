@@ -9,7 +9,7 @@ import org.junit.Test;
  * Created by tianqiao on 17/6/20.
  */
 public class FunctionTest {
-    
+
     @Test
     public void testFunction() throws Exception{
         ExpressRunner runner = new ExpressRunner();
@@ -18,11 +18,11 @@ public class FunctionTest {
         Object result = runner.execute(exp,context,null,false,false);
         System.out.println(result);
     }
-    
+
     @Test
     public void testFunction2() throws Exception{
         ExpressRunner runner = new ExpressRunner();
-        String exp = 
+        String exp =
                 "function FAILFUN(Integer errorCode,String message){\n" +
                     "System.out.println(errorCode+\" \"+message);\n" +
                     "return NewMap(\"message\":message,\"errorCode\":errorCode,\"success\":false);\n" +
@@ -32,7 +32,7 @@ public class FunctionTest {
         Object result = runner.execute(exp,context,null,false,false);
         System.out.println(result);
     }
-    
+
     @Test
     public void testFunction3() throws Exception{
         ExpressRunner runner = new ExpressRunner();
@@ -42,18 +42,18 @@ public class FunctionTest {
                         "return NewMap(\"message\":message,\"errorCode\":errorCode,\"success\":false);\n" +
                         "}\n";
         runner.loadMultiExpress("",funExp);
-        
+
         String exp = "FAILFUN(-1,'error')";
         IExpressContext<String, Object> context = new DefaultContext<String, Object>();
         Object result = runner.execute(exp,context,null,false,false);
         System.out.println(result);
-    
+
         String exp2 = "FAILFUN(-12,'error')";
         IExpressContext<String, Object> context2 = new DefaultContext<String, Object>();
         Object result2 = runner.execute(exp2,context2,null,false,false);
-        System.out.println(result);
+        System.out.println(result2);
     }
-    
-    
-    
+
+
+
 }

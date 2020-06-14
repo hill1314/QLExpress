@@ -187,6 +187,7 @@ public class ExpressRunner {
 
     /**
      * 装载表达式，但不执行，例如一些宏定义，或者自定义函数
+     * 证载多个表达式 场景下 使用
      *
      * @param groupName
      * @param express
