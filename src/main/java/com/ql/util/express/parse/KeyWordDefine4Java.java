@@ -29,7 +29,7 @@ public class KeyWordDefine4Java {
     };
 
     /**
-     * 节点类型定义
+     * 节点类型定义（语法解析定义）
      */
     public String[] nodeTypeDefines = new String[]{
             //关键词 NodeTypeKind.WORDDEF

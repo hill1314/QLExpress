@@ -5,7 +5,9 @@ import com.ql.util.express.instruction.opdata.*;
 
 import java.util.Stack;
 
-
+/**
+ * 指令执行运行过程的数据寄存器
+ */
 public class OperateDataCacheManager {
 
     private static ThreadLocal<RunnerDataCache> m_OperateDataObjectCache = new ThreadLocal<RunnerDataCache>() {
@@ -65,9 +67,7 @@ public class OperateDataCacheManager {
     public static void resetCache(ExpressRunner aRunner) {
         getOperateDataCache().resetCache();
         m_OperateDataObjectCache.get().pop(aRunner);
-
     }
-
 
 }
 
