@@ -18,13 +18,13 @@ public class OperatorSelfDefineServiceFunction extends OperatorBase implements C
   Method method;
   boolean isReturnVoid;
   boolean maybeDynamicParams;
-  
+
 	public OperatorSelfDefineServiceFunction(String aOperName,
 			Object aServiceObject, String aFunctionName,
 			Class<?>[] aParameterClassTypes,String[] aParameterDesc,String[] aParameterAnnotation, String aErrorInfo) throws Exception {
 		if (errorInfo != null && errorInfo.trim().length() == 0) {
 			errorInfo = null;
-		} 
+		}
 		this.name = aOperName;
 		this.errorInfo = aErrorInfo;
 		this.serviceObject = aServiceObject;
@@ -41,13 +41,13 @@ public class OperatorSelfDefineServiceFunction extends OperatorBase implements C
 		this.isReturnVoid = method.getReturnType().equals(void.class);
 		this.maybeDynamicParams = DynamicParamsUtil.maybeDynamicParams(parameterClasses);
 	}
-  
+
   public OperatorSelfDefineServiceFunction(String aOperName,Object aServiceObject, String aFunctionName,
                          String[] aParameterTypes,String[] aParameterDesc,String[] aParameterAnnotation,String aErrorInfo) throws Exception {
-    
+
 	if (errorInfo != null && errorInfo.trim().length() == 0) {
 			errorInfo = null;
-	}  
+	}
 	this.name = aOperName;
     this.errorInfo = aErrorInfo;
     this.serviceObject = aServiceObject;
@@ -73,6 +73,7 @@ public class OperatorSelfDefineServiceFunction extends OperatorBase implements C
 	}
   public OperateData executeInner(InstructionSetContext context, ArraySwap list) throws Exception {
       Object[] parameres =  DynamicParamsUtil.transferDynamicParams(context, list, parameterClasses,this.maybeDynamicParams);
+      //也是通过反射执行的方法
       Object obj = this.method.invoke(this.serviceObject,ExpressUtil.transferArray(parameres,parameterClasses));
       if(obj != null){
          return OperateDataCacheManager.fetchOperateData(obj,obj.getClass());
@@ -80,7 +81,7 @@ public class OperatorSelfDefineServiceFunction extends OperatorBase implements C
       if(this.isReturnVoid == true){
     	  return OperateDataCacheManager.fetchOperateDataAttr("null", void.class);
       }else{
-    	  return OperateDataCacheManager.fetchOperateDataAttr("null", null);  
+    	  return OperateDataCacheManager.fetchOperateDataAttr("null", null);
       }
   }
 }

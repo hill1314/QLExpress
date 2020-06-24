@@ -442,7 +442,7 @@ public class ExpressParse {
         result.getMatchs().get(0).buildExpressNodeTree();
         ExpressNode root = (ExpressNode) result.getMatchs().get(0).getRef();
 
-        //为了生成代码时候进行判断，需要设置每个节点的父亲 TODO ?
+        //为了生成代码时候进行判断，需要设置每个节点的父亲
         resetParent(root, null);
 
         if (isTrace == true && log.isDebugEnabled()) {

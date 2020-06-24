@@ -6,8 +6,17 @@ import com.ql.util.express.exception.QLException;
 public final class RunEnvironment {
     private static int INIT_DATA_LENTH = 15;
     private boolean isTrace = false;
+    /**
+     * 数据指针
+     */
     private int point = -1;
+    /**
+     * 程序指针
+     */
     protected int programPoint = 0;
+    /**
+     * 操作数据（指令执行过程中的数据）
+     */
     private OperateData[] dataContainer;
     private ArraySwap arraySwap = new ArraySwap();
 
@@ -102,6 +111,10 @@ public final class RunEnvironment {
         return this.point + 1;
     }
 
+    /**
+     * 装载指令运行过程中的数据
+     * @param data
+     */
     public void push(OperateData data) {
         this.point++;
         if (this.point >= this.dataContainer.length) {
