@@ -1,5 +1,8 @@
 package com.ql.util.express.instruction;
 
+/**
+ * 规则引擎执行结果
+ */
 public class CallResult {
     private Object returnValue;
     private boolean isExit;

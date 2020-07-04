@@ -28,7 +28,7 @@ public class InstructionGoToWithCondition extends Instruction {
     public void execute(RunEnvironment environment, List<String> errorList) throws Exception {
         Object o = null;
         //判断 只是获取 还是 要弹出数据
-        if (this.isPopStackData == false) {
+        if (!isPopStackData) {
             o = environment.peek().getObject(environment.getContext());
             if (o == null) {
             	//对于空的数据，也要进行弹出

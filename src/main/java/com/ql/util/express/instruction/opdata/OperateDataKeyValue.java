@@ -2,48 +2,54 @@ package com.ql.util.express.instruction.opdata;
 
 import com.ql.util.express.context.InstructionSetContext;
 
+/**
+ * key-value 结构的数据结构
+ */
 public class OperateDataKeyValue extends OperateData {
-	OperateData key;
-	OperateData value;
+    OperateData key;
+    OperateData value;
 
-	public OperateDataKeyValue(OperateData aKey, OperateData aValue) {
-		super(null, null);
-		this.key = aKey;
-		this.value = aValue;
-	}
-    public void initialDataKeyValue(OperateData aKey, OperateData aValue){
-    	super.initial(null, null);
-    	this.key = aKey;
-		this.value = aValue;
+    public OperateDataKeyValue(OperateData aKey, OperateData aValue) {
+        super(null, null);
+        this.key = aKey;
+        this.value = aValue;
     }
-	public void clearDataKeyValue(){
-		super.clear();
-		this.key = null;
-		this.value = null;
-	}
-	public OperateData getKey() {
-		return key;
-	}
 
-	public OperateData getValue() {
-		return value;
-	}
+    public void initialDataKeyValue(OperateData aKey, OperateData aValue) {
+        super.initial(null, null);
+        this.key = aKey;
+        this.value = aValue;
+    }
 
-	public String toString() {
-		return this.key + ":" + this.value;
-	}
+    public void clearDataKeyValue() {
+        super.clear();
+        this.key = null;
+        this.value = null;
+    }
 
-	public Object getObjectInner(InstructionSetContext context) {
-		throw new RuntimeException("没有实现方法：getObjectInner");
-	}
+    public OperateData getKey() {
+        return key;
+    }
 
-	public Class<?> getType(InstructionSetContext context)
-			throws Exception {
-		throw new RuntimeException("没有实现方法：getType");
-	}
+    public OperateData getValue() {
+        return value;
+    }
 
-	public void setObject(InstructionSetContext parent,
-			Object object) {
-		throw new RuntimeException("没有实现方法：setObject");
-	}
+    public String toString() {
+        return this.key + ":" + this.value;
+    }
+
+    public Object getObjectInner(InstructionSetContext context) {
+        throw new RuntimeException("没有实现方法：getObjectInner");
+    }
+
+    public Class<?> getType(InstructionSetContext context)
+            throws Exception {
+        throw new RuntimeException("没有实现方法：getType");
+    }
+
+    public void setObject(InstructionSetContext parent,
+                          Object object) {
+        throw new RuntimeException("没有实现方法：setObject");
+    }
 }

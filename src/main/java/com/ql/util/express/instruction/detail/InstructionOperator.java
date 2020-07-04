@@ -1,11 +1,11 @@
 package com.ql.util.express.instruction.detail;
 
-import com.ql.util.express.instruction.opdata.ArraySwap;
-import com.ql.util.express.instruction.opdata.OperateData;
 import com.ql.util.express.RunEnvironment;
 import com.ql.util.express.exception.QLBizException;
 import com.ql.util.express.exception.QLException;
 import com.ql.util.express.instruction.op.OperatorBase;
+import com.ql.util.express.instruction.opdata.ArraySwap;
+import com.ql.util.express.instruction.opdata.OperateData;
 import com.ql.util.express.instruction.opdata.OperateDataAttr;
 
 import java.util.List;
@@ -27,8 +27,31 @@ public class InstructionOperator extends Instruction {
         return this.operator;
     }
 
+
     public void execute(RunEnvironment environment, List<String> errorList) throws Exception {
+        //获取方法执行需要的参数
         ArraySwap parameters = environment.popArray(environment.getContext(), this.opDataNumber);
+        //打印日志
+        debugInfo(environment, parameters);
+
+        try {
+            OperateData result = operator.execute(environment.getContext(), parameters, errorList);
+            environment.push(result);
+            environment.programPointAddOne();
+        } catch (QLException e) {
+            throw new QLException(getExceptionPrefix(), e);
+        } catch (Throwable t) {
+            throw new QLBizException(getExceptionPrefix(), t);
+        }
+    }
+
+    /**
+     * 打印debug日志
+     *
+     * @param environment
+     * @param parameters
+     */
+    private void debugInfo(RunEnvironment environment, ArraySwap parameters) throws Exception {
         if (environment.isTrace() && this.log.isDebugEnabled()) {
             String str = this.operator.toString() + "(";
             OperateData p = null;
@@ -45,15 +68,6 @@ public class InstructionOperator extends Instruction {
             }
             str = str + ")";
             this.log.debug(str);
-        }
-        try {
-            OperateData result = operator.execute(environment.getContext(), parameters, errorList);
-            environment.push(result);
-            environment.programPointAddOne();
-        } catch (QLException e) {
-            throw new QLException(getExceptionPrefix(), e);
-        } catch (Throwable t) {
-            throw new QLBizException(getExceptionPrefix(), t);
         }
     }
 

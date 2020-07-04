@@ -7,7 +7,7 @@ import com.ql.util.express.instruction.opdata.*;
 import com.ql.util.express.loader.ExpressLoader;
 
 /**
- * 操作数据缓存
+ * 运行时数据获取 接口
  */
 public interface IOperateDataCache {
 

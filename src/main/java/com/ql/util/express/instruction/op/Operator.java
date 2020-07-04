@@ -18,6 +18,7 @@ import java.util.Date;
 public abstract class Operator extends OperatorBase {
 
     public OperateData executeInner(InstructionSetContext context, ArraySwap list) throws Exception {
+        //获取 变量对应的值
         Object[] parameters = new Object[list.length];
         for (int i = 0; i < list.length; i++) {
             if (list.get(i) == null && QLExpressRunStrategy.isAvoidNullPointer()) {
@@ -26,6 +27,8 @@ public abstract class Operator extends OperatorBase {
                 parameters[i] = list.get(i).getObject(context);
             }
         }
+
+        //执行 （对于继承Operator的方法实现  是通过调用实现类的方法来执行的）
         Object result = executeInner(parameters);
         if (result != null && result.getClass().equals(OperateData.class)) {
             throw new QLException("操作符号定义的返回类型错误：" + this.getAliasName());

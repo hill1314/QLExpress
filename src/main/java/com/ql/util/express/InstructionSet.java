@@ -30,7 +30,7 @@ public class InstructionSet implements Serializable {
 
     private static final transient Log log = LogFactory.getLog(InstructionSet.class);
 
-    public static AtomicInteger uniqIndex = new AtomicInteger(1);
+//    public static AtomicInteger uniqIndex = new AtomicInteger(1);
 
     public static String TYPE_MAIN = "main";        //应该算是一个执行入口，唯一的
     public static String TYPE_CLASS = "VClass";    //用户自定义的类
@@ -41,7 +41,6 @@ public class InstructionSet implements Serializable {
      * 指令执行异常时，是否打印指令信息
      */
     public static boolean printInstructionError = false;
-
 
     private String type = TYPE_MAIN;
     private String name;
@@ -56,7 +55,9 @@ public class InstructionSet implements Serializable {
      */
     private Map<String, FunctionInstructionSet> functionDefine = new HashMap<String, FunctionInstructionSet>();
 
-    //为了增加性能，开始的时候缓存为数组
+    /**
+     * 为了增加性能，开始的时候缓存为数组
+     */
     private Map<String, Object> cacheFunctionSet = null;
 
     private List<ExportItem> exportVar = new ArrayList<ExportItem>();
@@ -65,9 +66,10 @@ public class InstructionSet implements Serializable {
      */
     private List<OperateDataLocalVar> parameterList = new ArrayList<OperateDataLocalVar>();
 
-    public static int getUniqClassIndex() {
-        return uniqIndex.getAndIncrement();
-    }
+//    没有用到。。
+//    public static int getUniqClassIndex() {
+//        return uniqIndex.getAndIncrement();
+//    }
 
     public InstructionSet(String aType) {
         this.type = aType;
@@ -187,7 +189,7 @@ public class InstructionSet implements Serializable {
         }
 
         context.addSymbol(cacheFunctionSet);
-
+        //执行内部原始指令
         executeInnerOrigiInstruction(environment, errorList, aLog);
         if (environment.isExit() == false) {// 是在执行完所有的指令后结束的代码
             if (environment.getDataStackSize() > 0) {

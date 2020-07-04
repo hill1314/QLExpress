@@ -26,10 +26,20 @@ public class OperateDataCacheManager {
         m_OperateDataObjectCache.get().push(aRunner);
     }
 
+    /**
+     * 获取运行时数据
+     * @return
+     */
     public static IOperateDataCache getOperateDataCache() {
         return m_OperateDataObjectCache.get().cache;
     }
 
+    /**
+     * 获取运行时数据
+     * @param obj
+     * @param aType
+     * @return
+     */
     public static OperateData fetchOperateData(Object obj, Class<?> aType) {
         return getOperateDataCache().fetchOperateData(obj, aType);
     }
@@ -54,14 +64,36 @@ public class OperateDataCacheManager {
         return getOperateDataCache().fetchOperateDataKeyValue(aKey, aValue);
     }
 
+    /**
+     * 获取运行时环境
+     * @param aInstructionSet
+     * @param aContext
+     * @param aIsTrace
+     * @return
+     */
     public static RunEnvironment fetRunEnvironment(InstructionSet aInstructionSet, InstructionSetContext aContext, boolean aIsTrace) {
         return getOperateDataCache().fetRunEnvironment(aInstructionSet, aContext, aIsTrace);
     }
 
+    /**
+     * 获取执行结果
+     * @param aReturnValue
+     * @param aIsExit
+     * @return
+     */
     public static CallResult fetchCallResult(Object aReturnValue, boolean aIsExit) {
         return getOperateDataCache().fetchCallResult(aReturnValue, aIsExit);
     }
 
+    /**
+     * 获取指令集上下文
+     * @param aIsExpandToParent
+     * @param aRunner
+     * @param aParent
+     * @param aExpressLoader
+     * @param aIsSupportDynamicFieldName
+     * @return
+     */
     public static InstructionSetContext fetchInstructionSetContext(boolean aIsExpandToParent, ExpressRunner aRunner, IExpressContext<String, Object> aParent, ExpressLoader aExpressLoader, boolean aIsSupportDynamicFieldName) {
         return getOperateDataCache().fetchInstructionSetContext(aIsExpandToParent, aRunner, aParent, aExpressLoader, aIsSupportDynamicFieldName);
     }
@@ -70,14 +102,22 @@ public class OperateDataCacheManager {
         return getOperateDataCache().getFetchCount();
     }
 
+    /**
+     * 清除本地缓存
+     * @param aRunner
+     */
     public static void resetCache(ExpressRunner aRunner) {
+        //清除所有运行时数据
         getOperateDataCache().resetCache();
+        //弹出执行器
         m_OperateDataObjectCache.get().pop(aRunner);
     }
 
 }
 
-
+/**
+ * 运行时数据缓存（包含数据 和 执行堆栈）
+ */
 class RunnerDataCache {
     IOperateDataCache cache;
 

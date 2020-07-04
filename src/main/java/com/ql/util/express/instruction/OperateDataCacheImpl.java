@@ -30,6 +30,9 @@ public class OperateDataCacheImpl implements IOperateDataCache {
     int callResultPoint = 0;
     int contextPoint = 0;
 
+    /**
+     * 所有运行时数据的数组长度 （默认30）
+     */
     int length;
 
     public OperateDataCacheImpl(int len) {
@@ -43,6 +46,7 @@ public class OperateDataCacheImpl implements IOperateDataCache {
         callResultList = new CallResult[len];
         environmentList = new RunEnvironment[len];
         contextList = new InstructionSetContext[len];
+
         for (int i = 0; i < len; i++) {
             dataList[i] = new OperateData(null, null);
             attrList[i] = new OperateDataAttr(null, null);

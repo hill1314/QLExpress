@@ -12,11 +12,14 @@ import java.util.Map;
  * 指令集运行时的数据上下文
  */
 public class InstructionSetContext implements IExpressContext<String, Object> {
-    /*
-     * 没有指定数据类型的变量定义是否传递到最外层的Context  （是否集成 parent 中的变量）
+    /**
+     * 没有指定数据类型的变量定义 是否传递到最外层的Context  （是否集成 parent 中的变量）
      */
     private boolean isExpandToParent = true;
 
+    /**
+     * 父 上下文
+     */
     private IExpressContext<String, Object> parent = null;
 
     /**
@@ -24,12 +27,15 @@ public class InstructionSetContext implements IExpressContext<String, Object> {
      */
     private Map<String, Object> content;
     /**
-     * 符号表（变量）
+     * 符号表（别名？）
      */
     private Map<String, Object> symbolTable = new HashMap<String, Object>();
 
     private ExpressLoader expressLoader;
 
+    /**
+     * 是否支持动态字段
+     */
     private boolean isSupportDynamicFieldName = false;
 
     public ExpressRunner getRunner() {
@@ -61,6 +67,12 @@ public class InstructionSetContext implements IExpressContext<String, Object> {
 
     }
 
+    /**
+     * 添加 符号
+     * @param varName
+     * @param aliasNameObject
+     * @throws Exception
+     */
     public void exportSymbol(String varName, Object aliasNameObject) throws Exception {
         if (this.parent != null && this.parent instanceof InstructionSetContext) {
             ((InstructionSetContext) this.parent).exportSymbol(varName, aliasNameObject);
@@ -71,7 +83,7 @@ public class InstructionSetContext implements IExpressContext<String, Object> {
 
     public void addSymbol(String varName, Object aliasNameObject) throws Exception {
         if (this.symbolTable.containsKey(varName)) {
-            throw new QLException("变量" + varName + "已经存在，不能重复定义，也不能再从函数内部 exprot ");
+            throw new QLException("变量" + varName + "已经存在，不能重复定义，也不能再从函数内部 export ");
         }
         this.symbolTable.put(varName, aliasNameObject);
     }
@@ -92,6 +104,12 @@ public class InstructionSetContext implements IExpressContext<String, Object> {
         return this.runner;
     }
 
+    /**
+     * 找出符号
+     * @param varName
+     * @return
+     * @throws Exception
+     */
     public Object findAliasOrDefSymbol(String varName) throws Exception {
         Object result = this.symbolTable.get(varName);
         if (result == null) {
@@ -105,7 +123,7 @@ public class InstructionSetContext implements IExpressContext<String, Object> {
     }
 
     /**
-     * 获取值
+     * 获取符号 （本地没有，会通过CacheManager创建，并设置到本地）
      * @param varName
      * @return
      * @throws Exception
@@ -116,8 +134,7 @@ public class InstructionSetContext implements IExpressContext<String, Object> {
             result = this.expressLoader.getInstructionSet(varName);
         }
         if (result == null) {
-            if (this.isExpandToParent == true && this.parent != null
-                    && this.parent instanceof InstructionSetContext) {
+            if (isExpandToParent && this.parent != null && this.parent instanceof InstructionSetContext) {
                 result = ((InstructionSetContext) this.parent).getSymbol(varName);
             } else {
                 result = OperateDataCacheManager.fetchOperateDataAttr(varName, null);
@@ -135,15 +152,26 @@ public class InstructionSetContext implements IExpressContext<String, Object> {
         return this.parent;
     }
 
+    /**
+     * 获取变量
+     * @param key 属性名称
+     * @return
+     */
     public Object get(Object key) {
         if (this.content != null && this.content.containsKey(key)) {
             return this.content.get(key);
-        } else if (this.isExpandToParent == true && this.parent != null) {
+        } else if (isExpandToParent && this.parent != null) {
             return this.parent.get(key);
         }
         return null;
     }
 
+    /**
+     * 设置变量
+     * @param key
+     * @param value
+     * @return
+     */
     public Object put(String key, Object value) {
         if (this.content != null && this.content.containsKey(key)) {
             return this.content.put(key, value);

@@ -13,7 +13,13 @@ import com.ql.util.express.exception.QLException;
 
 public class OperateData implements java.io.Serializable {
     private static final long serialVersionUID = 4749348640699065036L;
+    /**
+     * 数据
+     */
     protected Object dataObject;
+    /**
+     * 数据类型
+     */
     protected Class<?> type;
 
     public OperateData(Object obj, Class<?> aType) {

@@ -35,9 +35,8 @@ public class InstructionSetRunner {
                                       boolean isTrace, boolean isCatchException,
                                       Log aLog, boolean isSupportDynamicFieldName) throws Exception {
         try {
-            //开始计时
-            QLExpressTimer.startTimer();
-            OperateDataCacheManager.push(runner);
+            QLExpressTimer.startTimer();   //开始计时
+            OperateDataCacheManager.push(runner); //设置执行器
             return execute(runner, sets, loader, aContext, errorList, isTrace, isCatchException, true, aLog, isSupportDynamicFieldName);
         } finally {
             OperateDataCacheManager.resetCache(runner);

@@ -143,21 +143,21 @@ public abstract class OperatorBase implements java.io.Serializable {
     }
 }
 
-class OperatorFunction extends OperatorBase {
-    public OperatorFunction(String aName) {
-        this.name = aName;
-    }
-
-    public OperatorFunction(String aAliasName, String aName, String aErrorInfo) {
-        this.name = aName;
-        this.aliasName = aAliasName;
-        this.errorInfo = aErrorInfo;
-    }
-
-    public OperateData executeInner(InstructionSetContext context, ArraySwap list) throws Exception {
-        throw new QLException("还没有实现");
-    }
-}
+//class OperatorFunction extends OperatorBase {
+//    public OperatorFunction(String aName) {
+//        this.name = aName;
+//    }
+//
+//    public OperatorFunction(String aAliasName, String aName, String aErrorInfo) {
+//        this.name = aName;
+//        this.aliasName = aAliasName;
+//        this.errorInfo = aErrorInfo;
+//    }
+//
+//    public OperateData executeInner(InstructionSetContext context, ArraySwap list) throws Exception {
+//        throw new QLException("还没有实现");
+//    }
+//}
 
 class OperatorReturn extends OperatorBase {
     public OperatorReturn(String name) {

@@ -3,8 +3,13 @@ package com.ql.util.express.instruction.opdata;
 import com.ql.util.express.utils.ExpressUtil;
 import com.ql.util.express.context.InstructionSetContext;
 
-
+/**
+ * 变量属性
+ */
 public class OperateDataAttr extends OperateData {
+    /**
+     * 变量名称
+     */
     protected String name;
 
     public OperateDataAttr(String aName, Class<?> aType) {
