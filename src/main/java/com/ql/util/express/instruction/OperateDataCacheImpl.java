@@ -18,7 +18,7 @@ public class OperateDataCacheImpl implements IOperateDataCache {
     InstructionSetContext[] contextList;
 
     int dataPoint = 0;
-    int attrPoint = 0;
+    int attrPoint = 0;   //属性变量指针
     int localVarPoint = 0;
     int fieldPoint = 0;
     int arrayPoint = 0;

@@ -6,9 +6,12 @@ import com.ql.util.express.instruction.OperateDataCacheManager;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 指令集运行时的数据上下文
+ */
 public class InstructionSetContext implements IExpressContext<String, Object> {
     /*
-     * 没有知道数据类型的变量定义是否传递到最外层的Context
+     * 没有指定数据类型的变量定义是否传递到最外层的Context  （是否集成 parent 中的变量）
      */
     private boolean isExpandToParent = true;
 
@@ -19,7 +22,7 @@ public class InstructionSetContext implements IExpressContext<String, Object> {
      */
     private Map<String, Object> content;
     /**
-     * 符号表
+     * 符号表（变量）
      */
     private Map<String, Object> symbolTable = new HashMap<String, Object>();
 
@@ -99,6 +102,12 @@ public class InstructionSetContext implements IExpressContext<String, Object> {
         return result;
     }
 
+    /**
+     * 获取值
+     * @param varName
+     * @return
+     * @throws Exception
+     */
     public Object getSymbol(String varName) throws Exception {
         Object result = this.symbolTable.get(varName);
         if (result == null && this.expressLoader != null) {
@@ -107,8 +116,7 @@ public class InstructionSetContext implements IExpressContext<String, Object> {
         if (result == null) {
             if (this.isExpandToParent == true && this.parent != null
                     && this.parent instanceof InstructionSetContext) {
-                result = ((InstructionSetContext) this.parent)
-                        .getSymbol(varName);
+                result = ((InstructionSetContext) this.parent).getSymbol(varName);
             } else {
                 result = OperateDataCacheManager.fetchOperateDataAttr(varName, null);
                 this.addSymbol(varName, result);

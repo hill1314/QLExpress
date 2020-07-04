@@ -14,6 +14,7 @@ import com.ql.util.express.ArraySwap;
 import com.ql.util.express.ExpressUtil;
 import com.ql.util.express.InstructionSetContext;
 import com.ql.util.express.OperateData;
+import com.ql.util.express.exception.QLException;
 import com.ql.util.express.instruction.opdata.OperateDataAttr;
 
 import java.util.List;
@@ -142,103 +143,103 @@ public abstract class OperatorBase implements java.io.Serializable {
     }
 }
 
-//class OperatorFunction extends OperatorBase {
-//    public OperatorFunction(String aName) {
-//        this.name = aName;
-//    }
-//
-//    public OperatorFunction(String aAliasName, String aName, String aErrorInfo) {
-//        this.name = aName;
-//        this.aliasName = aAliasName;
-//        this.errorInfo = aErrorInfo;
-//    }
-//
-//    public OperateData executeInner(InstructionSetContext context, ArraySwap list) throws Exception {
-//        throw new QLException("还没有实现");
-//    }
-//}
+class OperatorFunction extends OperatorBase {
+    public OperatorFunction(String aName) {
+        this.name = aName;
+    }
 
-//class OperatorReturn extends OperatorBase {
-//    public OperatorReturn(String name) {
-//        this.name = name;
-//    }
-//
-//    public OperatorReturn(String aAliasName, String aName, String aErrorInfo) {
-//        this.name = aName;
-//        this.aliasName = aAliasName;
-//        this.errorInfo = aErrorInfo;
-//    }
-//
-//    public OperateData executeInner(InstructionSetContext parent, ArraySwap list) throws Exception {
-//        return executeInner(parent);
-//    }
-//
-//    public OperateData executeInner(InstructionSetContext parent) throws Exception {
-//        throw new QLException("return 是通过特殊指令来实现的，不能支持此方法");
-//    }
-//}
+    public OperatorFunction(String aAliasName, String aName, String aErrorInfo) {
+        this.name = aName;
+        this.aliasName = aAliasName;
+        this.errorInfo = aErrorInfo;
+    }
 
-//class OperatorCall extends OperatorBase {
-//    public OperatorCall(String name) {
-//        this.name = name;
-//    }
-//
-//    public OperatorCall(String aAliasName, String aName, String aErrorInfo) {
-//        this.name = aName;
-//        this.aliasName = aAliasName;
-//        this.errorInfo = aErrorInfo;
-//    }
-//
-//    public OperateData executeInner(InstructionSetContext parent, ArraySwap list) throws Exception {
-//        throw new QLException("call 是通过特殊指令来实现的，不能支持此方法");
-//    }
-//}
+    public OperateData executeInner(InstructionSetContext context, ArraySwap list) throws Exception {
+        throw new QLException("还没有实现");
+    }
+}
 
-//class OperatorBreak extends OperatorBase {
-//    public OperatorBreak(String name) {
-//        this.name = name;
-//    }
-//
-//    public OperatorBreak(String aAliasName, String aName, String aErrorInfo) {
-//        this.name = aName;
-//        this.aliasName = aAliasName;
-//        this.errorInfo = aErrorInfo;
-//    }
-//
-//    public OperateData executeInner(InstructionSetContext parent, ArraySwap list) throws Exception {
-//        throw new QLException("OperatorBreak 是通过特殊指令来实现的，不能支持此方法");
-//    }
-//}
+class OperatorReturn extends OperatorBase {
+    public OperatorReturn(String name) {
+        this.name = name;
+    }
 
-//class OperatorContinue extends OperatorBase {
-//    public OperatorContinue(String name) {
-//        this.name = name;
-//    }
-//
-//    public OperatorContinue(String aAliasName, String aName, String aErrorInfo) {
-//        this.name = aName;
-//        this.aliasName = aAliasName;
-//        this.errorInfo = aErrorInfo;
-//    }
-//
-//    public OperateData executeInner(InstructionSetContext parent, ArraySwap list) throws Exception {
-//        throw new QLException("OperatorContinue 是通过特殊指令来实现的，不能支持此方法");
-//    }
-//}
+    public OperatorReturn(String aAliasName, String aName, String aErrorInfo) {
+        this.name = aName;
+        this.aliasName = aAliasName;
+        this.errorInfo = aErrorInfo;
+    }
 
-//class OperatorFor extends OperatorBase {
-//    public OperatorFor(String aName) {
-//        this.name = aName;
-//    }
-//
-//    public OperatorFor(String aAliasName, String aName, String aErrorInfo) {
-//        this.name = aName;
-//        this.aliasName = aAliasName;
-//        this.errorInfo = aErrorInfo;
-//    }
-//
-//    public OperateData executeInner(InstructionSetContext parent, ArraySwap list) throws Exception {
-//        throw new QLException("cache 是通过特殊指令来实现的，不能支持此方法");
-//    }
-//
-//}
+    public OperateData executeInner(InstructionSetContext parent, ArraySwap list) throws Exception {
+        return executeInner(parent);
+    }
+
+    public OperateData executeInner(InstructionSetContext parent) throws Exception {
+        throw new QLException("return 是通过特殊指令来实现的，不能支持此方法");
+    }
+}
+
+class OperatorCall extends OperatorBase {
+    public OperatorCall(String name) {
+        this.name = name;
+    }
+
+    public OperatorCall(String aAliasName, String aName, String aErrorInfo) {
+        this.name = aName;
+        this.aliasName = aAliasName;
+        this.errorInfo = aErrorInfo;
+    }
+
+    public OperateData executeInner(InstructionSetContext parent, ArraySwap list) throws Exception {
+        throw new QLException("call 是通过特殊指令来实现的，不能支持此方法");
+    }
+}
+
+class OperatorBreak extends OperatorBase {
+    public OperatorBreak(String name) {
+        this.name = name;
+    }
+
+    public OperatorBreak(String aAliasName, String aName, String aErrorInfo) {
+        this.name = aName;
+        this.aliasName = aAliasName;
+        this.errorInfo = aErrorInfo;
+    }
+
+    public OperateData executeInner(InstructionSetContext parent, ArraySwap list) throws Exception {
+        throw new QLException("OperatorBreak 是通过特殊指令来实现的，不能支持此方法");
+    }
+}
+
+class OperatorContinue extends OperatorBase {
+    public OperatorContinue(String name) {
+        this.name = name;
+    }
+
+    public OperatorContinue(String aAliasName, String aName, String aErrorInfo) {
+        this.name = aName;
+        this.aliasName = aAliasName;
+        this.errorInfo = aErrorInfo;
+    }
+
+    public OperateData executeInner(InstructionSetContext parent, ArraySwap list) throws Exception {
+        throw new QLException("OperatorContinue 是通过特殊指令来实现的，不能支持此方法");
+    }
+}
+
+class OperatorFor extends OperatorBase {
+    public OperatorFor(String aName) {
+        this.name = aName;
+    }
+
+    public OperatorFor(String aAliasName, String aName, String aErrorInfo) {
+        this.name = aName;
+        this.aliasName = aAliasName;
+        this.errorInfo = aErrorInfo;
+    }
+
+    public OperateData executeInner(InstructionSetContext parent, ArraySwap list) throws Exception {
+        throw new QLException("cache 是通过特殊指令来实现的，不能支持此方法");
+    }
+
+}

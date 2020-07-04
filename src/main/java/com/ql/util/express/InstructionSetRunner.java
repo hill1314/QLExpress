@@ -11,20 +11,21 @@ public class InstructionSetRunner {
     private static final Log log = LogFactory.getLog(InstructionSetRunner.class);
 
 
-	/**
-	 * 指令集执行过程：InstructionSet + context ->Object
-	 * @param runner
-	 * @param sets
-	 * @param loader
-	 * @param aContext
-	 * @param errorList
-	 * @param isTrace
-	 * @param isCatchException
-	 * @param aLog
-	 * @param isSupportDynamicFieldName
-	 * @return
-	 * @throws Exception
-	 */
+    /**
+     * 指令集执行过程：InstructionSet + context ->Object
+     *
+     * @param runner
+     * @param sets
+     * @param loader
+     * @param aContext
+     * @param errorList
+     * @param isTrace
+     * @param isCatchException
+     * @param aLog
+     * @param isSupportDynamicFieldName
+     * @return
+     * @throws Exception
+     */
     public static Object executeOuter(ExpressRunner runner, InstructionSet sets, ExpressLoader loader,
                                       IExpressContext<String, Object> aContext, List<String> errorList,
                                       boolean isTrace, boolean isCatchException,

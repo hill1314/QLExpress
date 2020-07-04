@@ -33,6 +33,9 @@ public class InstructionSet implements Serializable {
     public static String TYPE_FUNCTION = "function";    //方法
     public static String TYPE_MARCO = "marco";    //宏
 
+    /**
+     * 指令执行异常时，是否打印指令信息
+     */
     public static boolean printInstructionError = false;
 
 
@@ -158,7 +161,7 @@ public class InstructionSet implements Serializable {
     }
 
     /**
-     * @param environmen
+     * @param environment
      * @param context
      * @param errorList
      * @param isReturnLastData 是否最后的结果，主要是在执行宏定义的时候需要
@@ -166,7 +169,7 @@ public class InstructionSet implements Serializable {
      * @return
      * @throws Exception
      */
-    public CallResult execute(RunEnvironment environmen, InstructionSetContext context,
+    public CallResult execute(RunEnvironment environment, InstructionSetContext context,
                               List<String> errorList, boolean isReturnLastData, Log aLog)
             throws Exception {
 
@@ -181,29 +184,29 @@ public class InstructionSet implements Serializable {
 
         context.addSymbol(cacheFunctionSet);
 
-        executeInnerOrigiInstruction(environmen, errorList, aLog);
-        if (environmen.isExit() == false) {// 是在执行完所有的指令后结束的代码
-            if (environmen.getDataStackSize() > 0) {
-                OperateData tmpObject = environmen.pop();
+        executeInnerOrigiInstruction(environment, errorList, aLog);
+        if (environment.isExit() == false) {// 是在执行完所有的指令后结束的代码
+            if (environment.getDataStackSize() > 0) {
+                OperateData tmpObject = environment.pop();
                 if (tmpObject == null) {
-                    environmen.quitExpress(null);
+                    environment.quitExpress(null);
                 } else {
                     if (isReturnLastData == true) {
                         if (tmpObject.getType(context) != null && tmpObject.getType(context).equals(void.class)) {
-                            environmen.quitExpress(null);
+                            environment.quitExpress(null);
                         } else {
-                            environmen.quitExpress(tmpObject.getObject(context));
+                            environment.quitExpress(tmpObject.getObject(context));
                         }
                     } else {
-                        environmen.quitExpress(tmpObject);
+                        environment.quitExpress(tmpObject);
                     }
                 }
             }
         }
-        if (environmen.getDataStackSize() > 1) {
+        if (environment.getDataStackSize() > 1) {
             throw new QLException("在表达式执行完毕后，堆栈中还存在多个数据");
         }
-        CallResult result = OperateDataCacheManager.fetchCallResult(environmen.getReturnValue(), environmen.isExit());
+        CallResult result = OperateDataCacheManager.fetchCallResult(environment.getReturnValue(), environment.isExit());
         return result;
     }
 

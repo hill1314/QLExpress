@@ -9,7 +9,7 @@ public final class RunEnvironment {
     /**
      * 数据指针
      */
-    private int point = -1;
+    private int dataPoint = -1;
     /**
      * 程序指针
      */
@@ -42,7 +42,7 @@ public final class RunEnvironment {
 
     public void clear() {
         isTrace = false;
-        point = -1;
+        dataPoint = -1;
         programPoint = 0;
 
         isExit = false;
@@ -97,7 +97,7 @@ public final class RunEnvironment {
     }
 
     /**
-     * 指针+1
+     * 程序运行指针+1
      */
     public void programPointAddOne() {
         programPoint++;
@@ -108,7 +108,7 @@ public final class RunEnvironment {
     }
 
     public int getDataStackSize() {
-        return this.point + 1;
+        return this.dataPoint + 1;
     }
 
     /**
@@ -116,30 +116,30 @@ public final class RunEnvironment {
      * @param data
      */
     public void push(OperateData data) {
-        this.point++;
-        if (this.point >= this.dataContainer.length) {
-            ensureCapacity(this.point + 1);
+        this.dataPoint++;
+        if (this.dataPoint >= this.dataContainer.length) {
+            ensureCapacity(this.dataPoint + 1);
         }
-        this.dataContainer[point] = data;
+        this.dataContainer[dataPoint] = data;
     }
 
     public OperateData peek() {
-        if (point < 0) {
+        if (dataPoint < 0) {
             throw new RuntimeException("系统异常，堆栈指针错误");
         }
-        return this.dataContainer[point];
+        return this.dataContainer[dataPoint];
     }
 
     public OperateData pop() {
-        if (point < 0)
+        if (dataPoint < 0)
             throw new RuntimeException("系统异常，堆栈指针错误");
-        OperateData result = this.dataContainer[point];
-        this.point--;
+        OperateData result = this.dataContainer[dataPoint];
+        this.dataPoint--;
         return result;
     }
 
     public void clearDataStack() {
-        this.point = -1;
+        this.dataPoint = -1;
     }
 
     public void gotoWithOffset(int aOffset) {
@@ -155,22 +155,22 @@ public final class RunEnvironment {
      * @throws Exception
      */
     public ArraySwap popArray(InstructionSetContext context, int len) throws Exception {
-        int start = point - len + 1;
+        int start = dataPoint - len + 1;
         this.arraySwap.swap(this.dataContainer, start, len);
-        point = point - len;
+        dataPoint = dataPoint - len;
         return this.arraySwap;
     }
 
     public OperateData[] popArrayOld(InstructionSetContext context, int len) throws Exception {
-        int start = point - len + 1;
+        int start = dataPoint - len + 1;
         OperateData[] result = new OperateData[len];
         System.arraycopy(this.dataContainer, start, result, 0, len);
-        point = point - len;
+        dataPoint = dataPoint - len;
         return result;
     }
 
     public OperateData[] popArrayBackUp(InstructionSetContext context, int len) throws Exception {
-        int start = point - len + 1;
+        int start = dataPoint - len + 1;
         if (start < 0) {
             throw new QLException("堆栈溢出，请检查表达式是否错误");
         }
@@ -181,10 +181,14 @@ public final class RunEnvironment {
                 throw new QLException("void 不能参与任何操作运算,请检查使用在表达式中使用了没有返回值的函数,或者分支不完整的if语句");
             }
         }
-        point = point - len;
+        dataPoint = dataPoint - len;
         return result;
     }
 
+    /**
+     * 扩容
+     * @param minCapacity
+     */
     public void ensureCapacity(int minCapacity) {
         int oldCapacity = this.dataContainer.length;
         if (minCapacity > oldCapacity) {
