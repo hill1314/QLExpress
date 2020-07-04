@@ -3,15 +3,15 @@ package com.ql.util.express.test;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ql.util.express.DefaultContext;
+import com.ql.util.express.context.DefaultContext;
 import com.ql.util.express.ExpressRunner;
-import com.ql.util.express.Operator;
+import com.ql.util.express.instruction.op.Operator;
 
 public class DemoShow {
 
 	/**
 	 * 四则运算
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@org.junit.Test
@@ -22,7 +22,7 @@ public class DemoShow {
 
 	/**
 	 * for循环
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@org.junit.Test
@@ -35,7 +35,7 @@ public class DemoShow {
 
 	/**
 	 * for嵌套循环
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@org.junit.Test
@@ -49,7 +49,7 @@ public class DemoShow {
 
 	/**
 	 * 汉诺塔算法
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@org.junit.Test
@@ -63,7 +63,7 @@ public class DemoShow {
 
 	/**
 	 * 汉诺塔算法2
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@org.junit.Test
@@ -74,10 +74,10 @@ public class DemoShow {
 				null);
 		runner.execute("汉诺塔算法(3, '1', '2', '3')", null, null, false, false);
 	}
-	
+
 	/**
 	 * 汉诺塔算法3
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@org.junit.Test
@@ -102,10 +102,10 @@ public class DemoShow {
 	private void move(char x, char y) {
 		System.out.println(x + "--->" + y);
 	}
-	
+
 	/**
 	 * 自定义操作符
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@org.junit.Test
@@ -115,7 +115,7 @@ public class DemoShow {
 		runner.addOperator("join",new JoinOperator());
 		Object r = runner.execute("1 join 2 join 3", context, null, false, false);
 		System.out.println(r);
-	}	
+	}
 	@SuppressWarnings({ "unchecked", "rawtypes","serial" })
 	public class JoinOperator extends Operator{
 		public Object executeInner(Object[] list) throws Exception {
@@ -128,14 +128,14 @@ public class DemoShow {
 				java.util.List result = new java.util.ArrayList();
 				result.add(opdata1);
 				result.add(opdata2);
-				return result;				
+				return result;
 			}
 		}
 	}
-	
+
 	/**
 	 * 替换操作符
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@org.junit.Test
@@ -148,10 +148,10 @@ public class DemoShow {
 		r = runner.execute("1 + 2 + 3", context, null, false, false);
 		System.out.println(r);
 	}
-	
+
 	/**
 	 * 替换操作符
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@org.junit.Test
@@ -163,7 +163,7 @@ public class DemoShow {
 		context.put("假冒扣分", 11);
 		context.put("待整改卖家", false);
 		context.put("宝贝相符DSR", 4.0);
-		String expression = 
+		String expression =
 		"A类违规天数90天内 ==false and (虚假交易扣分<48 or 假冒扣分<12) and 待整改卖家 ==false and 宝贝相符DSR>4.6";
 		expression = initial(runner,expression);
 		List<String> errorInfo = new ArrayList<String>();
@@ -175,7 +175,7 @@ public class DemoShow {
 			for(String error : errorInfo){
 				System.out.println(error);
 			}
-		}		
+		}
 	}
 	public String initial(ExpressRunner runner,String expression) throws Exception{
 		runner.setShortCircuit(false);
@@ -184,7 +184,7 @@ public class DemoShow {
 		runner.addOperatorWithAlias("等于","==","$1 == $2 不符合");
 		return expression.replaceAll("<", " 小于 ").replaceAll(">", " 大于 ").replaceAll("==", " 等于 ");
 	}
-	
+
 	/**
 	 * 预加载表达式 & 虚拟类
 	 * @throws Exception
@@ -196,10 +196,10 @@ public class DemoShow {
 		runner.loadMultiExpress("创建小强", "a = new People();a.sex='male';a.height=185;a.money=10000000;");
 		runner.loadMultiExpress("体检", "if(a.sex=='male' && a.height>180 && a.money>5000000) return '高富帅，鉴定完毕'");
 		DefaultContext<String, Object> context = new DefaultContext<String, Object>();
-		
+
 		Object r = runner.execute("类初始化;创建小强;体检", context, null, false, false);
 		System.out.println(r);
 	}
-	
+
 
 }

@@ -1,8 +1,8 @@
 package com.ql.util.express.bugfix;
 
-import com.ql.util.express.DefaultContext;
+import com.ql.util.express.context.DefaultContext;
 import com.ql.util.express.ExpressRunner;
-import com.ql.util.express.IExpressContext;
+import com.ql.util.express.context.IExpressContext;
 import com.ql.util.express.config.QLExpressRunStrategy;
 import org.junit.After;
 import org.junit.Assert;
@@ -10,9 +10,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class NullCompareTest {
-    
+
     @Before
-    public void before()        
+    public void before()
     {
         QLExpressRunStrategy.setCompareNullLessMoreAsFalse(true);
     }
@@ -23,7 +23,7 @@ public class NullCompareTest {
     }
     @Test
     public void testNullCompar() throws Exception{
-        
+
         ExpressRunner runner = new ExpressRunner();
         String[] explist = new String[]{
                 "x < 1",

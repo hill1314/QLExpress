@@ -1,8 +1,8 @@
 package com.ql.util.express.bugfix;
 
-import com.ql.util.express.DefaultContext;
+import com.ql.util.express.context.DefaultContext;
 import com.ql.util.express.ExpressRunner;
-import com.ql.util.express.IExpressContext;
+import com.ql.util.express.context.IExpressContext;
 import com.ql.util.express.exception.QLBizException;
 import com.ql.util.express.exception.QLCompileException;
 import com.ql.util.express.exception.QLException;
@@ -13,7 +13,7 @@ import org.junit.Test;
  * Created by tianqiao on 17/6/20.
  */
 public class ThrowExceptionTest {
-    
+
     public String testParseLong(String a) throws Exception {
         return Long.valueOf(a).toString();
     }
@@ -70,7 +70,7 @@ public class ThrowExceptionTest {
             }
         }
     }
-    
+
     @Test
     public void testQLBizException() throws Exception {
 

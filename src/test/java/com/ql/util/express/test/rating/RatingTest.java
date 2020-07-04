@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.ql.util.express.DefaultContext;
+import com.ql.util.express.context.DefaultContext;
 import com.ql.util.express.ExpressRunner;
 /**
  * 分成配置范例
@@ -47,6 +47,6 @@ public class RatingTest {
 		System.out.println("----------分成结果----------------");
 		for(Object item : subjectValue.values()){
 			System.out.println(item);
-		}		
+		}
 	}
 }

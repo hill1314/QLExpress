@@ -2,7 +2,7 @@ package com.ql.util.express.test;
 
 import org.junit.Assert;
 
-import com.ql.util.express.DefaultContext;
+import com.ql.util.express.context.DefaultContext;
 import com.ql.util.express.ExpressRunner;
 
 public class VarAreaTest {
@@ -26,8 +26,8 @@ public class VarAreaTest {
 		System.out.println(r);
 		System.out.println(context);
 		Assert.assertTrue("变量定义作用域错误", context.get("qh").toString().equals("104"));
-		
-	}	
+
+	}
 	@org.junit.Test
 	public void testVarArea2() throws Exception{
 		String express =
@@ -48,6 +48,6 @@ public class VarAreaTest {
 		System.out.println(r);
 		System.out.println(context);
 		Assert.assertTrue("变量定义作用域错误", context.get("qh").toString().equals("2"));
-		
-	}		
+
+	}
 }

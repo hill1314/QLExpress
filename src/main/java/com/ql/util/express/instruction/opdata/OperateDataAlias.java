@@ -1,6 +1,6 @@
 package com.ql.util.express.instruction.opdata;
 
-import com.ql.util.express.InstructionSetContext;
+import com.ql.util.express.context.InstructionSetContext;
 
 public class OperateDataAlias extends OperateDataAttr {
 	OperateDataAttr realAttr;
@@ -20,14 +20,14 @@ public class OperateDataAlias extends OperateDataAttr {
 			return realAttr.getObject(context);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
-		}		
+		}
 	}
-    
+
 	public Class<?> getType(InstructionSetContext context) throws Exception {
 		return realAttr.getType(context);
 	}
 
-	public void setObject(InstructionSetContext context, Object object) {		
+	public void setObject(InstructionSetContext context, Object object) {
 		try {
 			realAttr.setObject(context, object);
 		} catch (Exception e) {

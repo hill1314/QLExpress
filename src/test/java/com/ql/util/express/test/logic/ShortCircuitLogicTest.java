@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.ql.util.express.DefaultContext;
+import com.ql.util.express.context.DefaultContext;
 import com.ql.util.express.ExpressRunner;
-import com.ql.util.express.IExpressContext;
+import com.ql.util.express.context.IExpressContext;
 
 /**
  * 短路逻辑测试类
@@ -15,22 +15,22 @@ import com.ql.util.express.IExpressContext;
  *
  */
 public class ShortCircuitLogicTest {
-	
+
 	private ExpressRunner runner = new ExpressRunner();
-	
+
 	public void initial() throws Exception{
 		runner.addOperatorWithAlias("小于","<","$1 小于 $2 不满足期望");
 		runner.addOperatorWithAlias("大于",">","$1 大于 $2 不满足期望");
 	}
-	
-	public boolean calculateLogicTest(String expression,IExpressContext<String,Object> expressContext,List<String> errorInfo) throws Exception {			
+
+	public boolean calculateLogicTest(String expression,IExpressContext<String,Object> expressContext,List<String> errorInfo) throws Exception {
         Boolean result = (Boolean)runner.execute(expression, expressContext, errorInfo, true, false);
         if(result.booleanValue() == true){
         	return true;
         }
         return false;
-	}	
-	
+	}
+
 	/**
 	 * 测试非短路逻辑,并且输出出错信息
 	 * @throws Exception
@@ -38,7 +38,7 @@ public class ShortCircuitLogicTest {
 	@Test
 	public void testShortCircuit() throws Exception {
 		runner.setShortCircuit(true);
-		IExpressContext<String,Object> expressContext = new DefaultContext<String,Object>();	
+		IExpressContext<String,Object> expressContext = new DefaultContext<String,Object>();
 		expressContext.put("违规天数", 100);
 		expressContext.put("虚假交易扣分", 11);
 		expressContext.put("VIP", false);
@@ -54,9 +54,9 @@ public class ShortCircuitLogicTest {
 				System.out.println(error);
 			}
 		}
-		
+
 	}
-	
+
 	/**
 	 * 测试非短路逻辑,并且输出出错信息
 	 * @throws Exception
@@ -64,7 +64,7 @@ public class ShortCircuitLogicTest {
 	@Test
 	public void testNoShortCircuit() throws Exception {
 		runner.setShortCircuit(false);
-		IExpressContext<String,Object> expressContext = new DefaultContext<String,Object>();	
+		IExpressContext<String,Object> expressContext = new DefaultContext<String,Object>();
 		expressContext.put("违规天数", 100);
 		expressContext.put("虚假交易扣分", 11);
 		expressContext.put("VIP", false);
@@ -80,7 +80,7 @@ public class ShortCircuitLogicTest {
 				System.out.println(error);
 			}
 		}
-		
+
 	}
 
 }

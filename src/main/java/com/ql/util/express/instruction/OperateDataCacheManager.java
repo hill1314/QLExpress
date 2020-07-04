@@ -1,15 +1,21 @@
 package com.ql.util.express.instruction;
 
 import com.ql.util.express.*;
+import com.ql.util.express.context.IExpressContext;
+import com.ql.util.express.context.InstructionSetContext;
 import com.ql.util.express.instruction.opdata.*;
+import com.ql.util.express.loader.ExpressLoader;
 
 import java.util.Stack;
 
 /**
- * 指令执行运行过程的数据寄存器
+ * 指令执行运行过程中用到的数据寄存器
  */
 public class OperateDataCacheManager {
 
+    /**
+     * 指令执行运行过程中用到的数据寄存器 （用 ThreadLocal 来保证线程安全）
+     */
     private static ThreadLocal<RunnerDataCache> m_OperateDataObjectCache = new ThreadLocal<RunnerDataCache>() {
         protected RunnerDataCache initialValue() {
             return new RunnerDataCache();
@@ -71,6 +77,7 @@ public class OperateDataCacheManager {
 
 }
 
+
 class RunnerDataCache {
     IOperateDataCache cache;
 
@@ -85,8 +92,8 @@ class RunnerDataCache {
         return this.cache;
     }
 
-    public void pop(ExpressRunner aRunner) {
 
+    public void pop(ExpressRunner aRunner) {
 //	    原有的逻辑
 //		this.cache = this.stack.pop().getOperateDataCache();
 

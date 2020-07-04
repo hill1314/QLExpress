@@ -2,7 +2,7 @@ package com.ql.util.express.instruction.detail;
 
 import java.util.List;
 
-import com.ql.util.express.InstructionSetContext;
+import com.ql.util.express.context.InstructionSetContext;
 import com.ql.util.express.RunEnvironment;
 
 public class InstructionCloseNewArea extends Instruction{
@@ -16,6 +16,6 @@ public class InstructionCloseNewArea extends Instruction{
 		environment.programPointAddOne();
 	}
 	public String toString(){
-	  return "closeNewArea";	
+	  return "closeNewArea";
 	}
 }

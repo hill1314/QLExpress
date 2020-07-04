@@ -1,7 +1,7 @@
 package com.ql.util.express.test.spring;
 
 import com.ql.util.express.ExpressRunner;
-import com.ql.util.express.IExpressContext;
+import com.ql.util.express.context.IExpressContext;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -24,7 +24,7 @@ public class QlExpressUtil implements ApplicationContextAware {
 	private ApplicationContext applicationContext;// spring上下文
 
 	/**
-	 * 
+	 *
 	 * @param statement
 	 *            执行语句
 	 * @param context
@@ -49,9 +49,9 @@ public class QlExpressUtil implements ApplicationContextAware {
 				return;
 			}
 			try {
-				runner.addFunctionOfServiceMethod("读取用户信息",applicationContext.getBean("bizLogicBean"), "getUserInfo", new Class[] {String.class}, null); 
+				runner.addFunctionOfServiceMethod("读取用户信息",applicationContext.getBean("bizLogicBean"), "getUserInfo", new Class[] {String.class}, null);
                 runner.addMacro("判定用户是否vip","userDO.salary>200000");
-				
+
 			} catch (Exception e) {
 				throw new RuntimeException("初始化失败表达式", e);
 			}

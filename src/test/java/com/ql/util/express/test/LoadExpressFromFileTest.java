@@ -3,8 +3,8 @@ package com.ql.util.express.test;
 import org.apache.commons.logging.Log;
 import org.junit.Test;
 
-import com.ql.util.express.DefaultContext;
-import com.ql.util.express.ExportItem;
+import com.ql.util.express.context.DefaultContext;
+import com.ql.util.express.instruction.ExportItem;
 import com.ql.util.express.ExpressRunner;
 
 public class LoadExpressFromFileTest {
@@ -32,12 +32,12 @@ public class LoadExpressFromFileTest {
 		System.out.println("context:" + context);
 	}
 	@Test
-	public void testLoadInclude() throws Exception{	
+	public void testLoadInclude() throws Exception{
 		ExpressRunner runner = new ExpressRunner(false,true);
 		runner.loadExpress("includeRoot");
-		DefaultContext<String, Object>  context = new DefaultContext<String, Object>();	
+		DefaultContext<String, Object>  context = new DefaultContext<String, Object>();
 		Object r = runner.executeByExpressName("includeRoot", context, null, false,false,null);
 		System.out.println(r );
 		System.out.println(context);
-	}	
+	}
 }

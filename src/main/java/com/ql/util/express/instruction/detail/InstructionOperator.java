@@ -1,7 +1,7 @@
 package com.ql.util.express.instruction.detail;
 
-import com.ql.util.express.ArraySwap;
-import com.ql.util.express.OperateData;
+import com.ql.util.express.instruction.opdata.ArraySwap;
+import com.ql.util.express.instruction.opdata.OperateData;
 import com.ql.util.express.RunEnvironment;
 import com.ql.util.express.exception.QLBizException;
 import com.ql.util.express.exception.QLException;

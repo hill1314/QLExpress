@@ -1,7 +1,7 @@
 package com.ql.util.express.parse;
 
-import com.ql.util.express.ExpressUtil;
-import com.ql.util.express.IExpressResourceLoader;
+import com.ql.util.express.utils.ExpressUtil;
+import com.ql.util.express.loader.IExpressResourceLoader;
 import com.ql.util.express.exception.QLCompileException;
 import com.ql.util.express.match.QLMatchResult;
 import com.ql.util.express.match.QLPattern;

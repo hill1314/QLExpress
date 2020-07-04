@@ -5,7 +5,7 @@ import java.util.HashMap;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.ql.util.express.DefaultContext;
+import com.ql.util.express.context.DefaultContext;
 import com.ql.util.express.ExpressRunner;
 import com.ql.util.express.InstructionSet;
 
@@ -14,13 +14,13 @@ public class DefineTest {
 	public void testDefExpressInner() throws Exception{
 		String express = "int qh =  1 ";
 		DefaultContext<String, Object>  context = new DefaultContext<String, Object>();
-		ExpressRunner runner = new ExpressRunner(false,true);	
+		ExpressRunner runner = new ExpressRunner(false,true);
 		context.put("qh",100);
 		Object r = runner.execute(express,context, null, false,false);
 		Assert.assertTrue("表达式变量作用域错误", r.toString().equalsIgnoreCase("1"));
 		Assert.assertTrue("表达式变量作用域错误", context.get("qh").toString().equalsIgnoreCase("100"));
-	}		
-	
+	}
+
 	@org.junit.Test
 	public void testDefUserContext() throws Exception{
 		String express = "qh = 1 + 1";
@@ -52,15 +52,15 @@ public class DefineTest {
 		String express ="定义宏  惩罚   {bean.unionName(name)}; 惩罚; return  惩罚";
 		ExpressRunner runner = new ExpressRunner();
 		runner.addOperatorWithAlias("定义宏", "macro", null);
-		DefaultContext<String, Object>  context = new DefaultContext<String, Object>();		
+		DefaultContext<String, Object>  context = new DefaultContext<String, Object>();
 		context.put("bean", new BeanExample("qhlhl2010@gmail.com"));
 		context.put("name","xuannn");
 		Object r = runner.execute(express,context, null, false,false);
 		Assert.assertTrue("别名宏 错误", r.toString().equalsIgnoreCase("qhlhl2010@gmail.com-xuannn"));
 		System.out.println(r);
-	}	
+	}
 	@Test
-	public void test_自定义函数() throws Exception{		
+	public void test_自定义函数() throws Exception{
 		String express ="定义函数  递归(int a){" +
 				" if(a == 1)then{ " +
 				"   return 1;" +
@@ -71,14 +71,14 @@ public class DefineTest {
 				"递归(10);";
 		ExpressRunner runner = new ExpressRunner();
 		runner.addOperatorWithAlias("定义函数", "function",null);
-		DefaultContext<String, Object>  context = new DefaultContext<String, Object>();		
+		DefaultContext<String, Object>  context = new DefaultContext<String, Object>();
 		Object r = runner.execute(express,context, null, true,false);
 		Assert.assertTrue("自定义函数 错误", r.toString().equals("3628800"));
-	}	
+	}
 	@org.junit.Test
 	public void testProperty() throws Exception{
 		//String express =" cache isVIP(\"qh\") ;  cache isVIP(\"xuannan\") cache isVIP(\"qh\") ;";
-		
+
 		String express =" example.child.a = \"ssssssss\";" +
 				" map.name =\"ffff\";" +
 				"return map.name;";
@@ -90,8 +90,8 @@ public class DefineTest {
 				"isVIP", new String[] { "String" }, "$1不是VIP用户");
 		Object r = runner.execute(express,context, null, false,false);
 		Assert.assertTrue("属性操作错误", r.toString().equalsIgnoreCase("ffff"));
-		Assert.assertTrue("属性操作错误", ((BeanExample)context.get("example")).child.a.toString().equalsIgnoreCase("ssssssss"));		
-	}	
+		Assert.assertTrue("属性操作错误", ((BeanExample)context.get("example")).child.a.toString().equalsIgnoreCase("ssssssss"));
+	}
 
 	@org.junit.Test
 	public  void test_循环() throws Exception{
@@ -106,25 +106,25 @@ public class DefineTest {
 				" };  " +
 				"};" +
 				"return qh;";
-		ExpressRunner runner = new ExpressRunner();		
+		ExpressRunner runner = new ExpressRunner();
 		runner.addOperatorWithAlias("循环", "for",null);
 		runner.addOperatorWithAlias("继续", "continue",null);
 		runner.addOperatorWithAlias("终止", "break",null);
 		runner.addFunctionOfServiceMethod("打印", System.out, "println", new String[]{Object.class.getName()}, null);
-		DefaultContext<String, Object>  context = new DefaultContext<String, Object>();		
+		DefaultContext<String, Object>  context = new DefaultContext<String, Object>();
 		context.put("bean", new BeanExample("qhlhl2010@gmail.com"));
-		context.put("name","xuannn");		
+		context.put("name","xuannn");
 		int count = 1;
 		s = System.currentTimeMillis();
 		Object r = runner.execute(express,context, null, false,false);
 
 		System.out.println("编译耗时：" + (System.currentTimeMillis() - s));
-		
+
 		for(int i=0;i<count;i++){
 			r = runner.execute(express,context, null, false,false);
 			Assert.assertTrue("循环处理错误", r.toString().equals("75"));
 		}
-		System.out.println("执行耗时：" + (System.currentTimeMillis() - s));		
-		System.out.println(context);	
-	}	
+		System.out.println("执行耗时：" + (System.currentTimeMillis() - s));
+		System.out.println(context);
+	}
 }

@@ -1,7 +1,7 @@
 package com.ql.util.express.rule;
 
 import com.ql.util.express.ExpressRunner;
-import com.ql.util.express.IExpressContext;
+import com.ql.util.express.context.IExpressContext;
 import com.ql.util.express.parse.ExpressNode;
 import com.ql.util.express.parse.Word;
 import org.apache.commons.logging.Log;
@@ -16,9 +16,9 @@ import java.util.Map;
  * Created by tianqiao on 16/12/8.
  */
 public class RuleManager {
-    
+
     private static final Log log = LogFactory.getLog(RuleManager.class);
-    
+
     public static RuleResult executeRule(ExpressRunner runner,Rule rule, IExpressContext<String,Object> context, boolean isCache, boolean isTrace)
     {
         RuleResult result = new RuleResult();
@@ -349,12 +349,12 @@ public class RuleManager {
         }
         return wordIndex;
     }
-    
-    
+
+
     public static Condition createCondition(ExpressNode condition, Word[] words) {
         Condition ruleCondition = new Condition();
         transferCondition(condition, ruleCondition, words);
         return ruleCondition;
     }
-    
+
 }

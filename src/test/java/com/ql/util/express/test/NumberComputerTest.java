@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.ql.util.express.DefaultContext;
+import com.ql.util.express.context.DefaultContext;
 import com.ql.util.express.ExpressRunner;
 
 public class NumberComputerTest {
@@ -20,21 +20,21 @@ public class NumberComputerTest {
 		System.out.println(1.0-0.42);  // 0.5800000000000001
 		String expressString = "1.0-0.42";
 		ExpressRunner runner = new ExpressRunner(true,false);
-		DefaultContext<String, Object>  context = new DefaultContext<String, Object>();	
+		DefaultContext<String, Object>  context = new DefaultContext<String, Object>();
 		Object r = runner.execute(expressString, context, null, false, false);
 		System.out.println(r); //0.58
 		Assert.assertTrue("精度计算错误",r.toString().equals("0.58"));
-	}	
+	}
 	@Test
 	public void testBigDecimalTransfer() throws Exception {
 		String expressString = "System.out.println(new java.math.BigDecimal(0.02))";
 		ExpressRunner runner = new ExpressRunner(false,false);
 		BeanExample bean = new BeanExample();
-		DefaultContext<String, Object>  context = new DefaultContext<String, Object>();	
+		DefaultContext<String, Object>  context = new DefaultContext<String, Object>();
 		context.put("bean",bean);
 		Object r = runner.execute(expressString, context, null, false, false);
 		System.out.println(r);
-	}		
+	}
 	@Test
 	public void testBigDecimal() throws Exception {
 		String expressString = "bean.intValue = 10;" +
@@ -43,18 +43,18 @@ public class NumberComputerTest {
 				"return bean.doubleValue + 10;";
 		ExpressRunner runner = new ExpressRunner(false,false);
 		BeanExample bean = new BeanExample();
-		DefaultContext<String, Object>  context = new DefaultContext<String, Object>();	
+		DefaultContext<String, Object>  context = new DefaultContext<String, Object>();
 		context.put("bean",bean);
 		Object r = runner.execute(expressString, context, null, false, false);
 		Assert.assertTrue("精度计算错误",r.getClass().equals(Double.class));
-		
+
 		runner = new ExpressRunner(true,true);
 		bean = new BeanExample();
-		context = new DefaultContext<String, Object>();	
+		context = new DefaultContext<String, Object>();
 		context.put("bean",bean);
 		r = runner.execute(expressString, context, null, false, false);
 		Assert.assertTrue("精度计算错误",r.getClass().equals(BigDecimal.class));
-		
+
 	}
 	@Test
 	public void testMod() throws Exception {

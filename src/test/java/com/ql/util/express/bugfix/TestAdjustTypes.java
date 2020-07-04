@@ -1,8 +1,8 @@
 package com.ql.util.express.bugfix;
 
-import com.ql.util.express.DefaultContext;
+import com.ql.util.express.context.DefaultContext;
 import com.ql.util.express.ExpressRunner;
-import com.ql.util.express.IExpressContext;
+import com.ql.util.express.context.IExpressContext;
 import org.junit.Test;
 
 /**
@@ -10,29 +10,29 @@ import org.junit.Test;
  * Created by tianqiao on 17/6/20.
  */
 public class TestAdjustTypes {
-    
-    
+
+
     public static TestAdjustTypes instance = new TestAdjustTypes();
-    
+
     public Integer test(Integer a){
         System.out.println("invoke Integer");
         return a;
     }
-    
+
     public String test(String a){
         System.out.println("invoke String");
         return a;
     }
-    
+
     public Object test(Object ... a){
         System.out.println("invoke dynamic params");
         return a[a.length-1];
     }
-    
+
     @Test
     public void testDemo() throws Exception{
         ExpressRunner runner = new ExpressRunner();
-        
+
         runner.addFunctionOfServiceMethod("test",instance,"test",new Class[]{Integer.class},null);
         runner.addFunctionOfServiceMethod("testString",instance,"test",new Class[]{String.class},null);
         String exp = "test(1) +test(1) + testString('aaaa')";
@@ -40,8 +40,8 @@ public class TestAdjustTypes {
         Object result = runner.execute(exp,context,null,false,true);
         System.out.println(result);
     }
-    
-    
+
+
     @Test
     public void testDemo2() throws Exception{
         ExpressRunner runner = new ExpressRunner();
@@ -51,7 +51,7 @@ public class TestAdjustTypes {
         Object result = runner.execute(exp,context,null,false,true);
         System.out.println(result);
     }
-    
+
     @Test
     public void testDemo3() throws Exception{
         ExpressRunner runner = new ExpressRunner();
@@ -61,5 +61,5 @@ public class TestAdjustTypes {
         Object result = runner.execute(exp,context,null,false,true);
         System.out.println(result);
     }
-    
+
 }

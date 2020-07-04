@@ -3,9 +3,9 @@ package com.ql.util.express.example;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ql.util.express.DefaultContext;
+import com.ql.util.express.context.DefaultContext;
 import com.ql.util.express.ExpressRunner;
-import com.ql.util.express.IExpressContext;
+import com.ql.util.express.context.IExpressContext;
 
 /**
  * QLExpress的一种典型应用场景
@@ -25,7 +25,7 @@ public class TypicalDemo {
     	boolean r =  (user.getUserTag() & ((long)Math.pow(2, tagBitIndex))) > 0;
     	return r;
     }
-	
+
 	/**
 	 * 判断一个用户是否订购过某个商品
 	 * @param user
@@ -48,7 +48,7 @@ public class TypicalDemo {
 	 * @return
 	 * @throws Exception
 	 */
-	public String hasPermission(UserInfo userInfo,String expression) throws Exception {			
+	public String hasPermission(UserInfo userInfo,String expression) throws Exception {
         	IExpressContext<String,Object> expressContext = new DefaultContext<String,Object>();
     		expressContext.put("userInfo",userInfo);
     		List<String> errorInfo = new ArrayList<String>();
@@ -66,7 +66,7 @@ public class TypicalDemo {
               resultStr = resultStr  + ",所以不能订购此商品";
             }
             return "亲爱的" + userInfo.getName() + " : " + resultStr;
-    }		
+    }
 	public void initial() throws Exception{
 		runner.addOperatorWithAlias("而且","and",null);
 		runner.addFunctionOfClassMethod("userTagJudge", TypicalDemo.class.getName(), "userTagJudge",new String[] {UserInfo.class.getName(),"int"}, "你不是三星卖家");

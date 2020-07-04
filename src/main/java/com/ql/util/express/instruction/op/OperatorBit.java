@@ -1,6 +1,5 @@
 package com.ql.util.express.instruction.op;
 
-import com.ql.util.express.Operator;
 import com.ql.util.express.exception.QLException;
 
 import java.util.Arrays;
@@ -9,7 +8,7 @@ import java.util.Arrays;
  * Created by tianqiao on 16/12/15.
  */
 public class OperatorBit extends Operator {
-    
+
     public OperatorBit(String name)
     {
         this.name = name;

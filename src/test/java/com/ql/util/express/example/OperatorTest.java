@@ -3,9 +3,9 @@ package com.ql.util.express.example;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.ql.util.express.DefaultContext;
+import com.ql.util.express.context.DefaultContext;
 import com.ql.util.express.ExpressRunner;
-import com.ql.util.express.IExpressContext;
+import com.ql.util.express.context.IExpressContext;
 import com.ql.util.express.example.operator.AddNOperator;
 import com.ql.util.express.example.operator.AddTwiceOperator;
 
@@ -48,7 +48,7 @@ public class OperatorTest {
 		System.out.println(r);
 		Assert.assertTrue("操作符执行错误",r==10);
 	}
-	
+
 	/**
 	 * 定义一个方法
 	 * @throws Exception
@@ -65,7 +65,7 @@ public class OperatorTest {
 		System.out.println(r);
 		Assert.assertTrue("操作符执行错误",r==10);
 	}
-	
+
 	/**
 	 * 使用参数
 	 * @throws Exception

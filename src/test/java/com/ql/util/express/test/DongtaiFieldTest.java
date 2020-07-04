@@ -8,7 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.ql.util.express.DefaultContext;
+import com.ql.util.express.context.DefaultContext;
 import com.ql.util.express.ExpressRunner;
 import com.ql.util.express.InstructionSet;
 import com.ql.util.express.InstructionSetRunner;
@@ -22,7 +22,7 @@ public class DongtaiFieldTest {
 				"费用.用户  = 100;" +
 				"用户 = \"李四\";" +
 				"费用.用户  = 200;";
-		
+
 		ExpressRunner runner = new ExpressRunner(false,true);
 		DefaultContext<String, Object> context = new DefaultContext<String, Object>();
 		Map<String,Object> fee = new HashMap<String,Object>();
@@ -35,14 +35,14 @@ public class DongtaiFieldTest {
 		Assert.assertTrue("动态属性错误",fee.get("李四").toString().equals("200"));
 	}
 	@Test
-	public void testLoadFromFile() throws Exception{	
+	public void testLoadFromFile() throws Exception{
 		ExpressRunner runner = new ExpressRunner(true,true);
 		runner.loadExpress("TestFunctionParamerType");
-		DefaultContext<String, Object>  context = new DefaultContext<String, Object>();	
+		DefaultContext<String, Object>  context = new DefaultContext<String, Object>();
 		context.put("auctionUtil",new com.ql.util.express.test.BeanExample());
 		context.put("log",log);
 		Object r = runner.executeByExpressName("TestFunctionParamerType", context, null, false,false,null);
 		System.out.println(r );
 		System.out.println(context);
-	}	
+	}
 }

@@ -4,11 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 import org.springframework.context.ApplicationContext;
 
-import com.ql.util.express.IExpressContext;
+import com.ql.util.express.context.IExpressContext;
 
 @SuppressWarnings("serial")
 public class ExpressContextExample extends HashMap<String,Object> implements IExpressContext<String,Object>{
-	
+
 	private ApplicationContext context;
 
     public ExpressContextExample(ApplicationContext aContext){
@@ -18,7 +18,7 @@ public class ExpressContextExample extends HashMap<String,Object> implements IEx
     	super(aProperties);
     	this.context = aContext;
     }
-    
+
 	/**
 	 * 抽象方法：根据名称从属性列表中提取属性值
 	 */
@@ -37,7 +37,7 @@ public class ExpressContextExample extends HashMap<String,Object> implements IEx
 			result = this.context.getBean((String)name);
 		}
 		}catch(Exception  e){
-		  throw new RuntimeException(e);	
+		  throw new RuntimeException(e);
 		}
 		return result;
 	}

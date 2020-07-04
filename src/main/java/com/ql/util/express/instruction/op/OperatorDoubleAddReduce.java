@@ -1,10 +1,9 @@
 package com.ql.util.express.instruction.op;
 
-import com.ql.util.express.ArraySwap;
-import com.ql.util.express.ExpressUtil;
-import com.ql.util.express.InstructionSetContext;
-import com.ql.util.express.OperateData;
-import com.ql.util.express.OperatorOfNumber;
+import com.ql.util.express.instruction.opdata.ArraySwap;
+import com.ql.util.express.utils.ExpressUtil;
+import com.ql.util.express.context.InstructionSetContext;
+import com.ql.util.express.instruction.opdata.OperateData;
 import com.ql.util.express.instruction.OperateDataCacheManager;
 
 public    class OperatorDoubleAddReduce extends OperatorBase {
@@ -22,7 +21,7 @@ public    class OperatorDoubleAddReduce extends OperatorBase {
 			result = OperatorOfNumber.subtract(obj, 1,this.isPrecise);
 		}
 		((OperateData)list.get(0)).setObject(parent, result);
-		
+
 		if(result == null){
 			return OperateDataCacheManager.fetchOperateData(null,null);
 		}else{

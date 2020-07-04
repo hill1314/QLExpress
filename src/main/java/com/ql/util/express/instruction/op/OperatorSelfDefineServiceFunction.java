@@ -2,8 +2,12 @@ package com.ql.util.express.instruction.op;
 
 import java.lang.reflect.Method;
 
-import com.ql.util.express.*;
+import com.ql.util.express.context.InstructionSetContext;
 import com.ql.util.express.instruction.OperateDataCacheManager;
+import com.ql.util.express.instruction.opdata.ArraySwap;
+import com.ql.util.express.instruction.opdata.OperateData;
+import com.ql.util.express.utils.DynamicParamsUtil;
+import com.ql.util.express.utils.ExpressUtil;
 
 /**
  * 用户自定义的服务函数操作
@@ -57,7 +61,7 @@ public class OperatorSelfDefineServiceFunction extends OperatorBase implements C
     this.operDataAnnotation = aParameterAnnotation;
     this.parameterClasses = new Class[this.parameterTypes.length];
     for(int i=0;i<this.parameterClasses.length;i++){
-      this.parameterClasses[i] =ExpressUtil.getJavaClass(this.parameterTypes[i]);
+      this.parameterClasses[i] = ExpressUtil.getJavaClass(this.parameterTypes[i]);
     }
     Class<?> operClass = serviceObject.getClass();
     method = operClass.getMethod(functionName,parameterClasses);

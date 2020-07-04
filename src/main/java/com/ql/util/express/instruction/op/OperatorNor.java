@@ -1,7 +1,5 @@
 package com.ql.util.express.instruction.op;
 
-import com.ql.util.express.Operator;
-
 public class OperatorNor extends Operator {
 	public OperatorNor(String name) {
 		this.name = name;

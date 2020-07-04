@@ -3,15 +3,15 @@ package com.ql.util.express.example;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.ql.util.express.DefaultContext;
+import com.ql.util.express.context.DefaultContext;
 import com.ql.util.express.ExpressRunner;
-import com.ql.util.express.IExpressContext;
+import com.ql.util.express.context.IExpressContext;
 
 public class BeanTest {
 
 	@Test
 	public void test1() throws Exception{
-		String exp = "import com.ql.util.express.example.CustBean;" + 
+		String exp = "import com.ql.util.express.example.CustBean;" +
 		        "CustBean cust = new CustBean(1);" +
 		        "cust.setName(\"小强\");" +
 		        "return cust.getName();";
@@ -21,11 +21,11 @@ public class BeanTest {
 		System.out.println(r);
 		Assert.assertTrue("操作符执行错误","小强".equals(r));
 	}
-	
+
 	@Test
 	public void test2() throws Exception{
 		String exp = "cust.setName(\"小强\");" +
-			     // "cust.name = \"小强\";" + 
+			     // "cust.name = \"小强\";" +
 		        "return cust.getName();";
 		IExpressContext<String,Object> expressContext = new DefaultContext<String,Object>();
 		expressContext.put("cust", new CustBean(1));
@@ -35,7 +35,7 @@ public class BeanTest {
 		System.out.println(r);
 		Assert.assertTrue("操作符执行错误","小强".equals(r));
 	}
-	
+
 	@Test
 	public void test3() throws Exception{
 		String exp = "首字母大写(\"abcd\")";
@@ -46,7 +46,7 @@ public class BeanTest {
 		System.out.println(r);
 		Assert.assertTrue("操作符执行错误","Abcd".equals(r));
 	}
-	
+
 	/**
 	 * 使用别名
 	 * @throws Exception
@@ -54,7 +54,7 @@ public class BeanTest {
 	@Test
 	public void testAlias() throws Exception{
 		String exp = "cust.setName(\"小强\");" +
-			      "定义别名 custName cust.name;" + 
+			      "定义别名 custName cust.name;" +
 		        "return custName;";
 		IExpressContext<String,Object> expressContext = new DefaultContext<String,Object>();
 		expressContext.put("cust", new CustBean(1));
@@ -66,7 +66,7 @@ public class BeanTest {
 		System.out.println(r);
 		Assert.assertTrue("操作符执行错误","小强".equals(r));
 	}
-	
+
 	/**
 	 * 使用宏
 	 * @throws Exception
@@ -74,7 +74,7 @@ public class BeanTest {
 	@Test
 	public void testMacro() throws Exception{
 		String exp = "cust.setName(\"小强\");" +
-			      "定义宏 custName {cust.name};" + 
+			      "定义宏 custName {cust.name};" +
 		        "return custName;";
 		IExpressContext<String,Object> expressContext = new DefaultContext<String,Object>();
 		expressContext.put("cust", new CustBean(1));

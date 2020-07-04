@@ -1,39 +1,39 @@
 package com.ql.util.express.bugfix;
 
-import com.ql.util.express.DefaultContext;
+import com.ql.util.express.context.DefaultContext;
 import com.ql.util.express.ExpressRunner;
-import com.ql.util.express.IExpressContext;
+import com.ql.util.express.context.IExpressContext;
 import com.ql.util.express.config.QLExpressRunStrategy;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 public class AvoidNullPointMockTest {
-    
-    
+
+
     public class DemoObject{
         private String code;
         private DemoObject parent;
-    
+
         public String getCode() {
             return code;
         }
-    
+
         public void setCode(String code) {
             this.code = code;
         }
-    
+
         public DemoObject getParent() {
             return parent;
         }
-    
+
         public void setParent(DemoObject parent) {
             this.parent = parent;
         }
     }
-    
+
     @Before
-    public void before()        
+    public void before()
     {
         QLExpressRunStrategy.setAvoidNullPointer(true);
     }
@@ -44,7 +44,7 @@ public class AvoidNullPointMockTest {
     }
     @Test
     public void testNullPoint() throws Exception{
-        
+
         ExpressRunner runner = new ExpressRunner(false,true);
         String[] explist = new String[]{
                 "x in(1,2,3)",

@@ -1,16 +1,10 @@
 package com.ql.util.express.test;
 
-import com.ql.util.express.DefaultContext;
-import com.ql.util.express.DynamicParamsUtil;
+import com.ql.util.express.context.DefaultContext;
+import com.ql.util.express.utils.DynamicParamsUtil;
 import com.ql.util.express.ExpressRunner;
-import com.ql.util.express.IExpressContext;
-import com.ql.util.express.example.operator.ApproveOperator;
+import com.ql.util.express.context.IExpressContext;
 import org.junit.Test;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * tianqiao
@@ -55,7 +49,7 @@ public class TestMethodParams {
         }
         return result;
     }
-    
+
     public static Object getTemplateStatic(Object a,String... params) throws Exception{
         String result = "";
         for(Object obj:params){
@@ -67,7 +61,7 @@ public class TestMethodParams {
 
 
 
-    
+
 
 
     //等价于Integer[] params

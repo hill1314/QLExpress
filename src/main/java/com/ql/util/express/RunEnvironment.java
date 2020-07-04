@@ -1,7 +1,10 @@
 package com.ql.util.express;
 
 
+import com.ql.util.express.context.InstructionSetContext;
 import com.ql.util.express.exception.QLException;
+import com.ql.util.express.instruction.opdata.ArraySwap;
+import com.ql.util.express.instruction.opdata.OperateData;
 
 public final class RunEnvironment {
     private static int INIT_DATA_LENTH = 15;
@@ -18,6 +21,7 @@ public final class RunEnvironment {
      * 操作数据（指令执行过程中的数据）
      */
     private OperateData[] dataContainer;
+
     private ArraySwap arraySwap = new ArraySwap();
 
     private boolean isExit = false;
@@ -123,6 +127,10 @@ public final class RunEnvironment {
         this.dataContainer[dataPoint] = data;
     }
 
+    /**
+     * 获取【当前数据指针】下的 运行时数据
+     * @return
+     */
     public OperateData peek() {
         if (dataPoint < 0) {
             throw new RuntimeException("系统异常，堆栈指针错误");
@@ -130,6 +138,10 @@ public final class RunEnvironment {
         return this.dataContainer[dataPoint];
     }
 
+    /**
+     * 弹出【当前数据指针】下的 运行时数据 （数据指针减1）
+     * @return
+     */
     public OperateData pop() {
         if (dataPoint < 0)
             throw new RuntimeException("系统异常，堆栈指针错误");

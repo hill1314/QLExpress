@@ -1,8 +1,8 @@
 package com.ql.util.express.bugfix;
 
-import com.ql.util.express.DefaultContext;
+import com.ql.util.express.context.DefaultContext;
 import com.ql.util.express.ExpressRunner;
-import com.ql.util.express.IExpressContext;
+import com.ql.util.express.context.IExpressContext;
 import com.ql.util.express.instruction.op.OperatorIn;
 import org.junit.Test;
 
@@ -10,7 +10,7 @@ import org.junit.Test;
  * Created by tianqiao on 17/6/20.
  */
 public class ArrayMapTest {
-    
+
     @Test
     public void testMinus() throws Exception{
         ExpressRunner runner = new ExpressRunner();
@@ -20,5 +20,5 @@ public class ArrayMapTest {
         Object result = runner.execute(exp,context,null,false,true);
         System.out.println(result);
     }
-    
+
 }

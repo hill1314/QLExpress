@@ -1,8 +1,8 @@
 package com.ql.util.express.bugfix;
 
-import com.ql.util.express.DefaultContext;
+import com.ql.util.express.context.DefaultContext;
 import com.ql.util.express.ExpressRunner;
-import com.ql.util.express.IExpressContext;
+import com.ql.util.express.context.IExpressContext;
 import com.ql.util.express.instruction.op.OperatorIn;
 import org.junit.Test;
 
@@ -10,7 +10,7 @@ import org.junit.Test;
  * Created by tianqiao on 17/6/15.
  */
 public class InOperatorTest {
-    
+
     @Test
     public void testAllByFunction() throws Exception{
         ExpressRunner runner = new ExpressRunner();

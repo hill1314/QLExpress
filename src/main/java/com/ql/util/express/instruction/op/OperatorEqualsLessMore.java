@@ -1,6 +1,5 @@
 package com.ql.util.express.instruction.op;
 
-import com.ql.util.express.Operator;
 import com.ql.util.express.exception.QLException;
 
 import static com.ql.util.express.config.QLExpressRunStrategy.*;
@@ -31,7 +30,7 @@ public class OperatorEqualsLessMore extends Operator {
 
 	public static boolean executeInner(String opStr, Object obj1, Object obj2)
 			throws Exception {
-	    
+
 	    if(opStr.equals("==")){
 	        return Operator.objectEquals(obj1, obj2);
         }

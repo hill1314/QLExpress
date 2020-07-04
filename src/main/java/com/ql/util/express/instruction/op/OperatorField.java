@@ -1,11 +1,10 @@
 package com.ql.util.express.instruction.op;
 
-import com.ql.util.express.ArraySwap;
-import com.ql.util.express.InstructionSetContext;
-import com.ql.util.express.OperateData;
+import com.ql.util.express.instruction.opdata.ArraySwap;
+import com.ql.util.express.context.InstructionSetContext;
+import com.ql.util.express.instruction.opdata.OperateData;
 import com.ql.util.express.config.QLExpressRunStrategy;
 import com.ql.util.express.instruction.OperateDataCacheManager;
-import com.ql.util.express.instruction.opdata.OperateDataField;
 
 public  class OperatorField extends OperatorBase {
 	String filedName;
@@ -15,7 +14,7 @@ public  class OperatorField extends OperatorBase {
 	public OperatorField(String aFieldName) {
 		this.name = "FieldCall";
 		this.filedName = aFieldName;
-		
+
 	}
 	public OperateData executeInner(InstructionSetContext parent, ArraySwap list) throws Exception {
 		OperateData operateData = list.get(0);
@@ -27,5 +26,5 @@ public  class OperatorField extends OperatorBase {
 	}
     public String toString(){
     	return this.name + ":" + this.filedName;
-    } 	
+    }
 }

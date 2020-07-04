@@ -1,7 +1,6 @@
 package com.ql.util.express.instruction.opdata;
 
-import com.ql.util.express.InstructionSetContext;
-import com.ql.util.express.OperateData;
+import com.ql.util.express.context.InstructionSetContext;
 
 public class OperateDataKeyValue extends OperateData {
 	OperateData key;

@@ -1,11 +1,10 @@
 package com.ql.util.express.instruction.op;
 
-import com.ql.util.express.ArraySwap;
-import com.ql.util.express.InstructionSetContext;
-import com.ql.util.express.OperateData;
+import com.ql.util.express.instruction.opdata.ArraySwap;
+import com.ql.util.express.context.InstructionSetContext;
+import com.ql.util.express.instruction.opdata.OperateData;
 import com.ql.util.express.exception.QLException;
 import com.ql.util.express.instruction.OperateDataCacheManager;
-import com.ql.util.express.instruction.opdata.OperateDataArrayItem;
 
 public class OperatorArray extends OperatorBase {
 	public OperatorArray(String aName) {
@@ -26,7 +25,7 @@ public class OperatorArray extends OperatorBase {
 	    if( tmpObject.getClass().isArray() == false){
 			throw new QLException("对象:"+ tmpObject.getClass() +"不是数组,不能执行相关操作" );
 		}
-	    int index = ((Number)list.get(1).getObject(context)).intValue();		
+	    int index = ((Number)list.get(1).getObject(context)).intValue();
 	    OperateData result  = OperateDataCacheManager.fetchOperateDataArrayItem((OperateData)p0,index);
 		return result;
 	}

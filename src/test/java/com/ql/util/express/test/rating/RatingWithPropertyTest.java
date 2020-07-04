@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.ql.util.express.DefaultContext;
+import com.ql.util.express.context.DefaultContext;
 import com.ql.util.express.ExpressRunner;
 /**
  * 分成配置范例,通过动态属性来实现
@@ -37,12 +37,12 @@ public class RatingWithPropertyTest {
 		context.put("仓储订单", goodsOrder);
 		SubjectMananger subjectMananger = new SubjectMananger();
 		context.put("费用", subjectMananger);
-		
+
 		runner.executeByExpressName("ratingWithProperty", context, null, false,false,null);
 		//输出分成结果
 		System.out.println("----------分成结果----------------");
 		for(Object item : subjectMananger.getSubjectValues()){
 			System.out.println(item);
-		}		
+		}
 	}
 }

@@ -1,7 +1,7 @@
 package com.ql.util.express.test;
 
-import com.ql.util.express.Operator;
-import com.ql.util.express.OperatorOfNumber;
+import com.ql.util.express.instruction.op.Operator;
+import com.ql.util.express.instruction.op.OperatorOfNumber;
 
 
 class GroupOperator extends Operator {

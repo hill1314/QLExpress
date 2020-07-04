@@ -1,8 +1,5 @@
 package com.ql.util.express.instruction.op;
 
-import com.ql.util.express.Operator;
-import com.ql.util.express.OperatorOfNumber;
-
 public class OperatorMultiDiv extends Operator {
     public OperatorMultiDiv(String name) {
         this.name = name;

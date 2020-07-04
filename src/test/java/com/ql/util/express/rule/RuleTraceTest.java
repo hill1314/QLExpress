@@ -1,11 +1,10 @@
 package com.ql.util.express.rule;
 
-import com.ql.util.express.DefaultContext;
+import com.ql.util.express.context.DefaultContext;
 import com.ql.util.express.ExpressRunner;
-import com.ql.util.express.Operator;
+import com.ql.util.express.instruction.op.Operator;
 import org.junit.Test;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 
 /**
@@ -25,7 +24,7 @@ public class RuleTraceTest {
             this.b = b;
         }
     }
-    
+
     @Test
     public void testSimpleTrace() throws Exception {
         ExpressRunner runner = new ExpressRunner();
@@ -54,7 +53,7 @@ public class RuleTraceTest {
         context.put("c",3);
         context.put("boolValue",true);
         context.put("trueValue",true);
-    
+
         executeQl("if(demo.b){a=a+b;f();}",context,runner);
         executeQl("if(demo.b){a=a+b;return a+(a+(c+(a+b)));}",context,runner);
         executeQl("if(1+2==3 and boolValue or b>3){'OK';}",context,runner);

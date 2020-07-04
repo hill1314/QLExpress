@@ -1,7 +1,11 @@
 package com.ql.util.express.instruction.op;
 
-import com.ql.util.express.*;
+import com.ql.util.express.context.InstructionSetContext;
 import com.ql.util.express.instruction.OperateDataCacheManager;
+import com.ql.util.express.instruction.opdata.ArraySwap;
+import com.ql.util.express.instruction.opdata.OperateData;
+import com.ql.util.express.utils.DynamicParamsUtil;
+import com.ql.util.express.utils.ExpressUtil;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;

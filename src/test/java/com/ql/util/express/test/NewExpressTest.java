@@ -3,9 +3,9 @@ package com.ql.util.express.test;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.ql.util.express.DefaultContext;
+import com.ql.util.express.context.DefaultContext;
 import com.ql.util.express.ExpressRunner;
-import com.ql.util.express.IExpressContext;
+import com.ql.util.express.context.IExpressContext;
 
 
 public class NewExpressTest {
@@ -14,7 +14,7 @@ public class NewExpressTest {
 		String[][] expresses = new String[][]{
 				{"0 - 3295837566L","-3295837566"},
 				{"1==1? 50+50:100+100","100"},
-				{"1==2? 50+50:100+100","200"},				
+				{"1==2? 50+50:100+100","200"},
 				{"int[][] abc = new int[10][10]; abc[0][0] = 100; abc[0][0]-10","90"},
 				{"Integer.parseInt(\"1\")-1","0"},
 				{"Double.parseDouble(\"-0.22\")","-0.22"},
@@ -29,13 +29,13 @@ public class NewExpressTest {
 				{"(1+1)*(9-7);","4"},
 				{"1+1;2+5","7"},
 				{"false && true","false"},
-				{"true || fale","true"},				
+				{"true || fale","true"},
 				{"return 100/2;","50"},
 				{"return 10;1 + 1;","10"},
 				{"if(1==1) then{ return 100; }else{return 10;}","100"},
 				{"if(1==2) then{ return 100; }else{return 10;}","10"},
 				{"if(1==1) then{ return 100;}","100"},
-				{"if(1==2) then{ return 100;}","null"},				
+				{"if(1==2) then{ return 100;}","null"},
 				{"if(1==1) { return 100; }else{return 10;}","100"},
 				{"if(1==2) { return 100; }else{return 10;}","10"},
 				{"if(1==1) { return 100;}","100"},
@@ -78,7 +78,7 @@ public class NewExpressTest {
 			runner.addOperator("love","+",new LoveOperator("love"));
 			Object result = runner.execute(expresses[i][0],expressContext, null, false,true);
 			System.out.println("运算结果：" + result);
-			System.out.println("环境结果：" + expressContext);		
+			System.out.println("环境结果：" + expressContext);
 			Assert.assertTrue("表达式执行错误:" + expresses[i][0] + " 期望值：" + expresses[i][1] +" 运算结果：" + result ,expresses[i][1].equals(result == null?"null":result.toString()));
 		}
 	}

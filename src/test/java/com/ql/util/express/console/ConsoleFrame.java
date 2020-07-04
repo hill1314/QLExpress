@@ -1,6 +1,6 @@
 package com.ql.util.express.console;
 
-import com.ql.util.express.DefaultContext;
+import com.ql.util.express.context.DefaultContext;
 import com.ql.util.express.ExpressRunner;
 import com.ql.util.express.console.FileTree.PathNode;
 
@@ -226,7 +226,7 @@ class StringBufferOutputStream extends OutputStream
     throws IOException
   {
     this.buffer.write(ch);
-   
+
   }
   public void flush() throws IOException {
 	  jTextArea.setText(this.buffer.toString());

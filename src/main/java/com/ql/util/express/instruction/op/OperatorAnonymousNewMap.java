@@ -3,9 +3,9 @@ package com.ql.util.express.instruction.op;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.ql.util.express.ArraySwap;
-import com.ql.util.express.InstructionSetContext;
-import com.ql.util.express.OperateData;
+import com.ql.util.express.instruction.opdata.ArraySwap;
+import com.ql.util.express.context.InstructionSetContext;
+import com.ql.util.express.instruction.opdata.OperateData;
 import com.ql.util.express.instruction.OperateDataCacheManager;
 import com.ql.util.express.instruction.opdata.OperateDataKeyValue;
 

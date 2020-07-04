@@ -1,8 +1,8 @@
 package com.ql.util.express.instruction.op;
 
-import com.ql.util.express.ArraySwap;
-import com.ql.util.express.InstructionSetContext;
-import com.ql.util.express.OperateData;
+import com.ql.util.express.instruction.opdata.ArraySwap;
+import com.ql.util.express.context.InstructionSetContext;
+import com.ql.util.express.instruction.opdata.OperateData;
 import com.ql.util.express.exception.QLException;
 
 public  class OperatorIf extends OperatorBase {
@@ -15,7 +15,7 @@ public  class OperatorIf extends OperatorBase {
 		this.aliasName = aAliasName;
 		this.errorInfo = aErrorInfo;
 	}
-	
+
 	public  OperateData executeInner(InstructionSetContext parent, ArraySwap list) throws Exception {
 		if(list.length <2){
 			throw new QLException("\"" + this.aliasName + "\"操作至少要两个操作数");
@@ -35,7 +35,7 @@ public  class OperatorIf extends OperatorBase {
 					return list.get(2);
 				}
 			}
-			return null;			
+			return null;
 		}
 	}
 }

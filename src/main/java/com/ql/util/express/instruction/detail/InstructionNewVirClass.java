@@ -2,8 +2,8 @@ package com.ql.util.express.instruction.detail;
 
 import java.util.List;
 
-import com.ql.util.express.ArraySwap;
-import com.ql.util.express.OperateData;
+import com.ql.util.express.instruction.opdata.ArraySwap;
+import com.ql.util.express.instruction.opdata.OperateData;
 import com.ql.util.express.RunEnvironment;
 import com.ql.util.express.instruction.opdata.OperateDataAttr;
 import com.ql.util.express.instruction.opdata.OperateDataVirClass;
@@ -17,11 +17,11 @@ public class InstructionNewVirClass extends Instruction {
 		this.className = name;
 		this.opDataNumber = aOpDataNumber;
 	}
-    
+
     public String getClassName() {
         return className;
     }
-    
+
     public void execute(RunEnvironment environment, List<String> errorList)
 			throws Exception {
 		ArraySwap parameters = environment.popArray(
@@ -44,14 +44,14 @@ public class InstructionNewVirClass extends Instruction {
 			str = str + ")";
 			log.debug(str);
 		}
-		
-		
+
+
 		//因为会影响堆栈，要先把对象拷贝出来
 		OperateData[] list = new OperateData[parameters.length];
-		for(int i = 0;i <list.length;i++){			
+		for(int i = 0;i <list.length;i++){
 			list[i] = parameters.get(i);
 		}
-		
+
 		OperateDataVirClass result = new OperateDataVirClass(className);
 		environment.push(result);
 		environment.programPointAddOne();

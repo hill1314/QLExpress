@@ -1,7 +1,7 @@
 package com.ql.util.express.instruction.opdata;
 
-import com.ql.util.express.ExpressUtil;
-import com.ql.util.express.InstructionSetContext;
+import com.ql.util.express.utils.ExpressUtil;
+import com.ql.util.express.context.InstructionSetContext;
 import com.ql.util.express.config.QLExpressRunStrategy;
 import com.ql.util.express.parse.AppendingClassFieldManager;
 

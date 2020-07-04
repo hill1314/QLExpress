@@ -1,16 +1,14 @@
 package com.ql.util.express.instruction.op;
 
-import com.ql.util.express.Operator;
-
 /**
  * Created by tianqiao on 17/9/19.
  */
 public class OperatorInstanceOf extends Operator {
-    
+
     public OperatorInstanceOf(String anInstanceof) {
         this.name = anInstanceof;
     }
-    
+
     @Override
     public Object executeInner(Object[] list) throws Exception {
         Object obj = list[0];

@@ -1,8 +1,8 @@
 package com.ql.util.express.test;
 
-import com.ql.util.express.DefaultContext;
+import com.ql.util.express.context.DefaultContext;
 import com.ql.util.express.ExpressRunner;
-import com.ql.util.express.IExpressContext;
+import com.ql.util.express.context.IExpressContext;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,10 +14,10 @@ import java.io.InputStreamReader;
  * Created by tianqiao on 17/4/1.
  */
 public class PrintLineExceptionTest {
-    
+
     @Test
     public void testLoadFromFile() throws Exception {
-        
+
         String script = getResourceAsStream("lineTest.ql");
         ExpressRunner runner = new ExpressRunner(false, false);
         IExpressContext<String, Object> context = new DefaultContext<String, Object>();
@@ -29,7 +29,7 @@ public class PrintLineExceptionTest {
             Assert.assertTrue(e.toString().contains("at line 7"));;
         }
     }
-    
+
     public static String getResourceAsStream(String path) throws Exception {
         InputStream in = Thread.currentThread().getContextClassLoader()
                 .getResourceAsStream(path);

@@ -1,9 +1,5 @@
 package com.ql.util.express.instruction.op;
 
-import com.ql.util.express.ArraySwap;
-import com.ql.util.express.Operator;
-import com.ql.util.express.OperatorOfNumber;
-
 public   class OperatorAdd extends Operator {
 	public OperatorAdd(String name) {
 		this.name = name;

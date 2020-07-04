@@ -1,6 +1,5 @@
 package com.ql.util.express.instruction.op;
 
-import com.ql.util.express.Operator;
 import com.ql.util.express.exception.QLException;
 
 public class OperatorMinMax extends Operator {

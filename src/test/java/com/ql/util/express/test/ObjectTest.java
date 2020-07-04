@@ -3,7 +3,7 @@ package com.ql.util.express.test;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.ql.util.express.DefaultContext;
+import com.ql.util.express.context.DefaultContext;
 import com.ql.util.express.ExpressRunner;
 
 public class ObjectTest {
@@ -19,7 +19,7 @@ public class ObjectTest {
 		System.out.println(r);
 		Assert.assertTrue("数据执行错误", r.toString().equals(260) == false);
 	}
-    
+
     @Test
     public void testABC2() throws Exception {
         String express = "object.getAmount(1)";

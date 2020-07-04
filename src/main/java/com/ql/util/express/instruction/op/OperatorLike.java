@@ -1,7 +1,5 @@
 package com.ql.util.express.instruction.op;
 
-import com.ql.util.express.Operator;
-
 import java.util.ArrayList;
 
 public class OperatorLike extends Operator {

@@ -3,7 +3,6 @@ package com.ql.util.express.instruction.op;
 import java.lang.reflect.Array;
 import java.util.List;
 
-import com.ql.util.express.Operator;
 import com.ql.util.express.config.QLExpressRunStrategy;
 import com.ql.util.express.exception.QLException;
 
@@ -50,7 +49,7 @@ public class OperatorIn extends Operator {
 							if (f == true) {
 								return Boolean.TRUE;
 							}
-					   }				   
+					   }
 				   }
 				   return false;
 		} else {

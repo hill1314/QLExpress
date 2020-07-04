@@ -1,6 +1,6 @@
 package com.ql.util.express.instruction.opdata;
 
-import com.ql.util.express.InstructionSetContext;
+import com.ql.util.express.context.InstructionSetContext;
 
 
 
@@ -8,7 +8,7 @@ public class OperateDataLocalVar extends OperateDataAttr {
 	public OperateDataLocalVar(String name,Class<?> type) {
 		super(name,type);
 	}
-	
+
 	public void initialDataLocalVar(String name,Class<?> type){
 		super.initialDataAttr(name, type);
 	}
@@ -16,7 +16,7 @@ public class OperateDataLocalVar extends OperateDataAttr {
 		super.clear();
 	}
 	public String toString() {
-		try {			
+		try {
 			return name +":localVar";
 		} catch (Exception ex) {
 			return ex.getMessage();
@@ -30,7 +30,7 @@ public class OperateDataLocalVar extends OperateDataAttr {
 			throw new RuntimeException(e);
 		}
 	}
-    
+
 	public Class<?> getType(InstructionSetContext context) throws Exception {
 		  return this.type;
 	}

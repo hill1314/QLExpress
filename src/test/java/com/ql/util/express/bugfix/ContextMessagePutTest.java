@@ -1,25 +1,28 @@
 package com.ql.util.express.bugfix;
 
 import com.ql.util.express.*;
+import com.ql.util.express.context.DefaultContext;
+import com.ql.util.express.context.IExpressContext;
+import com.ql.util.express.context.InstructionSetContext;
 import com.ql.util.express.instruction.op.OperatorBase;
+import com.ql.util.express.instruction.opdata.ArraySwap;
+import com.ql.util.express.instruction.opdata.OperateData;
 import org.junit.Test;
 
-import java.util.List;
-
 /**
- * 
+ *
  * @骆凡
  * Created by tianqiao on 17/7/5.
  */
 public class ContextMessagePutTest {
-    
-    
+
+
     class OperatorContextPut extends OperatorBase {
-        
+
         public OperatorContextPut(String aName) {
             this.name = aName;
         }
-    
+
         @Override
         public OperateData executeInner(InstructionSetContext parent, ArraySwap list) throws Exception {
             String key = list.get(0).toString();
@@ -28,7 +31,7 @@ public class ContextMessagePutTest {
             return null;
         }
     }
-    
+
     @Test
     public void test() throws Exception{
         ExpressRunner runner = new ExpressRunner();

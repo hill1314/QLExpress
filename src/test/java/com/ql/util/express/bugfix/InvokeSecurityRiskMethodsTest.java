@@ -1,8 +1,8 @@
 package com.ql.util.express.bugfix;
 
-import com.ql.util.express.DefaultContext;
+import com.ql.util.express.context.DefaultContext;
 import com.ql.util.express.ExpressRunner;
-import com.ql.util.express.IExpressContext;
+import com.ql.util.express.context.IExpressContext;
 import com.ql.util.express.config.QLExpressRunStrategy;
 import com.ql.util.express.exception.QLException;
 import com.ql.util.express.exception.QLSecurityRiskException;
@@ -12,9 +12,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class InvokeSecurityRiskMethodsTest {
-    
+
     @Before
-    public void before()        
+    public void before()
     {
         //系统默认阻止的方法黑名单:System.exit(1);Runtime.getRuntime().exec()两个函数
         QLExpressRunStrategy.setForbiddenInvokeSecurityRiskMethods(true);

@@ -4,6 +4,9 @@ import com.ql.util.express.RunEnvironment;
 
 import java.util.List;
 
+/**
+ * 指针跳转指令
+ */
 public class InstructionGoTo extends Instruction {
     private static final long serialVersionUID = 198094562177756098L;
     /**

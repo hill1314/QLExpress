@@ -2,8 +2,7 @@ package com.ql.util.express.instruction.opdata;
 
 import java.lang.reflect.Array;
 
-import com.ql.util.express.InstructionSetContext;
-import com.ql.util.express.OperateData;
+import com.ql.util.express.context.InstructionSetContext;
 
 public class OperateDataArrayItem extends OperateDataAttr {
 	OperateData arrayObject;
@@ -23,7 +22,7 @@ public class OperateDataArrayItem extends OperateDataAttr {
 		this.arrayObject = null;
 		this.index = -1;
 	}
-	public void toResource(StringBuilder builder,int level){		
+	public void toResource(StringBuilder builder,int level){
 		builder.append(this.index);
     }
 	public Class<?> getType(InstructionSetContext context) throws Exception {

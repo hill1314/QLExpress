@@ -1,6 +1,6 @@
 package com.ql.util.express.test.spring;
 
-import com.ql.util.express.IExpressContext;
+import com.ql.util.express.context.IExpressContext;
 import org.springframework.context.ApplicationContext;
 
 import java.util.HashMap;

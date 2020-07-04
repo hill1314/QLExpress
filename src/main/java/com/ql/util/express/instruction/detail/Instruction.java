@@ -6,7 +6,9 @@ import org.apache.commons.logging.LogFactory;
 
 import java.util.List;
 
-
+/**
+ * 指令基类 （具体的指令继承该类）
+ */
 public abstract class Instruction implements java.io.Serializable {
 
     private static final long serialVersionUID = 1361458333068300443L;
@@ -33,6 +35,11 @@ public abstract class Instruction implements java.io.Serializable {
         return "run QlExpress Exception at line " + line + " :";
     }
 
-    public abstract void execute(RunEnvironment environment, List<String> errorList)
-            throws Exception;
+    /**
+     * 执行指令
+     * @param environment
+     * @param errorList
+     * @throws Exception
+     */
+    public abstract void execute(RunEnvironment environment, List<String> errorList) throws Exception;
 }

@@ -2,7 +2,7 @@ package com.ql.util.express.instruction.detail;
 
 import java.util.List;
 
-import com.ql.util.express.OperateData;
+import com.ql.util.express.instruction.opdata.OperateData;
 import com.ql.util.express.RunEnvironment;
 import com.ql.util.express.instruction.opdata.OperateDataAttr;
 
