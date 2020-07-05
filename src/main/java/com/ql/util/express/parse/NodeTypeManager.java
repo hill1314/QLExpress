@@ -26,26 +26,35 @@ public class NodeTypeManager implements INodeTypeManager {
     }
 
     public NodeTypeManager(KeyWordDefine4Java keyWordDefine) {
+        //分割符号
         this.splitWord = keyWordDefine.splitWord;
         WordSplit.sortSplitWord(this.splitWord);
+        //关键词
         this.keyWords = keyWordDefine.keyWords;
+        //节点类型定义
         this.nodeTypeDefines = keyWordDefine.nodeTypeDefines;
+        //指令与指令工厂的映射关系
         this.instructionFactoryMapping = keyWordDefine.instructionFactoryMapping;
+
+        //初始化
         this.initial();
+
+        //额外添加的操作符
         this.addOperatorWithRealNodeType("and", "&&");
         this.addOperatorWithRealNodeType("or", "||");
 
     }
 
     public void initial() {
-        //创建所有的关键字
+        //创建所有的 （分隔符和关键字）
         NodeType[] tempKeyWordNodeTypes = new NodeType[splitWord.length + keyWords.length];
         for (int i = 0; i < splitWord.length; i++) {
-            tempKeyWordNodeTypes[i] = this.createNodeType(splitWord[i] + ":TYPE=KEYWORD");
+            tempKeyWordNodeTypes[i] = createNodeType(splitWord[i] + ":TYPE=KEYWORD");
         }
         for (int i = 0; i < keyWords.length; i++) {
-            tempKeyWordNodeTypes[i + splitWord.length] = this.createNodeType(keyWords[i] + ":TYPE=KEYWORD");
+            tempKeyWordNodeTypes[i + splitWord.length] = createNodeType(keyWords[i] + ":TYPE=KEYWORD");
         }
+
         // 初始化所有的类型信息，
         for (int i = 0; i < tempKeyWordNodeTypes.length; i++) {
             tempKeyWordNodeTypes[i].initial();
@@ -54,7 +63,7 @@ public class NodeTypeManager implements INodeTypeManager {
         // 创建所有的类型信息，但不能初始化
         NodeType[] nodeTypes = new NodeType[nodeTypeDefines.length];
         for (int i = 0; i < nodeTypeDefines.length; i++) {
-            nodeTypes[i] = this.createNodeType(nodeTypeDefines[i]);
+            nodeTypes[i] = createNodeType(nodeTypeDefines[i]);
         }
         // 初始化所有的类型信息，
         for (int i = 0; i < nodeTypes.length; i++) {
@@ -62,10 +71,10 @@ public class NodeTypeManager implements INodeTypeManager {
         }
 
         //初始化指令Factory
-        if (this.instructionFactoryMapping != null) {
-            for (String[] list : this.instructionFactoryMapping) {
+        if (instructionFactoryMapping != null) {
+            for (String[] list : instructionFactoryMapping) {
                 for (String s : list[0].split(",")) {
-                    this.findNodeType(s).setInstructionFactory(list[1]);
+                    findNodeType(s).setInstructionFactory(list[1]);
                 }
             }
         }

@@ -10,13 +10,19 @@ import com.ql.util.express.parse.ExpressNode;
 
 import java.util.Stack;
 
+/**
+ * 代码块指令工厂
+ */
 public class BlockInstructionFactory extends InstructionFactory {
+
     public boolean createInstruction(ExpressRunner aCompile, InstructionSet result,
                                      Stack<ForRelBreakContinue> forStack, ExpressNode node, boolean isRoot)
             throws Exception {
+        //分号？
         if (node.isTypeEqualsOrChild("STAT_SEMICOLON")
                 && result.getCurrentPoint() >= 0
                 && result.getInstruction(result.getCurrentPoint()) instanceof InstructionClearDataStack == false) {
+            //添加一个清除运行时数据的指令
             result.addInstruction(new InstructionClearDataStack().setLine(node.getLine()));
         }
 
@@ -24,7 +30,8 @@ public class BlockInstructionFactory extends InstructionFactory {
         boolean returnVal = false;
         boolean hasDef = false;
 
-        for (ExpressNode tmpNode : node.getChildren()) {
+        ExpressNode[] allChildren = node.getChildren();
+        for (ExpressNode tmpNode : allChildren) {
             boolean tmpHas = aCompile.createInstructionSetPrivate(result, forStack, tmpNode, false);
             hasDef = hasDef || tmpHas;
         }

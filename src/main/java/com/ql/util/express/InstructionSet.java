@@ -140,33 +140,6 @@ public class InstructionSet implements Serializable {
 
 
     /**
-     * 添加指令，为了提高运行期的效率，指令集用数组存储
-     *
-     * @param item
-     * @return
-     */
-    private void addArrayItem(Instruction item) {
-        Instruction[] newArray = new Instruction[this.instructionList.length + 1];
-        System.arraycopy(this.instructionList, 0, newArray, 0, this.instructionList.length);
-        newArray[this.instructionList.length] = item;
-        this.instructionList = newArray;
-    }
-
-    /**
-     * 插入数据
-     *
-     * @param aPoint
-     * @param item
-     */
-    private void insertArrayItem(int aPoint, Instruction item) {
-        Instruction[] newArray = new Instruction[this.instructionList.length + 1];
-        System.arraycopy(this.instructionList, 0, newArray, 0, aPoint);
-        System.arraycopy(this.instructionList, aPoint, newArray, aPoint + 1, this.instructionList.length - aPoint);
-        newArray[aPoint] = item;
-        this.instructionList = newArray;
-    }
-
-    /**
      * @param environment
      * @param context
      * @param errorList
@@ -282,12 +255,29 @@ public class InstructionSet implements Serializable {
         this.parameterList.add(localVar);
     }
 
+    /**
+     * 添加指令，为了提高运行期的效率，指令集用数组存储
+     * @param instruction
+     */
     public void addInstruction(Instruction instruction) {
-        this.addArrayItem(instruction);
+        Instruction[] newArray = new Instruction[this.instructionList.length + 1];
+        System.arraycopy(this.instructionList, 0, newArray, 0, this.instructionList.length);
+        newArray[this.instructionList.length] = instruction;
+        this.instructionList = newArray;
     }
 
-    public void insertInstruction(int point, Instruction instruction) {
-        this.insertArrayItem(point, instruction);
+    /**
+     * 插入指令
+     *
+     * @param aPoint
+     * @param instruction
+     */
+    public void insertInstruction(int aPoint, Instruction instruction) {
+        Instruction[] newArray = new Instruction[this.instructionList.length + 1];
+        System.arraycopy(this.instructionList, 0, newArray, 0, aPoint);
+        System.arraycopy(this.instructionList, aPoint, newArray, aPoint + 1, this.instructionList.length - aPoint);
+        newArray[aPoint] = instruction;
+        this.instructionList = newArray;
     }
 
     public Instruction getInstruction(int point) {

@@ -32,7 +32,7 @@ public class IfInstructionFactory extends InstructionFactory {
             children[point] = oldChildren[i];
             point = point + 1;
         }
-        if (point == 2) {
+        if (point == 2) { //没有ELSE 的场景
             children[2] = new ExpressNode(aCompile.getNodeTypeManager().findNodeType("STAT_BLOCK"), null);
         }
         int[] finishPoint = new int[children.length];

@@ -840,6 +840,7 @@ public class ExpressRunner {
                                                Stack<ForRelBreakContinue> forStack, ExpressNode node,
                                                boolean isRoot) throws Exception {
         InstructionFactory factory = InstructionFactory.getInstructionFactory(node.getInstructionFactory());
+        //通过指令工厂创建指令，返回是否 有运行时变量
         boolean hasLocalVar = factory.createInstruction(this, result, forStack, node, isRoot);
         return hasLocalVar;
     }
