@@ -4,11 +4,8 @@ import com.ql.util.express.config.QLExpressTimer;
 import com.ql.util.express.context.IExpressContext;
 import com.ql.util.express.exception.QLCompileException;
 import com.ql.util.express.exception.QLException;
-import com.ql.util.express.instruction.ExportItem;
-import com.ql.util.express.instruction.ForRelBreakContinue;
-import com.ql.util.express.instruction.IOperateDataCache;
+import com.ql.util.express.instruction.*;
 import com.ql.util.express.instruction.factory.InstructionFactory;
-import com.ql.util.express.instruction.OperateDataCacheImpl;
 import com.ql.util.express.instruction.op.*;
 import com.ql.util.express.loader.DefaultExpressResourceLoader;
 import com.ql.util.express.loader.ExpressLoader;
@@ -77,7 +74,7 @@ public class ExpressRunner {
     /**
      * 操作符的管理器
      */
-    private OperatorFactory operatorManager;
+    private OperatorManager operatorManager;
     /**
      * 语法分析器
      */
@@ -141,7 +138,7 @@ public class ExpressRunner {
         } else {
             manager = aManager;
         }
-        this.operatorManager = new OperatorFactory(this.isPrecise);
+        this.operatorManager = new OperatorManager(this.isPrecise);
         this.loader = new ExpressLoader(this);
         this.parse = new ExpressParse(manager, this.expressResourceLoader, this.isPrecise);
         rootExpressPackage.addPackage("java.lang");
@@ -939,7 +936,7 @@ public class ExpressRunner {
      *
      * @return
      */
-    public OperatorFactory getOperatorFactory() {
+    public OperatorManager getOperatorFactory() {
         return this.operatorManager;
     }
 

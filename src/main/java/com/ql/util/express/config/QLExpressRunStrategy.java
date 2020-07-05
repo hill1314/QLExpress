@@ -53,22 +53,20 @@ public class QLExpressRunStrategy {
         QLExpressRunStrategy.forbiddenInvokeSecurityRiskMethods = forbiddenInvokeSecurityRiskMethods;
     }
 
-    private static List<String>securityRiskMethods = new ArrayList<String>();
+    private static List<String> securityRiskMethods = new ArrayList<String>();
 
-    static{
-        securityRiskMethods.add(System.class.getName()+"."+"exit");//系统退出
-        securityRiskMethods.add(Runtime.getRuntime().getClass().getName()+".exec");//运行脚本命令
+    static {
+        securityRiskMethods.add(System.class.getName() + "." + "exit");//系统退出
+        securityRiskMethods.add(Runtime.getRuntime().getClass().getName() + ".exec");//运行脚本命令
     }
 
-    public static void addSecurityRiskMethod(Class clazz, String methodName )
-    {
-        QLExpressRunStrategy.securityRiskMethods.add(clazz.getName()+"."+methodName);
+    public static void addSecurityRiskMethod(Class clazz, String methodName) {
+        QLExpressRunStrategy.securityRiskMethods.add(clazz.getName() + "." + methodName);
     }
 
     public static void assertBlackMethod(Method m) throws QLSecurityRiskException {
-
-        if(forbiddenInvokeSecurityRiskMethods && m!=null){
-            if(securityRiskMethods.contains(m.getDeclaringClass().getName()+"."+m.getName())) {
+        if (forbiddenInvokeSecurityRiskMethods && m != null) {
+            if (securityRiskMethods.contains(m.getDeclaringClass().getName() + "." + m.getName())) {
                 throw new QLSecurityRiskException("使用QLExpress调用了不安全的系统方法:" + m.toString());
             }
         }

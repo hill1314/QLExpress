@@ -17,6 +17,16 @@ import java.util.Date;
  */
 public abstract class Operator extends OperatorBase {
 
+    /**
+     * 执行操作指令的模板方法
+     * 1）获取操作需要的入参
+     * 2）调具体实现类执行指令
+     * 3）获取指令执行结果
+     * @param context
+     * @param list
+     * @return
+     * @throws Exception
+     */
     public OperateData executeInner(InstructionSetContext context, ArraySwap list) throws Exception {
         //获取 变量对应的值
         Object[] parameters = new Object[list.length];

@@ -97,15 +97,20 @@ public class OperatorSelfDefineClassFunction extends OperatorBase implements Can
     }
 
     public OperateData executeInner(InstructionSetContext context, ArraySwap list) throws Exception {
-        Object[] parameres = DynamicParamsUtil.transferDynamicParams(context, list, parameterClasses, this.maybeDynamicParams);
+        //获取方法参数
+        Object[] parameters = DynamicParamsUtil.transferDynamicParams(context, list, parameterClasses, this.maybeDynamicParams);
+
         Object obj = null;
+        //判断是否为静态方法
         if (Modifier.isStatic(this.method.getModifiers())) {
-            obj = this.method.invoke(null, ExpressUtil.transferArray(parameres, parameterClasses));
+            //也是通过反射执行的方法
+            obj = this.method.invoke(null, ExpressUtil.transferArray(parameters, parameterClasses));
         } else {
             if (operInstance == null) {
                 operInstance = operClass.newInstance();
             }
-            obj = this.method.invoke(operInstance, ExpressUtil.transferArray(parameres, parameterClasses));
+            //也是通过反射执行的方法
+            obj = this.method.invoke(operInstance, ExpressUtil.transferArray(parameters, parameterClasses));
         }
 
         if (obj != null) {

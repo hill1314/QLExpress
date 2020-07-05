@@ -20,12 +20,7 @@ public class OperatorEqualsLessMore extends Operator {
 	}
 
 	public Object executeInner(Object[] list) throws Exception {
-		return executeInner(list[0], list[1]);
-	}
-
-	public Object executeInner(Object op1,Object op2) throws Exception {
-		boolean result = executeInner(this.name, op1, op2);
-		return result;
+		return executeInner(this.name, list[0], list[1]);
 	}
 
 	public static boolean executeInner(String opStr, Object obj1, Object obj2)
