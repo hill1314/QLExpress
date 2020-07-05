@@ -9,7 +9,9 @@ import com.ql.util.express.ExpressRunner;
 public class ImportTest {
 	@Test
 	public void testImport() throws Exception{
-		String express ="import java.math.*;" +
+		String express ="import java.math.*; " +
+//				"// 注释" +
+//				"/** 注释 **/" +
 				"import com.ql.util.express.test.BeanExample;" +
 				"abc = new BeanExample(\"张三\").unionName(\"李四\") ;" +
 				"return new BigInteger(\"1000\");";

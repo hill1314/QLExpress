@@ -106,6 +106,15 @@ public class QLPatternNode {
 //		}
     }
 
+    /**
+     * TODO 此处逻辑有点闷逼
+     * @param aManager
+     * @param aName
+     * @param aOrgiContent
+     * @param aIsChildMode
+     * @param aLevel
+     * @throws Exception
+     */
     protected QLPatternNode(INodeTypeManager aManager, String aName, String aOrgiContent, boolean aIsChildMode, int aLevel) throws Exception {
         this.nodeTypeManager = aManager;
         this.name = aName;

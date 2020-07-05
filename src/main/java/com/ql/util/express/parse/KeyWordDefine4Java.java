@@ -44,6 +44,8 @@ public class KeyWordDefine4Java {
             "XOR:TYPE=WORDDEF,DEFINE=^",
             "MAYBE:TYPE=WORDDEF,DEFINE=|",
             "OR:TYPE=WORDDEF,DEFINE=||",
+
+            //TODO 注释 没实现？
             "LEFT_COMMENT:TYPE=WORDDEF,DEFINE=/**",
             "RIGHT_COMMENT:TYPE=WORDDEF,DEFINE=**/",
             "MULTI:TYPE=WORDDEF,DEFINE=*",
